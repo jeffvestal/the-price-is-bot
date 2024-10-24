@@ -1,5 +1,3 @@
-// src/components/Leaderboard.js
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
@@ -41,8 +39,8 @@ function Leaderboard() {
                 <TableCell>{idx + 1}</TableCell>
                 <TableCell>{score.username}</TableCell>
                 <TableCell>{score.score}</TableCell>
-                <TableCell>${score.total_price.toFixed(2)}</TableCell>
-                <TableCell>{score.time_taken}</TableCell>
+                <TableCell>${score.total_price ? score.total_price.toFixed(2) : '0.00'}</TableCell>
+                <TableCell>{score.time_taken !== undefined ? score.time_taken : 'N/A'}</TableCell>
               </TableRow>
             ))}
           </TableBody>

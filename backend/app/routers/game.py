@@ -57,6 +57,18 @@ async def submit_game_result(game_result: GameResult, user: dict = Depends(get_c
             target_price = settings.get('target_price', TARGET_PRICE)
             max_podiums = settings.get('max_podiums', MAX_PODIUMS)
 
+        # **Validation: Ensure time_taken is positive and realistic**
+        if game_result_dict['time_taken'] <= 0:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid time_taken value.")
+
+        # **Validation: Ensure total_price is non-negative**
+        if game_result_dict['total_price'] < 0:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid total_price value.")
+
+        # **Validation: Ensure number of items does not exceed max_podiums**
+        if len(game_result_dict['items']) > max_podiums:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Exceeded maximum number of podiums.")
+
         # Calculate score using the scoring utility
         game_result_dict['price_difference'] = abs(target_price - game_result_dict['total_price'])
         game_result_dict['target_price'] = target_price
@@ -68,8 +80,8 @@ async def submit_game_result(game_result: GameResult, user: dict = Depends(get_c
         )
         logger.debug(f"Calculated score: {game_result_dict['score']}")
 
-        # **Validation: Check if podiums exceed limits**
-        if len(game_result_dict['items']) > max_podiums or game_result_dict['total_price'] > target_price:
+        # **Additional Validation: Check if total_price exceeds target_price**
+        if game_result_dict['total_price'] > target_price:
             game_result_dict['score'] = 0.0  # Assign score 0 for failed submissions
             logger.info(f"User '{user['username']}' exceeded limits. Marked as failed.")
 
@@ -77,9 +89,13 @@ async def submit_game_result(game_result: GameResult, user: dict = Depends(get_c
         await store_game_result(game_result_dict)
         logger.info(f"Game result stored for user: {user['username']} with score: {game_result_dict['score']}")
         return {"score": game_result_dict['score']}
+    except HTTPException as he:
+        logger.error(f"Validation error for user {user['username']}: {he.detail}")
+        raise he
     except Exception as e:
         logger.error(f"Failed to submit game result for user {user['username']}: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to submit game result")
+
 
 
 def calculate_score(target_price: float, player_total_price: float, time_limit: int, time_taken: float) -> float:

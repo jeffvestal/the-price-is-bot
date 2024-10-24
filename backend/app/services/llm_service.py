@@ -251,11 +251,12 @@ def validate_response(response: dict) -> bool:
 
 async def handle_llm_interaction(username: str, user_message: str) -> str:
     """
-    Handles the interaction with the Language Learning Model (LLM) to generate assistant responses.
+    Handles the interaction with the Language Learning Model (LLM) to generate assistant responses,
+    allowing multiple function calls within a single interaction.
 
     :param username: The username of the user interacting with the assistant.
     :param user_message: The message sent by the user.
-    :return: The assistant's response as a string.
+    :return: The assistant's final response as a string.
     """
 
     logger.debug(f"Handling LLM interaction for user '{username}' with message: {user_message}")
@@ -269,181 +270,130 @@ async def handle_llm_interaction(username: str, user_message: str) -> str:
         # Append user message to conversation history
         conversation_histories[username].append({"role": "user", "content": user_message})
 
-        # Send the full conversation history to the LLM
-        completion = await asyncio.to_thread(
-            client.beta.chat.completions.parse,  # Use the 'parse' method for Structured Outputs
-            model=AZURE_OPENAI_DEPLOYMENT_NAME,
-            messages=conversation_histories[username],
-            functions=[query_elasticsearch_schema],
-            response_format=AssistantResponse  # Specify the Pydantic model for parsing
-        )
+        max_iterations = 5  # Prevent infinite loops
+        iteration = 0
 
-        message = completion.choices[0].message
+        while iteration < max_iterations:
+            iteration += 1
+            logger.debug(f"LLM interaction iteration {iteration} for user '{username}'.")
 
-        # Log the received message once
-        logger.debug(f"Assistant message for user '{username}': {message}")
+            # Send the full conversation history to the LLM
+            completion = await asyncio.to_thread(
+                client.beta.chat.completions.parse,  # Use the 'parse' method for Structured Outputs
+                model=AZURE_OPENAI_DEPLOYMENT_NAME,
+                messages=conversation_histories[username],
+                functions=[query_elasticsearch_schema],
+                response_format=AssistantResponse  # Specify the Pydantic model for parsing
+            )
 
-        if message.parsed:
-            logger.debug(f"Assistant response for user '{username}': {message.parsed.dict()}")
-            # If the response is parsed successfully
-            assistant_response_json = message.parsed.dict()
-            if validate_response(assistant_response_json):
-                logger.debug(f"Assistant response for user '{username}': {assistant_response_json}")
+            message = completion.choices[0].message
+
+            logger.debug(f"Assistant message for user '{username}': {message}")
+
+            if message.parsed:
+                logger.debug(f"Assistant response for user '{username}': {message.parsed.dict()}")
                 # Append assistant response to conversation history
-                conversation_histories[username].append({"role": "assistant", "content": json.dumps(assistant_response_json)})
-                return json.dumps(assistant_response_json)
-            else:
-                logger.error(f"Assistant response validation failed for user '{username}'.")
-                return json.dumps({
-                    "podiums": [],
-                    "overall_total": 0.0,
-                    "other_info": "I'm sorry, I provided an invalid response. Please try again.",
-                    "proposed_solution": False
-                })
-        elif message.function_call:
-            logger.debug(f"Function call detected, parsing...")
-            # Handle function call
-            function_name = message.function_call.name
-            function_args = json.loads(message.function_call.arguments)
+                conversation_histories[username].append({"role": "assistant", "content": json.dumps(message.parsed.dict())})
+                return json.dumps(message.parsed.dict())
+            elif message.function_call:
+                function_name = message.function_call.name
+                function_args = json.loads(message.function_call.arguments)
 
-            logger.debug(f"Function call detected: {function_name} with arguments {function_args}")
-
-            if function_name == "query_elasticsearch":
-                query = function_args.get("query")
-                if not query:
-                    logger.error(f"No query provided in function call by user '{username}'.")
-                    return json.dumps({
-                        "podiums": [],
-                        "overall_total": 0.0,
-                        "other_info": "No query provided to search for grocery items.",
-                        "proposed_solution": False
-                    })
+                logger.debug(f"Function call detected: {function_name} with arguments {function_args}")
 
                 # Execute the function
-                logger.debug(f"Executing function 'query_elasticsearch' with query: {query}")
-                function_response = await query_elasticsearch(query)
-
-                # Extract relevant information from the search results
-                podiums: List[Podium] = []
-                if "results" in function_response and isinstance(function_response["results"], list):
-                    for idx, item in enumerate(function_response["results"], start=1):
-                        title_list = item.get("Title", [])
-                        price_list = item.get("Price", [])
-                        title = title_list[0] if title_list else "No Title"
-                        price_str = price_list[0] if price_list else "$0"
-                        try:
-                            price = float(price_str.replace('$', '').replace(',', '').strip())
-                        except ValueError:
-                            price = 0.0
-                        podium = Podium(
-                            podium=idx,
-                            item_name=title,
-                            item_price=price,
-                            quantity=1,
-                            total_price=price * 1
+                if function_name == "query_elasticsearch":
+                    query = function_args.get("query")
+                    if not query:
+                        logger.error(f"No query provided in function call by user '{username}'.")
+                        assistant_response = AssistantResponse(
+                            podiums=[],
+                            overall_total=0.0,
+                            other_info="No query provided to search for grocery items.",
+                            proposed_solution=False
                         )
-                        podiums.append(podium)
+                    else:
+                        # Execute the function
+                        function_response = await query_elasticsearch(query)
+
+                        # Extract relevant information from the search results
+                        podiums: List[Podium] = []
+                        if "results" in function_response and isinstance(function_response["results"], list):
+                            for idx, item in enumerate(function_response["results"], start=1):
+                                title_list = item.get("Title", [])
+                                price_list = item.get("Price", [])
+                                title = title_list[0] if title_list else "No Title"
+                                price_str = price_list[0] if price_list else "$0"
+                                try:
+                                    price = float(price_str.replace('$', '').replace(',', '').strip())
+                                except ValueError:
+                                    price = 0.0
+                                podium = Podium(
+                                    podium=idx,
+                                    item_name=title,
+                                    item_price=price,
+                                    quantity=1,
+                                    total_price=price * 1
+                                )
+                                podiums.append(podium)
+                        else:
+                            logger.warning(f"No results found for query '{query}'.")
+
+                        # Construct the AssistantResponse
+                        assistant_response = AssistantResponse(
+                            podiums=podiums,
+                            overall_total=sum(p.total_price for p in podiums),
+                            other_info=None,
+                            proposed_solution=True
+                        )
+
                 else:
-                    logger.warning(f"No results found for query '{query}'.")
+                    logger.error(f"Unknown function call: {function_name} for user '{username}'.")
+                    assistant_response = AssistantResponse(
+                        podiums=[],
+                        overall_total=0.0,
+                        other_info="I'm sorry, I encountered an unexpected error.",
+                        proposed_solution=False
+                    )
 
-                # Construct the AssistantResponse
-                assistant_response = AssistantResponse(
-                    podiums=podiums,
-                    overall_total=sum(p.total_price for p in podiums),
-                    other_info=None,
-                    proposed_solution=True
-                )
-
-                # Serialize to JSON
+                # Serialize to JSON and append to conversation history
                 assistant_response_json = assistant_response.dict()
-
-                # Append function response to conversation history
                 conversation_histories[username].append({
                     "role": "function",
                     "name": function_name,
-                    "content": json.dumps({
-                        "podiums": [podium.dict() for podium in podiums],
-                        "overall_total": assistant_response.overall_total,
-                        "other_info": assistant_response.other_info,
-                        "proposed_solution": assistant_response.proposed_solution
-                    })
+                    "content": json.dumps(assistant_response_json)
                 })
 
-                # Send the updated conversation history back to the LLM to get the final response
-                final_completion = await asyncio.to_thread(
-                    client.beta.chat.completions.parse,
-                    model=AZURE_OPENAI_DEPLOYMENT_NAME,
-                    messages=conversation_histories[username],
-                    functions=[query_elasticsearch_schema],
-                    response_format=AssistantResponse  # Specify the Pydantic model for parsing
-                )
-
-                final_message = final_completion.choices[0].message
-
-                logger.debug(f"Final assistant message for user '{username}': {final_message}")
-
-                if final_message.parsed:
-                    logging.debug(f"Assistant final response for user '{username}': {final_message.parsed.dict()}")
-                    assistant_final_response_json = final_message.parsed.dict()
-                    if validate_response(assistant_final_response_json):
-                        logger.debug(f"Assistant final response for user '{username}': {assistant_final_response_json}")
-                        # Append final assistant response to conversation history
-                        conversation_histories[username].append({"role": "assistant", "content": json.dumps(assistant_final_response_json)})
-                        return json.dumps(assistant_final_response_json)
-                    else:
-                        logger.error(f"Assistant final response validation failed for user '{username}'.")
-                        return json.dumps({
-                            "podiums": [],
-                            "overall_total": 0.0,
-                            "other_info": "I'm sorry, I provided an invalid response. Please try again.",
-                            "proposed_solution": False
-                        })
-                elif final_message.refusal:
-                    logger.warning(f"Assistant refused to respond for user '{username}': {final_message.refusal}")
-                    return json.dumps({
-                        "podiums": [],
-                        "overall_total": 0.0,
-                        "other_info": "I'm sorry, I couldn't assist with that request.",
-                        "proposed_solution": False
-                    })
-                else:
-                    logger.error(f"Unexpected final response structure for user '{username}': {final_message}")
-                    return json.dumps({
-                        "podiums": [],
-                        "overall_total": 0.0,
-                        "other_info": "I'm sorry, I encountered an unexpected error. Please try again.",
-                        "proposed_solution": False
-                    })
-            else:
-                logger.error(f"Unknown function call: {function_name} for user '{username}'")
+            elif message.refusal:
+                logger.warning(f"Assistant refused to respond for user '{username}': {message.refusal}")
+                # Append refusal to conversation history
+                conversation_histories[username].append({"role": "assistant", "content": "I'm sorry, I couldn't assist with that request."})
                 return json.dumps({
                     "podiums": [],
                     "overall_total": 0.0,
-                    "other_info": "I'm sorry, I encountered an unexpected error.",
+                    "other_info": "I'm sorry, I couldn't assist with that request.",
                     "proposed_solution": False
                 })
-        elif message.refusal:
-            # Handle refusal messages if any
-            logger.warning(f"Assistant refused to respond for user '{username}': {message.refusal}")
-            # Append refusal to conversation history
-            conversation_histories[username].append({"role": "assistant", "content": "I'm sorry, I couldn't assist with that request."})
-            return json.dumps({
-                "podiums": [],
-                "overall_total": 0.0,
-                "other_info": "I'm sorry, I couldn't assist with that request.",
-                "proposed_solution": False
-            })
-        else:
-            # Handle other unexpected scenarios
-            logger.error(f"Unexpected response structure for user '{username}': {message}")
-            # Append error message to conversation history
-            conversation_histories[username].append({"role": "assistant", "content": "I'm sorry, I encountered an unexpected error. Please try again."})
-            return json.dumps({
-                "podiums": [],
-                "overall_total": 0.0,
-                "other_info": "I'm sorry, I encountered an unexpected error. Please try again.",
-                "proposed_solution": False
-            })
+            else:
+                # Handle other unexpected scenarios
+                logger.error(f"Unexpected response structure for user '{username}': {message}")
+                # Append error message to conversation history
+                conversation_histories[username].append({"role": "assistant", "content": "I'm sorry, I encountered an unexpected error. Please try again."})
+                return json.dumps({
+                    "podiums": [],
+                    "overall_total": 0.0,
+                    "other_info": "I'm sorry, I encountered an unexpected error. Please try again.",
+                    "proposed_solution": False
+                })
+
+        # If maximum iterations are reached without a final response
+        logger.error(f"Maximum iterations reached for user '{username}' without receiving a final response.")
+        return json.dumps({
+            "podiums": [],
+            "overall_total": 0.0,
+            "other_info": "I'm sorry, I couldn't process your request fully. Please try again later.",
+            "proposed_solution": False
+        })
 
     except PydanticValidationError as e:
         logger.error(f"Pydantic validation error for user '{username}': {e}")

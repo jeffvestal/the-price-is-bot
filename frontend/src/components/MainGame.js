@@ -25,6 +25,9 @@ function MainGame({
   const [hasAcceptedSolution, setHasAcceptedSolution] = useState(false);
   const [submissionError, setSubmissionError] = useState('');
   const [submissionSuccess, setSubmissionSuccess] = useState('');
+  const [submitted, setSubmitted] = useState(false); // Track if submitted
+
+  const [elapsedTime, setElapsedTime] = useState(0); // New state variable
 
   const handleFinalSubmit = async () => {
     if (!user) {
@@ -35,22 +38,20 @@ function MainGame({
     const gameResult = {
       items: items,
       total_price: totalPrice,
-      time_taken: timeTaken,
+      time_taken: elapsedTime, // Use elapsedTime from Timer component
     };
 
     // Log the payload
-  console.log('Submitting Game Result:', gameResult);
+    console.log('Submitting Game Result:', gameResult);
+
+    // Disable further interactions by marking as submitted
+    setSubmitted(true); // Mark as submitted
 
     // Submit game result to backend
     try {
       const response = await handleSubmit(gameResult);
       setSubmissionSuccess(`Your score is ${response.score}`);
       setSubmissionError('');
-
-      // Determine if submission was successful based on score
-      if (response.score === 0) { // Assuming score 0 indicates failure
-        setSubmissionError('Submission failed: Your selections exceeded the set limits.');
-      }
     } catch (error) {
       console.error(error);
       if (error.response) {
@@ -70,7 +71,7 @@ function MainGame({
         <SignUpForm onLogin={handleLogin} />
       ) : (
         <>
-          {!timeUp && <Timer onTimeUp={handleTimeUp} />}
+          {!timeUp && <Timer onTimeUp={handleTimeUp} setElapsedTime={setElapsedTime} />}
           <ChatInterface
             sessionId={sessionId}
             items={items}
@@ -94,10 +95,10 @@ function MainGame({
             variant="contained"
             color="primary"
             onClick={handleFinalSubmit}
-            disabled={!items.length || !hasAcceptedSolution}
+            disabled={!items.length || !hasAcceptedSolution || submitted || timeUp} // Disable based on multiple conditions
             sx={{ mt: 2 }}
           >
-            Submit
+            {submitted ? 'Submitted' : 'Submit'}
           </Button>
         </>
       )}
