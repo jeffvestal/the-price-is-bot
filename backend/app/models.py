@@ -41,6 +41,8 @@ class GameResult(BaseModel):
 class LeaderboardEntry(BaseModel):
     username: str
     score: float
+    total_price: float
+    time_taken: float
     timestamp: datetime
 
 class GameResultInput(BaseModel):

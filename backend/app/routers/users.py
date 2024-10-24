@@ -19,9 +19,7 @@ async def register_user(user: UserCreate):
     if existing_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already exists")
 
-    user_in_db = user.dict()
-    # Remove password handling
-    # user_in_db['hashed_password'] = hash_password(user.password)  # Remove
+    user_in_db = user.model_dump()
     user_in_db['token'] = str(uuid.uuid4())
     user_in_db['is_admin'] = False  # Default to False; set to True manually or via another endpoint
 

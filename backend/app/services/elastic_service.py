@@ -215,7 +215,6 @@ async def store_user(user: dict) -> None:
 async def get_top_scores() -> list:
     """
     Retrieves the top 10 game scores from the 'game_results' Elasticsearch index.
-
     :return: A list of top game results.
     """
     try:
