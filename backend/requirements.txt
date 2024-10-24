@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+httpx
+elasticsearch[async]
+passlib[bcrypt]
+pydantic
+python-dotenv
+pytest
+opentelemetry-sdk
+opentelemetry-instrumentation-fastapi
+opentelemetry-exporter-otlp
+websockets
+python-jose[cryptography]
+python-multipart
+openai

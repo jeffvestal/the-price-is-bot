@@ -1,0 +1,2164 @@
+================================================================================================================================================================================================
+================================================================================================================================================================================================
+================================================================================================================================================================================================
+================================================================================================================================================================================================
+================================================================================================================================================================================================
+================================================================================================================================================================================================
+================================================================================================================================================================================================
+================================================================================================================================================================================================
+================================================================================================================================================================================================
+================================================================================================================================================================================================
+================================================================================================================================================================================================
+================================================================================================================================================================================================
+================================================================================================================================================================================================
+
+
+
+COMPLETE CODE BASE
+================================================================================================================================================================================================
+================================================================================================================================================================================================
+
+File: ./backend/app/config.py
+# app/config.py
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+ELASTICSEARCH_HOST = os.getenv("ELASTICSEARCH_HOST", "http://localhost:9200")
+ELASTICSEARCH_API_KEY = os.getenv("ELASTICSEARCH_API_KEY", "")
+LLM_API_ENDPOINT = os.getenv("LLM_API_ENDPOINT", f"{ELASTICSEARCH_HOST}/_infer")
+SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")
+
+# Admin Token for authentication
+ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "your_admin_token_here")
+
+# Azure OpenAI configurations
+AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT", "")
+AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY", "")
+AZURE_OPENAI_DEPLOYMENT_NAME = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME", "")
+AZURE_OPENAI_API_VERSION = os.getenv("AZURE_OPENAI_API_VERSION", "2023-07-01-preview")  # Update to the latest version that supports function calling
+---
+File: ./backend/app/main.py
+# app/main.py
+
+from fastapi import FastAPI
+from app.routers import users, game, admin, chat  # Ensure 'chat' is included correctly
+from app.telemetry import setup_telemetry
+from app.services.elastic_service import (
+    get_settings,
+    update_settings,
+    initialize_indices,
+    get_all_categories
+)  # Import get_all_categories
+from app.services.llm_service import set_categories  # Import set_categories
+import logging
+from starlette.middleware.cors import CORSMiddleware
+from app.sockets import sio
+import socketio
+
+# Configure root logger
+logging.basicConfig(
+    level=logging.DEBUG,  # Set to DEBUG for detailed logs
+    format="%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - line %(lineno)d - %(message)s",
+)
+
+# Initialize the FastAPI app
+app = FastAPI()
+
+# Include FastAPI routers
+app.include_router(users.router)
+app.include_router(game.router)
+app.include_router(admin.router)
+# Note: 'chat' is handled via Socket.IO and mounted separately
+
+# Initialize indices and settings on startup
+@app.on_event("startup")
+async def startup_event():
+    logger = logging.getLogger("startup")
+    logger.info("Initializing Elasticsearch indices...")
+    await initialize_indices()
+    logger.info("Elasticsearch indices initialized.")
+
+    # Get or create default settings
+    settings = await get_settings()
+    if not settings:
+        default_settings = {
+            "target_price": 100.0,
+            "time_limit": 300,  # 5 minutes
+        }
+        await update_settings(default_settings)
+        logger.info("Default game settings created.")
+    else:
+        logger.info("Game settings loaded.")
+
+    # Fetch all categories from Elasticsearch
+    categories = await get_all_categories()
+    if categories:
+        set_categories(categories)
+        logger.info(f"Categories set for LLM: {categories}")
+    else:
+        logger.warning("No categories found in Elasticsearch. LLM will have limited guidance.")
+
+# Set up CORS middleware for FastAPI app
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Update to specific domains in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Create the Socket.IO ASGI app
+socketio_app = socketio.ASGIApp(sio, socketio_path='/socket.io')
+
+# Mount the Socket.IO app at the root
+app.mount("/", socketio_app)
+---
+File: ./backend/app/models.py
+# app/models.py
+
+from pydantic import BaseModel, Field
+from typing import List, Optional
+from datetime import datetime
+
+class User(BaseModel):
+    username: str
+    email: str
+    company: Optional[str] = None
+    token: str
+    is_admin: bool = False
+
+class UserCreate(BaseModel):
+    username: str
+    email: str
+    company: Optional[str] = None
+
+class Message(BaseModel):
+    sender: str  # 'user' or 'bot'
+    content: str
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+class ItemSelection(BaseModel):
+    podium: int  # Podium number from 1 to 5
+    item_name: str
+    item_price: float
+    quantity: int
+
+class GameResult(BaseModel):
+    username: str
+    total_price: float
+    items: List[ItemSelection]
+    time_taken: float
+    price_difference: float
+    target_price: float
+    score: float
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+class LeaderboardEntry(BaseModel):
+    username: str
+    score: float
+    timestamp: datetime
+---
+File: ./backend/app/routers/admin.py
+# app/routers/admin.py
+
+from fastapi import APIRouter, Depends, HTTPException
+from app.utils.auth import authenticate_admin
+from app.services.elastic_service import get_settings, update_settings
+from pydantic import BaseModel
+
+router = APIRouter(prefix="/admin", tags=["admin"])
+
+class SettingsUpdate(BaseModel):
+    target_price: float
+    time_limit: int
+
+@router.post("/settings")
+async def update_game_settings(
+    settings: SettingsUpdate,
+    authorized: bool = Depends(authenticate_admin)
+):
+    await update_settings(settings.dict())
+    return {"message": "Settings updated"}
+
+@router.get("/settings")
+async def get_game_settings(
+    authorized: bool = Depends(authenticate_admin)
+):
+    settings = await get_settings()
+    return settings
+
+@router.get("/dashboard")
+async def admin_dashboard(current_user: dict = Depends(authenticate_admin)):
+    """
+    Example admin dashboard endpoint.
+
+    :param current_user: The currently authenticated admin user.
+    :return: Admin dashboard data.
+    """
+    # Implement your admin-specific logic here
+    return {"message": f"Welcome to the admin dashboard, {current_user['username']}!"}
+---
+File: ./backend/app/routers/chat.py
+# app/routers/chat.py
+
+import logging
+from app.utils.auth import get_user_by_token
+from app.sockets import sio  # Import sio from sockets.py
+from urllib.parse import parse_qs
+from app.services.llm_service import handle_llm_interaction  # Import the LLM interaction function
+
+# Configure logger
+logger = logging.getLogger("chat")
+logger.setLevel(logging.DEBUG)
+handler = logging.StreamHandler()
+formatter = logging.Formatter(
+    "%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - line %(lineno)d - %(message)s"
+)
+
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+# Define an in-memory mapping of session IDs to user data
+connected_users = {}
+
+@sio.event
+async def connect(sid, environ):
+    query_string = environ.get('QUERY_STRING', '')
+    params = parse_qs(query_string)
+    token = params.get('token', [None])[0]
+    logger.debug(f"Socket.IO connection attempt with token: {token}")
+    if token:
+        user = await get_user_by_token(token)
+        if user:
+            connected_users[sid] = user
+            logger.info(f"Socket.IO connection accepted for user: {user['username']}")
+            await sio.emit('message', {'content': 'Welcome to the chat!'}, room=sid)
+        else:
+            logger.warning(f"Authentication failed for token: {token}")
+            await sio.disconnect(sid)
+    else:
+        logger.warning("No token provided. Rejecting connection.")
+        await sio.disconnect(sid)
+
+
+@sio.event
+async def disconnect(sid):
+    user = connected_users.pop(sid, None)
+    username = user['username'] if user else 'Unknown'
+    logger.info(f"Socket.IO connection disconnected for user: {username}")
+
+@sio.on('message')
+async def handle_message(sid, data):
+    user = connected_users.get(sid)
+    if user:
+        username = user['username']
+        logger.debug(f"Received message from {username}: {data}")
+        user_message = data.get('content', '')
+        if user_message:
+            # Forward the message to the LLM service
+            llm_response = await handle_llm_interaction(username, user_message)
+            # Emit the LLM's response back to the client
+            await sio.emit('message', {'content': llm_response}, room=sid)
+            logger.debug(f"Sent LLM response to {username}: {llm_response}")
+        else:
+            logger.warning(f"Received empty message from user: {username}")
+    else:
+        logger.warning(f"No user found for sid: {sid}")
+        await sio.disconnect(sid)
+---
+File: ./backend/app/routers/game.py
+# app/routers/game.py
+
+from fastapi import APIRouter, HTTPException, Depends, status
+from app.services.elastic_service import store_game_result, get_top_scores, get_settings
+from app.models import GameResult, LeaderboardEntry
+from app.utils.auth import get_current_user
+import datetime
+import logging
+
+router = APIRouter(prefix="/game", tags=["game"])
+
+# Configure logger
+logger = logging.getLogger("game_router")
+logger.setLevel(logging.DEBUG)  # Set to DEBUG for detailed logs
+handler = logging.StreamHandler()
+formatter = logging.Formatter(
+    "%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - line %(lineno)d - %(message)s"
+)
+
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+@router.get("/settings")
+async def get_game_settings():
+    settings = await get_settings()
+    if not settings:
+        raise HTTPException(status_code=404, detail="Settings not found")
+    return settings
+
+@router.post("/submit")
+async def submit_game_result(game_result: GameResult, user: dict = Depends(get_current_user)):
+    """
+    Submits a game result for the authenticated user.
+
+    :param game_result: The game result data.
+    :param user: The authenticated user.
+    :return: The calculated score.
+    """
+    logger.debug(f"Received game result from user: {user['username']}")
+    try:
+        # Convert Pydantic model to dict
+        game_result_dict = game_result.dict()
+        # Add username from user context
+        game_result_dict['username'] = user['username']
+        # Add timestamp
+        game_result_dict['timestamp'] = datetime.datetime.utcnow()
+        # Retrieve settings
+        settings = await get_settings()
+        if not settings:
+            logger.warning("Game settings not found. Using default values.")
+            target_price = 100.0  # Default value
+        else:
+            target_price = settings.get('target_price', 100.0)
+        # Calculate score (implement your own logic)
+        game_result_dict['score'] = calculate_score(game_result_dict, target_price)
+        logger.debug(f"Calculated score: {game_result_dict['score']}")
+        # Store the game result in Elasticsearch
+        await store_game_result(game_result_dict)
+        logger.info(f"Game result stored for user: {user['username']} with score: {game_result_dict['score']}")
+        return {"score": game_result_dict['score']}
+    except Exception as e:
+        logger.error(f"Failed to submit game result for user {user['username']}: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to submit game result")
+
+def calculate_score(game_result: dict, target_price: float) -> float:
+    """
+    Calculates the score based on the game result and target price.
+
+    :param game_result: The game result data.
+    :param target_price: The target price from settings.
+    :return: Calculated score.
+    """
+    # Example scoring logic
+    total_price = sum(item['item_price'] * item['quantity'] for item in game_result['items'])
+    price_difference = abs(target_price - total_price)
+    score = max(0, 100 - price_difference)  # Example scoring logic
+    return score
+
+@router.get("/leaderboard", response_model=list[LeaderboardEntry])
+async def get_leaderboard():
+    """
+    Retrieves the top 10 game scores.
+
+    :return: A list of top game results.
+    """
+    logger.debug("Retrieving top scores for leaderboard.")
+    top_scores = await get_top_scores()
+    return top_scores
+---
+File: ./backend/app/routers/users.py
+# app/routers/users.py
+
+from fastapi import APIRouter, HTTPException, status
+from app.services.elastic_service import store_user, get_user_by_username
+from app.models import UserCreate
+# from app.utils.hash import hash_password  # Remove if not needed
+import uuid
+
+router = APIRouter(prefix="/users", tags=["users"])
+
+@router.post("/register", response_model=dict)
+async def register_user(user: UserCreate):
+    """
+    Registers a new user.
+
+    :param user: The user registration data.
+    :return: Confirmation message and user token.
+    """
+    existing_user = await get_user_by_username(user.username)
+    if existing_user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already exists")
+
+    user_in_db = user.dict()
+    # Remove password handling
+    # user_in_db['hashed_password'] = hash_password(user.password)  # Remove
+    user_in_db['token'] = str(uuid.uuid4())
+    user_in_db['is_admin'] = False  # Default to False; set to True manually or via another endpoint
+
+    await store_user(user_in_db)
+
+    return {
+        "message": "User registered successfully",
+        "token": user_in_db['token'],
+        "username": user_in_db['username'],
+        "email": user_in_db['email'],
+        "company": user_in_db['company'],
+    }
+---
+File: ./backend/app/schemas.py
+# app/schemas.py
+
+from pydantic import BaseModel, Field
+from typing import Optional, List
+
+class Podium(BaseModel):
+    podium: int = Field(..., description="Podium number.")
+    item_name: str = Field(..., description="Name of the grocery item.")
+    item_price: float = Field(..., description="Price of a single unit of the item.")
+    quantity: int = Field(..., description="Number of units of the item placed on the podium.")
+    total_price: float = Field(..., description="Total price for the item (item_price * quantity).")
+
+class AssistantResponse(BaseModel):
+    podiums: List[Podium] = Field(..., description="List of podium items.")
+    overall_total: float = Field(..., description="Cumulative total price of all selected items.")
+    other_info: Optional[str] = Field(None, description="Additional information or instructions.")
+    proposed_solution: bool = Field(..., description="Indicate if this response contains a proposed solution (True) or not (False).")
+---
+File: ./backend/app/services/elastic_service.py
+# app/services/elastic_service.py
+
+from elasticsearch import AsyncElasticsearch, NotFoundError, RequestError
+from app.config import ELASTICSEARCH_HOST, ELASTICSEARCH_API_KEY
+import logging
+from typing import Optional, Dict
+
+# Configure logger
+logger = logging.getLogger("elastic_service")
+logger.setLevel(logging.DEBUG)  # Set to DEBUG for detailed logs
+handler = logging.StreamHandler()
+formatter = logging.Formatter(
+    "%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - line %(lineno)d - %(message)s"
+)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+# Initialize Elasticsearch client
+es = AsyncElasticsearch(
+    hosts=[ELASTICSEARCH_HOST],
+    api_key=ELASTICSEARCH_API_KEY,
+    verify_certs=True
+)
+
+
+async def initialize_indices():
+    """
+    Initializes the necessary Elasticsearch indices with appropriate mappings.
+    """
+    indices = {
+        "users": {
+            "mappings": {
+                "properties": {
+                    "username": {"type": "keyword"},
+                    "email": {"type": "keyword"},
+                    "company": {"type": "keyword"},
+                    "token": {"type": "keyword"}
+                }
+            }
+        },
+        "game_results": {
+            "mappings": {
+                "properties": {
+                    "username": {"type": "keyword"},
+                    "total_price": {"type": "double"},
+                    "items": {
+                        "type": "nested",
+                        "properties": {
+                            "podium": {"type": "integer"},
+                            "item_name": {"type": "text"},
+                            "item_price": {"type": "double"},
+                            "quantity": {"type": "integer"}
+                        }
+                    },
+                    "time_taken": {"type": "double"},
+                    "price_difference": {"type": "double"},
+                    "target_price": {"type": "double"},
+                    "score": {"type": "double"},
+                    "timestamp": {"type": "date"}
+                }
+            }
+        },
+        "game_settings": {
+            "mappings": {
+                "properties": {
+                    "target_price": {"type": "double"},
+                    "time_limit": {"type": "integer"}
+                }
+            }
+        },
+        "grocery_items": {  # Added grocery_items index
+            "mappings": {
+                "_meta": {
+                    "created_by": "file-data-visualizer"
+                },
+                "properties": {
+                    "Currency": {
+                        "type": "keyword"
+                    },
+                    "Discount": {
+                        "type": "keyword"
+                    },
+                    "Feature": {
+                        "type": "text"
+                    },
+                    "Price": {
+                        "type": "keyword"
+                    },
+                    "Product Description": {
+                        "type": "text"
+                    },
+                    "Product Description_semantic": {
+                        "type": "semantic_text",
+                        "inference_id": "elser-endpoint",
+                        "model_settings": {
+                            "task_type": "sparse_embedding"
+                        }
+                    },
+                    "Rating": {
+                        "type": "text"
+                    },
+                    "Sub Category": {  # Ensure correct field name
+                        "type": "keyword"
+                    },
+                    "Title": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "Title_semantic": {
+                        "type": "semantic_text",
+                        "inference_id": "elser-endpoint",
+                        "model_settings": {
+                            "task_type": "sparse_embedding"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    for index, body in indices.items():
+        try:
+            exists = await es.indices.exists(index=index)
+            if not exists:
+                await es.indices.create(index=index, body=body)
+                logger.info(f"Created index: {index}")
+            else:
+                logger.info(f"Index already exists: {index}")
+        except RequestError as e:
+            logger.error(f"Error creating index {index}: {e}")
+
+
+async def get_user_by_token(token: str) -> Optional[dict]:
+    """
+    Retrieves a user from Elasticsearch based on the provided token.
+
+    :param token: The authentication token.
+    :return: User data as a dictionary or None if not found.
+    """
+    try:
+        response = await es.search(
+            index="users",
+            body={
+                "query": {
+                    "term": {
+                        "token": token
+                    }
+                }
+            }
+        )
+        hits = response['hits']['hits']
+        if hits:
+            user = hits[0]['_source']
+            logger.debug(f"User found for token {token}: {user}")
+            return user
+        else:
+            logger.warning(f"No user found for token: {token}")
+            return None
+    except Exception as e:
+        logger.error(f"Error retrieving user by token: {e}")
+        return None
+
+
+async def get_user_by_username(username: str) -> Optional[dict]:
+    """
+    Retrieves a user from Elasticsearch based on the provided username.
+
+    :param username: The username of the user.
+    :return: User data as a dictionary or None if not found.
+    """
+    try:
+        response = await es.get(index="users", id=username)
+        logger.debug(f"User found for username {username}: {response['_source']}")
+        return response["_source"]
+    except NotFoundError:
+        logger.warning(f"No user found for username: {username}")
+        return None
+    except Exception as e:
+        logger.error(f"Error retrieving user by username: {e}")
+        return None
+
+
+async def store_game_result(game_result: dict) -> None:
+    """
+    Stores a game result into the 'game_results' Elasticsearch index.
+
+    :param game_result: A dictionary containing game result data.
+    """
+    try:
+        await es.index(index="game_results", document=game_result)
+        logger.info(f"Stored game result for user: {game_result.get('username')}")
+    except Exception as e:
+        logger.error(f"Failed to store game result: {e}")
+        raise
+
+
+async def store_user(user: dict) -> None:
+    """
+    Stores a new user into the 'users' Elasticsearch index.
+
+    :param user: A dictionary containing user data.
+    """
+    try:
+        await es.index(index="users", id=user['username'], document=user)
+        logger.info(f"Stored user: {user['username']}")
+    except Exception as e:
+        logger.error(f"Failed to store user {user['username']}: {e}")
+        raise
+
+
+async def get_top_scores() -> list:
+    """
+    Retrieves the top 10 game scores from the 'game_results' Elasticsearch index.
+
+    :return: A list of top game results.
+    """
+    try:
+        response = await es.search(
+            index="game_results",
+            body={
+                "size": 10,
+                "sort": [
+                    {"score": {"order": "desc"}}
+                ]
+            }
+        )
+        hits = response['hits']['hits']
+        top_scores = [hit['_source'] for hit in hits]
+        logger.debug(f"Retrieved top scores: {top_scores}")
+        return top_scores
+    except NotFoundError:
+        logger.warning("No game results found.")
+        return []
+    except Exception as e:
+        logger.error(f"Error retrieving top scores: {e}")
+        return []
+
+
+async def get_settings() -> Optional[Dict]:
+    """
+    Retrieves game settings from the 'game_settings' Elasticsearch index.
+
+    :return: Game settings as a dictionary or None if not found.
+    """
+    try:
+        response = await es.get(index="game_settings", id="default")
+        logger.debug(f"Game settings found: {response['_source']}")
+        return response["_source"]
+    except NotFoundError:
+        logger.warning("No game settings found.")
+        return None
+    except Exception as e:
+        logger.error(f"Error retrieving game settings: {e}")
+        return None
+
+
+async def update_settings(settings: dict) -> None:
+    """
+    Updates or creates game settings in the 'game_settings' Elasticsearch index.
+
+    :param settings: A dictionary containing game settings.
+    """
+    try:
+        await es.index(index="game_settings", id="default", document=settings)
+        logger.info("Game settings updated successfully.")
+    except Exception as e:
+        logger.error(f"Failed to update game settings: {e}")
+        raise
+
+
+async def get_all_categories() -> list:
+    """
+    Fetches all unique grocery item sub-categories from Elasticsearch using a terms aggregation.
+
+    :return: A list of sub-category names.
+    """
+    try:
+        response = await es.search(
+            index="grocery_items",
+            body={
+                "size": 0,  # No need to return documents
+                "aggs": {
+                    "categories": {
+                        "terms": {
+                            "field": "Sub Category",  # Correct field name
+                            "size": 100  # Adjust the size based on expected number of categories
+                        }
+                    }
+                }
+            }
+        )
+        buckets = response['aggregations']['categories']['buckets']
+        categories = [bucket['key'] for bucket in buckets]
+        logger.debug(f"Retrieved sub-categories: {categories}")
+        return categories
+    except Exception as e:
+        logger.error(f"Error fetching sub-categories: {e}")
+        return []
+---
+File: ./backend/app/services/llm_service.py
+# app/services/llm_service.py
+
+from app.schemas import AssistantResponse, Podium
+from jsonschema import validate, ValidationError
+import json
+import logging
+from typing import Optional, Dict, List
+import openai
+import asyncio
+from app.services.elastic_service import es, get_all_categories
+from app.config import (
+    AZURE_OPENAI_API_KEY,
+    AZURE_OPENAI_ENDPOINT,
+    AZURE_OPENAI_DEPLOYMENT_NAME,
+    AZURE_OPENAI_API_VERSION
+)
+from pydantic import ValidationError as PydanticValidationError
+import traceback
+
+# Configure the logger
+logger = logging.getLogger("llm_service")
+logger.setLevel(logging.DEBUG)  # Set to DEBUG for detailed logs
+handler = logging.StreamHandler()
+formatter = logging.Formatter(
+    "%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - line %(lineno)d - %(message)s"
+)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+# Define a global variable to hold categories
+CATEGORIES = []
+
+# Define a global conversation history per user
+conversation_histories: Dict[str, List[Dict[str, str]]] = {}
+
+# Validate environment variables
+required_configs = [
+    AZURE_OPENAI_API_KEY,
+    AZURE_OPENAI_ENDPOINT,
+    AZURE_OPENAI_DEPLOYMENT_NAME,
+    AZURE_OPENAI_API_VERSION
+]
+
+if not all(required_configs):
+    missing = [name for name, value in zip(
+        ["AZURE_OPENAI_API_KEY", "AZURE_OPENAI_ENDPOINT", "AZURE_OPENAI_DEPLOYMENT_NAME", "AZURE_OPENAI_API_VERSION"],
+        required_configs
+    ) if not value]
+    logger.error(f"Azure OpenAI configurations are incomplete. Missing: {', '.join(missing)}")
+    raise ValueError("Azure OpenAI configurations are incomplete.")
+
+# Initialize AzureOpenAI client
+client = openai.AzureOpenAI(
+    api_key=AZURE_OPENAI_API_KEY,
+    azure_endpoint=AZURE_OPENAI_ENDPOINT,
+    api_version=AZURE_OPENAI_API_VERSION
+)
+
+def set_categories(categories: list):
+    """
+    Sets the global categories list.
+    """
+    global CATEGORIES
+    CATEGORIES = categories
+    logger.debug(f"Categories set to: {CATEGORIES}")
+
+# Define the JSON schema for the function 'query_elasticsearch'
+query_elasticsearch_schema = {
+    "name": "query_elasticsearch",
+    "description": "Query Elasticsearch to retrieve information about grocery items based on user input.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "query": {
+                "type": "string",
+                "description": "The search query related to grocery items."
+            }
+        },
+        "required": ["query"]
+    }
+}
+
+# Define the JSON schema for the assistant's response
+assistant_response_schema = AssistantResponse.schema()
+
+def get_prompt_template():
+    """
+    Generates the prompt template with the current list of categories.
+    """
+    if not CATEGORIES:
+        categories_formatted = "No categories available."
+    else:
+        categories_formatted = "\n".join([f"- {category}" for category in CATEGORIES])
+
+    prompt = f"""
+You are an intelligent assistant participating in a game designed around grocery store items.
+The specifics of the game will be provided by the user, and you need to assist them in making the right choices.
+The real purpose of the game is to see how well the user can craft prompts to instruct an LLM.
+
+Instructions:
+- Use the provided 'query_elasticsearch' function to fetch up-to-date information about grocery items when needed.
+- Your responses should follow the specified JSON schema to allow for easy parsing.
+- You will receive instructions from the user on what to do; however, there are some overall rules to follow.
+
+Game Rules:
+- Topics should only be about grocery items and this game.
+- If you don't understand the user's instructions, you can ask for more information, but try to figure out what they mean first.
+  - If you do need more info, set `other_info` to the question you have and `proposed_solution` to False.
+- If the user provides minimal or no specific items, proactively select items from the available categories to fill the podiums.
+  - Aim to maximize the total price without exceeding the budget.
+
+Available Categories:
+{categories_formatted}
+
+JSON Schema for Responses:
+{json.dumps(assistant_response_schema, indent=4)}
+
+YOUR RESPONSES MUST strictly adhere to the above JSON schema.
+ONLY REPLY WITH THE JSON OBJECT WITHOUT ANY ADDITIONAL TEXT OR MARKDOWN.
+"""
+    return prompt
+
+async def query_elasticsearch(query: str) -> dict:
+    """
+    Performs a hybrid semantic and lexical search on the 'grocery_items' index based on user input.
+
+    :param query: The search query related to grocery items.
+    :return: A dictionary containing search results.
+    """
+    try:
+        response = await es.search(
+            index="grocery_items",
+            body={
+                "retriever": {
+                    "rrf": {
+                        "retrievers": [
+                            {
+                                "standard": {
+                                    "query": {
+                                        "nested": {
+                                            "path": "Product Description_semantic.inference.chunks",
+                                            "query": {
+                                                "sparse_vector": {
+                                                    "inference_id": "elser-endpoint",
+                                                    "field": "Product Description_semantic.inference.chunks.embeddings",
+                                                    "query": query
+                                                }
+                                            },
+                                            "inner_hits": {
+                                                "size": 2,
+                                                "name": "grocery_items.Product Description_semantic",
+                                                "_source": [
+                                                    "Product Description_semantic.inference.chunks.text"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "standard": {
+                                    "query": {
+                                        "nested": {
+                                            "path": "Title_semantic.inference.chunks",
+                                            "query": {
+                                                "sparse_vector": {
+                                                    "inference_id": "elser-endpoint",
+                                                    "field": "Title_semantic.inference.chunks.embeddings",
+                                                    "query": query
+                                                }
+                                            },
+                                            "inner_hits": {
+                                                "size": 2,
+                                                "name": "grocery_items.Title_semantic",
+                                                "_source": [
+                                                    "Title_semantic.inference.chunks.text"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "standard": {
+                                    "query": {
+                                        "multi_match": {
+                                            "query": query,
+                                            "fields": [
+                                                "Title",
+                                                "Feature",
+                                                "Product Description"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        ],
+                        "rank_window_size": 20
+                    }
+                },
+                "size": 20,
+                "fields": [
+                    "Product Description",
+                    "Price",
+                    "Sub Category",
+                    "Title"
+                ],
+                "_source": False
+            }
+        )
+        hits = response['hits']['hits']
+        results = [hit['fields'] for hit in hits]
+        logger.debug(f"Elasticsearch hybrid search results for '{query}': {results}")
+        return {"results": results}
+    except Exception as e:
+        logger.error(f"Error performing hybrid search: {e}")
+        return {"error": "Failed to retrieve data from Elasticsearch."}
+
+def parse_single_json(json_string: str) -> Optional[dict]:
+    """
+    Parses a string containing one or more JSON objects and returns the first valid JSON object.
+
+    :param json_string: The JSON string to parse.
+    :return: A dictionary representing the first JSON object, or None if parsing fails.
+    """
+    try:
+        # Attempt to parse as a single JSON object
+        return json.loads(json_string)
+    except json.JSONDecodeError:
+        # If multiple JSON objects are present, split and parse the first one
+        try:
+            first_json = json_string.strip().split('\n')[0]
+            return json.loads(first_json)
+        except json.JSONDecodeError:
+            logger.error("Failed to parse JSON from LLM response.")
+            return None
+
+def validate_response(response: dict) -> bool:
+    """
+    Validates the assistant's response against the defined JSON schema.
+
+    :param response: The response dictionary from the assistant.
+    :return: True if valid, False otherwise.
+    """
+    try:
+        AssistantResponse.parse_obj(response)
+        return True
+    except ValidationError as ve:
+        logger.error(f"Response validation error: {ve.message}")
+        return False
+
+async def handle_llm_interaction(username: str, user_message: str) -> str:
+    """
+    Handles the interaction with the Language Learning Model (LLM) to generate assistant responses.
+
+    :param username: The username of the user interacting with the assistant.
+    :param user_message: The message sent by the user.
+    :return: The assistant's response as a string.
+    """
+
+    logger.debug(f"Handling LLM interaction for user '{username}' with message: {user_message}")
+
+    try:
+        # Initialize conversation history for the user if not present
+        if username not in conversation_histories:
+            conversation_histories[username] = [{"role": "system", "content": get_prompt_template()}]
+            logger.debug(f"Initialized conversation history for user '{username}'.")
+
+        # Append user message to conversation history
+        conversation_histories[username].append({"role": "user", "content": user_message})
+
+        # Send the full conversation history to the LLM
+        completion = await asyncio.to_thread(
+            client.beta.chat.completions.parse,  # Use the 'parse' method for Structured Outputs
+            model=AZURE_OPENAI_DEPLOYMENT_NAME,
+            messages=conversation_histories[username],
+            functions=[query_elasticsearch_schema],
+            response_format=AssistantResponse  # Specify the Pydantic model for parsing
+        )
+
+        message = completion.choices[0].message
+
+        # Log the received message once
+        logger.debug(f"Assistant message for user '{username}': {message}")
+
+        if message.parsed:
+            # If the response is parsed successfully
+            assistant_response_json = message.parsed.dict()
+            if validate_response(assistant_response_json):
+                logger.debug(f"Assistant response for user '{username}': {assistant_response_json}")
+                # Append assistant response to conversation history
+                conversation_histories[username].append({"role": "assistant", "content": json.dumps(assistant_response_json)})
+                return json.dumps(assistant_response_json)
+            else:
+                logger.error(f"Assistant response validation failed for user '{username}'.")
+                return json.dumps({
+                    "podiums": [],
+                    "overall_total": 0.0,
+                    "other_info": "I'm sorry, I provided an invalid response. Please try again.",
+                    "proposed_solution": False
+                })
+        elif message.function_call:
+            logger.debug(f"Function call detected, parsing...")
+            # Handle function call
+            function_name = message.function_call.name
+            function_args = json.loads(message.function_call.arguments)
+
+            logger.debug(f"Function call detected: {function_name} with arguments {function_args}")
+
+            if function_name == "query_elasticsearch":
+                query = function_args.get("query")
+                if not query:
+                    logger.error(f"No query provided in function call by user '{username}'.")
+                    return json.dumps({
+                        "podiums": [],
+                        "overall_total": 0.0,
+                        "other_info": "No query provided to search for grocery items.",
+                        "proposed_solution": False
+                    })
+
+                # Execute the function
+                logger.debug(f"Executing function 'query_elasticsearch' with query: {query}")
+                function_response = await query_elasticsearch(query)
+
+                # Extract relevant information from the search results
+                podiums: List[Podium] = []
+                if "results" in function_response and isinstance(function_response["results"], list):
+                    for idx, item in enumerate(function_response["results"], start=1):
+                        title_list = item.get("Title", [])
+                        price_list = item.get("Price", [])
+                        title = title_list[0] if title_list else "No Title"
+                        price_str = price_list[0] if price_list else "$0"
+                        try:
+                            price = float(price_str.replace('$', '').replace(',', '').strip())
+                        except ValueError:
+                            price = 0.0
+                        podium = Podium(
+                            podium=idx,
+                            item_name=title,
+                            item_price=price,
+                            quantity=1,
+                            total_price=price * 1
+                        )
+                        podiums.append(podium)
+                else:
+                    logger.warning(f"No results found for query '{query}'.")
+
+                # Construct the AssistantResponse
+                assistant_response = AssistantResponse(
+                    podiums=podiums,
+                    overall_total=sum(p.total_price for p in podiums),
+                    other_info=None,
+                    proposed_solution=True
+                )
+
+                # Serialize to JSON
+                assistant_response_json = assistant_response.dict()
+
+                # Append function response to conversation history
+                conversation_histories[username].append({
+                    "role": "function",
+                    "name": function_name,
+                    "content": json.dumps({
+                        "podiums": [podium.dict() for podium in podiums],
+                        "overall_total": assistant_response.overall_total,
+                        "other_info": assistant_response.other_info,
+                        "proposed_solution": assistant_response.proposed_solution
+                    })
+                })
+
+                # Send the updated conversation history back to the LLM to get the final response
+                final_completion = await asyncio.to_thread(
+                    client.beta.chat.completions.parse,
+                    model=AZURE_OPENAI_DEPLOYMENT_NAME,
+                    messages=conversation_histories[username],
+                    functions=[query_elasticsearch_schema],
+                    response_format=AssistantResponse  # Specify the Pydantic model for parsing
+                )
+
+                final_message = final_completion.choices[0].message
+
+                logger.debug(f"Final assistant message for user '{username}': {final_message}")
+
+                if final_message.parsed:
+                    assistant_final_response_json = final_message.parsed.dict()
+                    if validate_response(assistant_final_response_json):
+                        logger.debug(f"Assistant final response for user '{username}': {assistant_final_response_json}")
+                        # Append final assistant response to conversation history
+                        conversation_histories[username].append({"role": "assistant", "content": json.dumps(assistant_final_response_json)})
+                        return json.dumps(assistant_final_response_json)
+                    else:
+                        logger.error(f"Assistant final response validation failed for user '{username}'.")
+                        return json.dumps({
+                            "podiums": [],
+                            "overall_total": 0.0,
+                            "other_info": "I'm sorry, I provided an invalid response. Please try again.",
+                            "proposed_solution": False
+                        })
+                elif final_message.refusal:
+                    logger.warning(f"Assistant refused to respond for user '{username}': {final_message.refusal}")
+                    return json.dumps({
+                        "podiums": [],
+                        "overall_total": 0.0,
+                        "other_info": "I'm sorry, I couldn't assist with that request.",
+                        "proposed_solution": False
+                    })
+                else:
+                    logger.error(f"Unexpected final response structure for user '{username}': {final_message}")
+                    return json.dumps({
+                        "podiums": [],
+                        "overall_total": 0.0,
+                        "other_info": "I'm sorry, I encountered an unexpected error. Please try again.",
+                        "proposed_solution": False
+                    })
+            else:
+                logger.error(f"Unknown function call: {function_name} for user '{username}'")
+                return json.dumps({
+                    "podiums": [],
+                    "overall_total": 0.0,
+                    "other_info": "I'm sorry, I encountered an unexpected error.",
+                    "proposed_solution": False
+                })
+        elif message.refusal:
+            # Handle refusal messages if any
+            logger.warning(f"Assistant refused to respond for user '{username}': {message.refusal}")
+            # Append refusal to conversation history
+            conversation_histories[username].append({"role": "assistant", "content": "I'm sorry, I couldn't assist with that request."})
+            return json.dumps({
+                "podiums": [],
+                "overall_total": 0.0,
+                "other_info": "I'm sorry, I couldn't assist with that request.",
+                "proposed_solution": False
+            })
+        else:
+            # Handle other unexpected scenarios
+            logger.error(f"Unexpected response structure for user '{username}': {message}")
+            # Append error message to conversation history
+            conversation_histories[username].append({"role": "assistant", "content": "I'm sorry, I encountered an unexpected error. Please try again."})
+            return json.dumps({
+                "podiums": [],
+                "overall_total": 0.0,
+                "other_info": "I'm sorry, I encountered an unexpected error. Please try again.",
+                "proposed_solution": False
+            })
+
+    except PydanticValidationError as e:
+        logger.error(f"Pydantic validation error for user '{username}': {e}")
+        logger.error(f"Validation errors: {e.errors()}")
+        # It's unclear what 'message' is here; ensure it's defined or log appropriately
+        return json.dumps({
+            "podiums": [],
+            "overall_total": 0.0,
+            "other_info": "I'm sorry, I couldn't understand my response correctly. Please try again.",
+            "proposed_solution": False
+        })
+    except openai.APIConnectionError as e:
+        logger.error(f"API connection error while processing user '{username}': {e}")
+        return json.dumps({
+            "podiums": [],
+            "overall_total": 0.0,
+            "other_info": "Unable to connect to the AI service. Please check your network connection.",
+            "proposed_solution": False
+        })
+    except openai.BadRequestError as e:
+        logger.error(f"Invalid request error for user '{username}': {e}")
+        return json.dumps({
+            "podiums": [],
+            "overall_total": 0.0,
+            "other_info": "There was an issue with your request. Please try again with different input.",
+            "proposed_solution": False
+        })
+    except openai.OpenAIError as e:
+        logger.error(f"OpenAI API error for user '{username}': {e}")
+        return json.dumps({
+            "podiums": [],
+            "overall_total": 0.0,
+            "other_info": "I'm experiencing some issues right now. Please try again later.",
+            "proposed_solution": False
+        })
+    except Exception as e:
+        logger.error(f"Unexpected error for user '{username}': {e}")
+        logger.error(f"Full stack trace: {traceback.format_exc()}")
+        raise  # Let the exception propagate for higher-level handling
+---
+File: ./backend/app/sockets.py
+# app/sockets.py
+
+import socketio
+
+# Initialize Socket.IO server
+sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins='*')
+---
+File: ./backend/app/telemetry.py
+from opentelemetry import trace
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
+def setup_telemetry(app):
+    resource = Resource(attributes={
+        SERVICE_NAME: "grocery-game-backend"
+    })
+    provider = TracerProvider(resource=resource)
+    exporter = OTLPSpanExporter(endpoint="http://localhost:4318/v1/traces", insecure=True)  # Updated endpoint and insecure
+    processor = BatchSpanProcessor(exporter)
+    provider.add_span_processor(processor)
+    trace.set_tracer_provider(provider)
+    FastAPIInstrumentor.instrument_app(app)
+---
+File: ./backend/app/utils/auth.py
+# app/utils/auth.py
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from app.services.elastic_service import get_user_by_token
+from app.config import ADMIN_TOKEN
+
+security = HTTPBearer()
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """
+    Retrieves the current user based on the provided token.
+
+    :param credentials: HTTP authorization credentials containing the token.
+    :return: User data as a dictionary.
+    :raises HTTPException: If authentication fails.
+    """
+    token = credentials.credentials
+    user = await get_user_by_token(token)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Invalid authentication credentials",
+        )
+    return user
+
+async def authenticate_admin(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
+    """
+    Validates that the current request is authenticated with the admin token.
+
+    :param credentials: HTTP authorization credentials containing the token.
+    :return: Admin user data if authenticated.
+    :raises HTTPException: If authentication fails.
+    """
+    token = credentials.credentials
+    if token != ADMIN_TOKEN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User does not have admin privileges",
+        )
+    return {"username": "admin", "is_admin": True}
+---
+File: ./backend/app/utils/scoring.py
+def calculate_score(target_price, player_total_price, time_limit, time_taken):
+    # Closeness Score
+    if player_total_price <= target_price:
+        closeness_score = (1 - (target_price - player_total_price) / target_price) * 70
+    else:
+        closeness_score = 0
+
+    # Time Score
+    if time_taken <= time_limit:
+        time_score = (1 - (time_taken / time_limit)) * 30
+    else:
+        time_score = 0
+
+    total_score = closeness_score + time_score
+    return round(total_score, 2)
+---
+File: ./frontend/src/App.js
+// src/App.js
+
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import MainGame from './components/MainGame';
+import AdminPanel from './components/AdminPanel';
+import axios from 'axios';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
+function App() {
+  const [user, setUser] = useState(null);
+  const [sessionId, setSessionId] = useState(null);
+  const [items, setItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0); // Ensure this is a number
+  const [timeTaken, setTimeTaken] = useState(0);
+  const [timeUp, setTimeUp] = useState(false); // Initially false
+
+  const handleLogin = (userData) => {
+    setUser({
+      username: userData.username,
+      email: userData.email,
+      company: userData.company,
+    });
+    setSessionId(userData.token);
+    setTimeUp(false); // Reset timeUp on new login
+    setTotalPrice(0); // Reset totalPrice on new login
+    setItems([]); // Reset items on new login
+  };
+
+  const handleTimeUp = (elapsedTime) => {
+    console.log("Timer expired. Elapsed Time:", elapsedTime);
+    setTimeUp(true);
+    setTimeTaken(elapsedTime);
+    alert('Time is up!');
+  };
+
+  const handleSubmit = async () => {
+    if (!user) {
+      alert('Please log in first.');
+      return;
+    }
+    // Prepare game result data
+    const gameResult = {
+      items: items,
+      total_price: totalPrice,
+      time_taken: timeTaken,
+    };
+
+    // Submit game result to backend
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/game/submit`,
+        gameResult,
+        {
+          headers: {
+            'Authorization': `Bearer ${sessionId}`, // Use Authorization header
+          },
+        }
+      );
+      alert(`Your score is ${response.data.score}`);
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        alert(`Submission failed: ${error.response.data.detail || 'Unknown error'}`);
+      } else if (error.request) {
+        alert('No response from server. Please try again later.');
+      } else {
+        alert('An unexpected error occurred.');
+      }
+    }
+  };
+
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#1976d2', // Customize as needed
+      },
+      secondary: {
+        main: '#dc004e',
+      },
+    },
+  });
+
+  return (
+    <ThemeProvider theme={theme}>
+      <Router>
+        <div>
+          <Routes>
+            <Route path="/admin" element={<AdminPanel />} />
+            <Route
+              path="/"
+              element={
+                <MainGame
+                  user={user}
+                  handleLogin={handleLogin}
+                  sessionId={sessionId}
+                  items={items}
+                  setItems={setItems}
+                  setTotalPrice={setTotalPrice}
+                  totalPrice={totalPrice}
+                  timeUp={timeUp}
+                  timeTaken={timeTaken}
+                  handleTimeUp={handleTimeUp}
+                  handleSubmit={handleSubmit}
+                />
+              }
+            />
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
+  );
+}
+
+export default App;
+---
+File: ./frontend/src/components/AdminPanel.js
+// src/components/AdminPanel.js
+
+import React, { useState } from 'react';
+import axios from 'axios';
+import { Container, TextField, Button, Typography, Box, Alert } from '@mui/material';
+
+function AdminPanel() {
+  const [adminToken, setAdminToken] = useState('');
+  const [settings, setSettings] = useState(null);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/admin/settings`, {
+        headers: {
+          'Authorization': `Bearer ${adminToken}`,
+        },
+      });
+      setSettings(response.data);
+      setError('');
+    } catch (error) {
+      console.error(error);
+      setError('Invalid admin token');
+      setSettings(null);
+    }
+  };
+
+  const updateSettings = async () => {
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/admin/settings`,
+        settings,
+        {
+          headers: {
+            'Authorization': `Bearer ${adminToken}`,
+          },
+        }
+      );
+      setSuccess('Settings updated successfully');
+      setError('');
+    } catch (error) {
+      console.error(error);
+      setError('Failed to update settings');
+      setSuccess('');
+    }
+  };
+
+  return (
+    <Container maxWidth="sm">
+      <Box sx={{ mt: 5 }}>
+        {!settings ? (
+          <Box>
+            <Typography variant="h4" gutterBottom>
+              Admin Login
+            </Typography>
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
+            <TextField
+              label="Admin Token"
+              type="password"
+              value={adminToken}
+              onChange={(e) => setAdminToken(e.target.value)}
+              fullWidth
+              margin="normal"
+            />
+            <Button variant="contained" color="primary" onClick={handleLogin} sx={{ mt: 2 }}>
+              Login
+            </Button>
+          </Box>
+        ) : (
+          <Box>
+            <Typography variant="h4" gutterBottom>
+              Game Settings
+            </Typography>
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
+            {success && (
+              <Alert severity="success" sx={{ mb: 2 }}>
+                {success}
+              </Alert>
+            )}
+            <TextField
+              label="Target Price"
+              type="number"
+              value={settings.target_price}
+              onChange={(e) =>
+                setSettings({ ...settings, target_price: parseFloat(e.target.value) })
+              }
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Time Limit (seconds)"
+              type="number"
+              value={settings.time_limit}
+              onChange={(e) =>
+                setSettings({ ...settings, time_limit: parseInt(e.target.value, 10) })
+              }
+              fullWidth
+              margin="normal"
+            />
+            <Button variant="contained" color="primary" onClick={updateSettings} sx={{ mt: 2 }}>
+              Update Settings
+            </Button>
+          </Box>
+        )}
+      </Box>
+    </Container>
+  );
+}
+
+export default AdminPanel;
+---
+File: ./frontend/src/components/ChatInterface.js
+// src/components/ChatInterface.js
+
+import React, { useState, useEffect, useRef } from 'react';
+import io from 'socket.io-client';
+import { Box, TextField, Button, Typography, Paper, List, ListItem, ListItemText, Alert } from '@mui/material';
+import PropTypes from 'prop-types';
+
+function ChatInterface({ sessionId, items, setItems, setTotalPrice, timeUp, setHasAcceptedSolution }) {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [error, setError] = useState('');
+  const socketRef = useRef();
+
+  // New state variables for proposed solution handling
+  const [isProposedSolutionPending, setIsProposedSolutionPending] = useState(false);
+  const [pendingProposedSolution, setPendingProposedSolution] = useState(null);
+  const [alertMessage, setAlertMessage] = useState('');
+
+  useEffect(() => {
+    if (!sessionId) {
+      setError("No session ID found. Please log in.");
+      return;
+    }
+
+    const socket = io(process.env.REACT_APP_BACKEND_URL, {
+      query: { token: sessionId },
+      transports: ['websocket'],
+      path: '/socket.io',
+    });
+
+    socketRef.current = socket;
+
+    socket.on('connect', () => {
+      console.log('Connected to chat server');
+      setError('');
+    });
+
+    socket.on('connect_error', (err) => {
+      console.error('WebSocket connection error:', err);
+      setError('Failed to connect to chat server. Please try again.');
+    });
+
+    socket.on('message', (message) => {
+      if (message && message.content) {
+        try {
+          // Parse the incoming message content as JSON
+          const parsedMessage = JSON.parse(message.content);
+
+          if (parsedMessage.podiums && parsedMessage.overall_total !== undefined) {
+            // Handle messages that include podiums and total
+            setItems(parsedMessage.podiums.map(p => ({
+              podium: p.podium,
+              item_name: p.item_name,
+              item_price: p.item_price,
+              quantity: p.quantity,
+            })));
+            setTotalPrice(parsedMessage.overall_total);
+
+            setMessages((prev) => [...prev, { sender: 'bot', content: 'Here are your current selections:' }]);
+
+            // Display each podium
+            parsedMessage.podiums.forEach(podium => {
+              setMessages((prev) => [...prev, {
+                sender: 'bot',
+                content: `Podium ${podium.podium}: ${podium.quantity} x ${podium.item_name} @ $${podium.item_price.toFixed(2)} each (Total: $${podium.total_price.toFixed(2)})`
+              }]);
+            });
+
+            // Handle proposed_solution flag
+            if (parsedMessage.proposed_solution) {
+              setPendingProposedSolution({
+                podiums: parsedMessage.podiums,
+                overall_total: parsedMessage.overall_total
+              });
+              setIsProposedSolutionPending(true);
+              setHasAcceptedSolution(false);
+              setMessages(prev => [...prev, { sender: 'bot', content: 'I have a proposed solution for you. Please review and accept or modify it.' }]);
+            } else {
+              // If not a proposed solution, check for other_info
+              if (parsedMessage.other_info) {
+                setAlertMessage(parsedMessage.other_info);
+              }
+              // Allow user to submit regardless of the proposed_solution flag
+              setHasAcceptedSolution(true);
+            }
+          } else if (parsedMessage.other_info) {
+            // Handle messages that only contain other_info
+            setMessages((prev) => [...prev, { sender: 'bot', content: parsedMessage.other_info }]);
+          } else {
+            // Handle other types of messages
+            setMessages((prev) => [...prev, { sender: 'bot', content: message.content }]);
+          }
+        } catch (e) {
+          // If parsing fails, treat as regular message
+          console.error('Failed to parse message content as JSON:', e);
+          setMessages((prev) => [...prev, { sender: 'bot', content: message.content }]);
+        }
+      } else {
+        console.error('Received malformed message:', message);
+      }
+    });
+
+    socket.on('disconnect', (reason) => {
+      console.log('Disconnected from chat server:', reason);
+      if (reason !== 'io client disconnect') {
+        setError('Disconnected from chat server. Attempting to reconnect...');
+      }
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [sessionId, setItems, setTotalPrice, timeUp, setHasAcceptedSolution]);
+
+  const sendMessage = () => {
+    if (input.trim() === '') return;
+    setMessages((prev) => [...prev, { sender: 'user', content: input }]);
+    socketRef.current.emit('message', { content: input });
+    setInput('');
+  };
+
+  // New functions to handle Accept and Modify actions
+  const acceptSolution = () => {
+    if (pendingProposedSolution) {
+      setHasAcceptedSolution(true);
+      setIsProposedSolutionPending(false);
+      setPendingProposedSolution(null);
+      setAlertMessage('');
+      setMessages(prev => [...prev, { sender: 'system', content: 'Proposed solution accepted. You can now submit your selections.' }]);
+    }
+  };
+
+  const modifySolution = () => {
+    setIsProposedSolutionPending(false);
+    setPendingProposedSolution(null);
+    setHasAcceptedSolution(false);
+    setAlertMessage('');
+    setMessages(prev => [...prev, { sender: 'system', content: 'Please modify your selections by interacting with the bot.' }]);
+  };
+
+  return (
+    <Box sx={{ mt: 4 }}>
+      <Typography variant="h5" gutterBottom>
+        Chat with the Bot
+      </Typography>
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+      {alertMessage && (
+        <Alert severity="warning" sx={{ mb: 2 }}>
+          {alertMessage}
+        </Alert>
+      )}
+      <Paper variant="outlined" sx={{ p: 2, height: '300px', overflowY: 'scroll' }}>
+        <List>
+          {messages.map((msg, idx) => (
+            <ListItem
+              key={idx}
+              sx={{ justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start' }}
+            >
+              <ListItemText
+                primary={
+                  <Typography
+                    variant="body1"
+                    align={msg.sender === 'user' ? 'right' : 'left'}
+                  >
+                    <strong>{msg.sender === 'user' ? 'You' : msg.sender === 'bot' ? 'Bot' : 'System'}:</strong> {msg.content}
+                  </Typography>
+                }
+              />
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
+      {!timeUp && (
+        <Box sx={{ mt: 2, display: 'flex' }}>
+          <TextField
+            label="Type your message"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            fullWidth
+            onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+          />
+          <Button variant="contained" color="primary" onClick={sendMessage} sx={{ ml: 2 }}>
+            Send
+          </Button>
+        </Box>
+      )}
+
+      {/* Proposed Solution Display */}
+      {isProposedSolutionPending && pendingProposedSolution && (
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6">Proposed Solution</Typography>
+          <Paper variant="outlined" sx={{ p: 2 }}>
+            {pendingProposedSolution.podiums.map((podium, idx) => (
+              <Typography key={idx} variant="body1">
+                <strong>Podium {podium.podium}:</strong> {podium.quantity} x {podium.item_name} @ ${podium.item_price.toFixed(2)} each (Total: ${podium.total_price.toFixed(2)})
+              </Typography>
+            ))}
+            <Typography variant="h6" sx={{ mt: 2 }}>
+              Overall Total: ${pendingProposedSolution.overall_total.toFixed(2)}
+            </Typography>
+          </Paper>
+          <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+            <Button variant="contained" color="primary" onClick={acceptSolution}>
+              Accept
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={modifySolution}>
+              Modify
+            </Button>
+          </Box>
+        </Box>
+      )}
+    </Box>
+  );
+}
+
+ChatInterface.propTypes = {
+  sessionId: PropTypes.string,
+  items: PropTypes.array.isRequired,
+  setItems: PropTypes.func.isRequired,
+  setTotalPrice: PropTypes.func.isRequired,
+  timeUp: PropTypes.bool.isRequired,
+  setHasAcceptedSolution: PropTypes.func.isRequired,
+};
+
+export default ChatInterface;
+---
+File: ./frontend/src/components/GameDisplay.js
+// src/components/GameDisplay.js
+
+import React from 'react';
+import { Box, Typography, Paper } from '@mui/material';
+import PropTypes from 'prop-types';
+
+function GameDisplay({ items, totalPrice }) {
+  // Ensure totalPrice is a number; if not, default to 0
+  const formattedTotalPrice = typeof totalPrice === 'number' ? totalPrice.toFixed(2) : '0.00';
+
+  return (
+    <Box sx={{ mt: 4 }}>
+      <Typography variant="h5" gutterBottom>
+        Your Selections
+      </Typography>
+      <Paper variant="outlined" sx={{ p: 2 }}>
+        {items.length > 0 ? (
+          items.map((item, idx) => (
+            <Box key={idx} sx={{ mb: 2 }}>
+              <Typography variant="body1">
+                <strong>Podium {item.podium}:</strong> {item.quantity} x {item.item_name} @ ${item.item_price.toFixed(2)} each
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Total: ${(item.item_price * item.quantity).toFixed(2)}
+              </Typography>
+            </Box>
+          ))
+        ) : (
+          <Typography variant="body1">No items selected yet.</Typography>
+        )}
+        <Typography variant="h6" sx={{ mt: 2 }}>
+          Total Price: ${formattedTotalPrice}
+        </Typography>
+      </Paper>
+    </Box>
+  );
+}
+
+GameDisplay.propTypes = {
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      podium: PropTypes.number.isRequired,
+      item_name: PropTypes.string.isRequired,
+      item_price: PropTypes.number.isRequired,
+      quantity: PropTypes.number.isRequired,
+    })
+  ).isRequired,
+  totalPrice: PropTypes.number.isRequired,
+};
+
+export default GameDisplay;
+---
+File: ./frontend/src/components/Leaderboard.js
+// src/components/Leaderboard.js
+
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+
+function Leaderboard() {
+  const [scores, setScores] = useState([]);
+
+  useEffect(() => {
+    const fetchScores = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/game/leaderboard`);
+        setScores(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchScores();
+  }, []);
+
+  return (
+    <Box sx={{ mt: 5 }}>
+      <Typography variant="h5" gutterBottom>
+        Leaderboard
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table aria-label="leaderboard">
+          <TableHead>
+            <TableRow>
+              <TableCell>Rank</TableCell>
+              <TableCell>Username</TableCell>
+              <TableCell>Score</TableCell>
+              <TableCell>Total Price</TableCell>
+              <TableCell>Time Taken (s)</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {scores.map((score, idx) => (
+              <TableRow key={idx}>
+                <TableCell>{idx + 1}</TableCell>
+                <TableCell>{score.username}</TableCell>
+                <TableCell>{score.score}</TableCell>
+                <TableCell>${score.total_price.toFixed(2)}</TableCell>
+                <TableCell>{score.time_taken}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
+}
+
+export default Leaderboard;
+---
+File: ./frontend/src/components/MainGame.js
+// src/components/MainGame.js
+
+import React, { useState } from 'react';
+import SignUpForm from './SignUpForm';
+import ChatInterface from './ChatInterface';
+import GameDisplay from './GameDisplay';
+import Leaderboard from './Leaderboard';
+import Timer from './Timer';
+import { Box, Button } from '@mui/material';
+
+function MainGame({
+  user,
+  handleLogin,
+  sessionId,
+  items,
+  setItems,
+  setTotalPrice,
+  totalPrice,
+  timeUp,
+  timeTaken,
+  handleTimeUp,
+  handleSubmit,
+}) {
+  const [hasAcceptedSolution, setHasAcceptedSolution] = useState(false); // New state variable
+
+  return (
+    <Box sx={{ p: 4 }}>
+      {!user ? (
+        <SignUpForm onLogin={handleLogin} />
+      ) : (
+        <>
+          {!timeUp && <Timer onTimeUp={handleTimeUp} />}
+          <ChatInterface
+            sessionId={sessionId}
+            items={items}
+            setItems={setItems}
+            setTotalPrice={setTotalPrice}
+            timeUp={timeUp}
+            setHasAcceptedSolution={setHasAcceptedSolution} // Pass setter to ChatInterface
+          />
+          <GameDisplay items={items} totalPrice={totalPrice} />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+            disabled={!items.length || !hasAcceptedSolution} // Disable until accepted
+            sx={{ mt: 2 }}
+          >
+            Submit
+          </Button>
+        </>
+      )}
+      <Leaderboard />
+    </Box>
+  );
+}
+
+export default MainGame;
+---
+File: ./frontend/src/components/SignUpForm.js
+// src/components/SignUpForm.js
+
+import React, { useState } from 'react';
+import axios from 'axios';
+import { TextField, Button, Container, Typography, Box, Alert, CircularProgress } from '@mui/material';
+
+function SignUpForm({ onLogin }) {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [company, setCompany] = useState('');
+  // const [password, setPassword] = useState(''); // Remove password state
+  const [error, setError] = useState(''); // State to hold error messages
+  const [loading, setLoading] = useState(false); // State to manage loading
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(''); // Reset error message
+    setLoading(true); // Start loading
+    try {
+      // Register the user
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/register`, {
+        username,
+        email,
+        company, // Exclude password
+      });
+      onLogin(response.data);
+    } catch (error) {
+      console.error(error);
+      if (error.response && error.response.status === 400) {
+        // Display specific error message from backend
+        setError(error.response.data.detail || 'Registration failed');
+      } else {
+        // Generic error message
+        setError('An unexpected error occurred. Please try again.');
+      }
+    } finally {
+      setLoading(false); // Stop loading
+    }
+  };
+
+  return (
+    <Container maxWidth="sm">
+      <Box sx={{ mt: 5 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          The Price is Bot
+        </Typography>
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Username (to be displayed on leaderboard)"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Company (optional)"
+            value={company}
+            onChange={(e) => setCompany(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          {/* Remove Password Field */}
+          {/* <TextField
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            fullWidth
+            margin="normal"
+          /> */}
+          <Box sx={{ position: 'relative', mt: 2 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={loading}
+            >
+              Start
+            </Button>
+            {loading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  color: 'primary.main',
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-12px',
+                  marginLeft: '-12px',
+                }}
+              />
+            )}
+          </Box>
+        </form>
+      </Box>
+    </Container>
+  );
+}
+
+export default SignUpForm;
+---
+File: ./frontend/src/components/Timer.js
+// src/components/Timer.js
+
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Typography, Box } from '@mui/material';
+
+function Timer({ onTimeUp }) {
+  const [timeLeft, setTimeLeft] = useState(null); // Initialize as null
+  const [elapsedTime, setElapsedTime] = useState(0);
+
+useEffect(() => {
+  const fetchTimeLimit = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/game/settings`);
+      console.log("Fetched time_limit:", response.data.time_limit);
+      setTimeLeft(response.data.time_limit);
+    } catch (error) {
+      console.error(error);
+      setTimeLeft(300); // Default to 5 minutes
+    }
+  };
+  fetchTimeLimit();
+}, []);
+
+  useEffect(() => {
+    if (timeLeft === null) return; // Don't start the timer until timeLeft is set
+    if (timeLeft <= 0) {
+      onTimeUp(elapsedTime);
+      return;
+    }
+    const timerId = setInterval(() => {
+      setTimeLeft((t) => t - 1);
+      setElapsedTime((e) => e + 1);
+    }, 1000);
+    return () => clearInterval(timerId);
+  }, [timeLeft, elapsedTime, onTimeUp]);
+
+  if (timeLeft === null) {
+    return (
+      <Box sx={{ mt: 2 }}>
+        <Typography variant="h6">Loading Timer...</Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ mt: 2 }}>
+      <Typography variant="h6">Time Left: {timeLeft} seconds</Typography>
+    </Box>
+  );
+}
+
+export default Timer;
+---
+File: ./frontend/src/index.js
+// src/index.js
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import { registerOTel } from './otel';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import './styles.css';
+
+
+registerOTel();
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2', // Adjust this to your preferred primary color
+    },
+    secondary: {
+      main: '#dc004e', // Adjust this to your preferred secondary color
+    },
+  },
+});
+
+ReactDOM.render(
+  <ThemeProvider theme={theme}>
+    <App />
+  </ThemeProvider>,
+  document.getElementById('root')
+);
+---
+File: ./frontend/src/otel.js
+// otel.js
+import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
+import { CollectorTraceExporter } from '@opentelemetry/exporter-collector';
+import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
+
+export function registerOTel() {
+  const provider = new WebTracerProvider();
+  const exporter = new CollectorTraceExporter({
+    serviceName: 'the-price-is-bot-frontend',
+    url: 'http://localhost:4318/v1/traces', // Update with your OpenTelemetry collector endpoint
+  });
+  provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
+  provider.register();
+}
+---
+File: ./frontend/src/styles.css
+/* styles.css */
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: rgba(245, 245, 245, 0.45);
+}
+---
