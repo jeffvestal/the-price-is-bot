@@ -13,7 +13,7 @@ import {
   ListItemText,
   Alert,
   Modal,
-  Grid
+  ListItemIcon
 } from '@mui/material';
 import PropTypes from 'prop-types';
 
@@ -162,6 +162,52 @@ function ChatInterface({
       <Typography variant="h5" gutterBottom>
         Chat with the Bot
       </Typography>
+
+      {/* Added Instructions */}
+      <Box
+        sx={{
+          mb: 2,
+          userSelect: 'none', // Prevents text selection
+          WebkitUserSelect: 'none', // Safari
+          MozUserSelect: 'none', // Firefox
+          msUserSelect: 'none', // IE10+
+        }}
+      >
+        <Typography variant="subtitle1" gutterBottom>
+          Game Rules:
+        </Typography>
+        <List dense>
+          <ListItem>
+            <ListItemIcon>
+              <Typography variant="body1">•</Typography>
+            </ListItemIcon>
+            <ListItemText primary="5 podiums" />
+          </ListItem>
+          <ListItem>
+            <ListItemIcon>
+              <Typography variant="body1">•</Typography>
+            </ListItemIcon>
+            <ListItemText primary="1 unique item per podium" />
+          </ListItem>
+          <ListItem>
+            <ListItemIcon>
+              <Typography variant="body1">•</Typography>
+            </ListItemIcon>
+            <ListItemText primary="Unlimited of that item per podium" />
+          </ListItem>
+          <ListItem>
+            <ListItemIcon>
+              <Typography variant="body1">•</Typography>
+            </ListItemIcon>
+            <ListItemText primary="Total of all items must be under or equal to $100" />
+          </ListItem>
+        </List>
+        <Typography variant="body2" color="text.secondary">
+          Use prompting to instruct the LLM how to accomplish this task using grocery store inventory from Elasticsearch.
+        </Typography>
+      </Box>
+      {/* End of Added Instructions */}
+
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {error}
