@@ -1,4 +1,4 @@
-// src/components/MainGame.js
+// File: ./frontend/src/components/MainGame.js
 
 import React, { useState } from 'react';
 import SignUpForm from './SignUpForm';
@@ -6,7 +6,17 @@ import ChatInterface from './ChatInterface';
 import GameDisplay from './GameDisplay';
 import Leaderboard from './Leaderboard';
 import Timer from './Timer';
-import { Box, Button, Alert } from '@mui/material';
+import {
+  Box,
+  Button,
+  Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+} from '@mui/material';
 import PropTypes from 'prop-types';
 
 function MainGame({
@@ -29,6 +39,12 @@ function MainGame({
 
   const [elapsedTime, setElapsedTime] = useState(0); // New state variable
 
+  // **New State Variables for Reset Confirmation Dialog**
+  const [openResetDialog, setOpenResetDialog] = useState(false);
+
+  /**
+   * Handles the final submission of the game result.
+   */
   const handleFinalSubmit = async () => {
     if (!user) {
       alert('Please log in first.');
@@ -65,8 +81,43 @@ function MainGame({
     }
   };
 
+  /**
+   * Opens the reset confirmation dialog.
+   */
+  const handleOpenResetDialog = () => {
+    setOpenResetDialog(true);
+  };
+
+  /**
+   * Closes the reset confirmation dialog.
+   */
+  const handleCloseResetDialog = () => {
+    setOpenResetDialog(false);
+  };
+
+  /**
+   * Resets the user session and redirects to the registration page.
+   */
+  const resetSession = () => {
+    // Clear user-related states
+    handleLogin(null); // This will set user to null and reset other states in App.js
+    setOpenResetDialog(false); // Close the dialog
+    // Optionally, you can perform additional cleanup here
+  };
+
   return (
-    <Box sx={{ p: 4 }}>
+    <Box sx={{ p: 4, position: 'relative' }}>
+      {user && (
+        // **Reset Session Button Positioned at Top-Right**
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={handleOpenResetDialog}
+          sx={{ position: 'absolute', top: 16, right: 16 }}
+        >
+          Reset Session
+        </Button>
+      )}
       {!user ? (
         <SignUpForm onLogin={handleLogin} />
       ) : (
@@ -103,6 +154,29 @@ function MainGame({
         </>
       )}
       <Leaderboard />
+
+      {/* **Reset Confirmation Dialog** */}
+      <Dialog
+        open={openResetDialog}
+        onClose={handleCloseResetDialog}
+        aria-labelledby="reset-session-dialog-title"
+        aria-describedby="reset-session-dialog-description"
+      >
+        <DialogTitle id="reset-session-dialog-title">Reset Session</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="reset-session-dialog-description">
+            Are you sure you want to reset the session? This will clear all your current progress and return you to the registration page.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseResetDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={resetSession} color="secondary" autoFocus>
+            Reset
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

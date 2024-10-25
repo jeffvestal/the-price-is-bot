@@ -1,4 +1,4 @@
-// src/App.js
+// File: ./frontend/src/App.js
 
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -16,15 +16,23 @@ function App() {
   const [timeUp, setTimeUp] = useState(false); // Initially false
 
   const handleLogin = (userData) => {
-    setUser({
-      username: userData.username,
-      email: userData.email,
-      company: userData.company,
-    });
-    setSessionId(userData.token);
-    setTimeUp(false); // Reset timeUp on new login
-    setTotalPrice(0); // Reset totalPrice on new login
-    setItems([]); // Reset items on new login
+    if (userData) {
+      // If userData is provided, set user and sessionId
+      setUser({
+        username: userData.username,
+        email: userData.email,
+        company: userData.company,
+      });
+      setSessionId(userData.token);
+    } else {
+      // If userData is null, reset user and sessionId
+      setUser(null);
+      setSessionId(null);
+    }
+    // Reset other states regardless of userData
+    setTimeUp(false); // Reset timeUp on new login or reset
+    setTotalPrice(0); // Reset totalPrice on new login or reset
+    setItems([]); // Reset items on new login or reset
   };
 
   const handleTimeUp = (elapsedTime) => {
