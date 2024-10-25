@@ -22,7 +22,15 @@ logging.basicConfig(
 )
 
 # Initialize the FastAPI app
-app = FastAPI()
+# app = FastAPI()
+app = FastAPI(
+    title="The Price is BOT",
+    description="API for the Price is BOT Game",
+    version="0.1.0",
+    docs_url="/docs",      # Swagger UI
+    redoc_url="/redoc",    # ReDoc
+    openapi_url="/openapi.json"
+)
 
 # Include FastAPI routers
 app.include_router(users.router)
@@ -79,4 +87,6 @@ async def log_requests(request: Request, call_next):
 socketio_app = socketio.ASGIApp(sio, socketio_path='/socket.io')
 
 # Mount the Socket.IO app at the root
-app.mount("/", socketio_app)
+# app.mount("/", socketio_app)
+app.mount("/socket.io", socketio_app)
+
