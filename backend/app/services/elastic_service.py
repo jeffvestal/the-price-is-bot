@@ -1,9 +1,11 @@
 # app/services/elastic_service.py
 
-from elasticsearch import AsyncElasticsearch, NotFoundError, RequestError
+from elasticsearch import AsyncElasticsearch, NotFoundError, RequestError, ConflictError
 from app.config import ELASTICSEARCH_HOST, ELASTICSEARCH_API_KEY
 import logging
 from typing import Optional, Dict
+from fastapi import HTTPException
+
 
 # Configure logger
 logger = logging.getLogger("elastic_service")
@@ -34,7 +36,8 @@ async def initialize_indices():
                     "username": {"type": "keyword"},
                     "email": {"type": "keyword"},
                     "company": {"type": "keyword"},
-                    "token": {"type": "keyword"}
+                    "token": {"type": "keyword"},
+                    "active": {"type": "boolean"}  # New field to track token activity
                 }
             }
         },
@@ -133,6 +136,23 @@ async def initialize_indices():
         except RequestError as e:
             logger.error(f"Error creating index {index}: {e}")
 
+async def get_user_by_username(username: str) -> Optional[dict]:
+    """
+    Retrieves a user from Elasticsearch based on the provided username.
+
+    :param username: The username of the user.
+    :return: User data as a dictionary or None if not found.
+    """
+    try:
+        response = await es.get(index="users", id=username)
+        logger.debug(f"User found for username {username}: {response['_source']}")
+        return response["_source"]
+    except NotFoundError:
+        logger.warning(f"No user found for username: {username}")
+        return None
+    except Exception as e:
+        logger.error(f"Error retrieving user by username: {e}")
+        return None
 
 async def get_user_by_token(token: str) -> Optional[dict]:
     """
@@ -165,23 +185,72 @@ async def get_user_by_token(token: str) -> Optional[dict]:
         return None
 
 
-async def get_user_by_username(username: str) -> Optional[dict]:
+async def get_active_user_by_token(token: str) -> Optional[dict]:
     """
-    Retrieves a user from Elasticsearch based on the provided username.
+    Retrieves an active user from Elasticsearch based on the provided token.
 
-    :param username: The username of the user.
-    :return: User data as a dictionary or None if not found.
+    :param token: The authentication token.
+    :return: User data as a dictionary or None if not found or inactive.
     """
     try:
-        response = await es.get(index="users", id=username)
-        logger.debug(f"User found for username {username}: {response['_source']}")
-        return response["_source"]
-    except NotFoundError:
-        logger.warning(f"No user found for username: {username}")
-        return None
+        response = await es.search(
+            index="users",
+            body={
+                "query": {
+                    "bool": {
+                        "must": [
+                            {"term": {"token": token}},
+                            {"term": {"active": True}}
+                        ]
+                    }
+                }
+            }
+        )
+        hits = response['hits']['hits']
+        if hits:
+            user = hits[0]['_source']
+            logger.debug(f"Active user found for token {token}: {user}")
+            return user
+        else:
+            logger.warning(f"No active user found for token: {token}")
+            return None
     except Exception as e:
-        logger.error(f"Error retrieving user by username: {e}")
+        logger.error(f"Error retrieving active user by token: {e}")
         return None
+
+
+class TokenAlreadyDeactivatedException(HTTPException):
+    def __init__(self, detail: str = "Token has already been used or deactivated."):
+        super().__init__(status_code=403, detail=detail)
+
+
+async def deactivate_token(token: str):
+    try:
+        response = await es.update_by_query(
+            index="users",
+            body={
+                "script": {
+                    "source": "ctx._source.active = false",
+                    "lang": "painless"
+                },
+                "query": {
+                    "term": {
+                        "token": token  # Corrected
+                    }
+                }
+            }
+        )
+        # Check if any document was updated
+        if response.get('updated') == 0:
+            raise TokenAlreadyDeactivatedException()
+        return response
+    except ConflictError as e:
+        logger.error(f"ConflictError while deactivating token {token}: {e}")
+        raise TokenAlreadyDeactivatedException()
+    except Exception as e:
+        logger.error(f"Unexpected error while deactivating token {token}: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
 
 
 async def store_game_result(game_result: dict) -> None:
@@ -205,11 +274,13 @@ async def store_user(user: dict) -> None:
     :param user: A dictionary containing user data.
     """
     try:
-        await es.index(index="users", id=user['username'], document=user)
+        user['active'] = True  # Set active to True upon user creation
+        await es.index(index="users", id=user['username'], document=user, refresh='wait_for')  # Force refresh
         logger.info(f"Stored user: {user['username']}")
     except Exception as e:
         logger.error(f"Failed to store user {user['username']}: {e}")
         raise
+
 
 
 async def get_top_scores() -> list:
