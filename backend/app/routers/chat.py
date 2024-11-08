@@ -1,7 +1,9 @@
 # app/routers/chat.py
 
 import logging
-from app.utils.auth import get_user_by_token
+# from app.utils.auth import get_user_by_token
+from app.utils.auth import decode_jwt, get_user_by_username  # Import necessary functions
+
 from app.sockets import sio  # Import sio from sockets.py
 from urllib.parse import parse_qs
 from app.services.llm_service import handle_llm_interaction  # Import the LLM interaction function
@@ -20,20 +22,30 @@ logger.addHandler(handler)
 # Define an in-memory mapping of session IDs to user data
 connected_users = {}
 
-@sio.event
+@ sio.event
 async def connect(sid, environ):
     query_string = environ.get('QUERY_STRING', '')
     params = parse_qs(query_string)
     token = params.get('token', [None])[0]
     logger.debug(f"Socket.IO connection attempt with token: {token}")
     if token:
-        user = await get_user_by_token(token)
-        if user:
-            connected_users[sid] = user
-            logger.info(f"Socket.IO connection accepted for user: {user['username']}")
-            await sio.emit('message', {'content': 'Welcome to the chat!'}, room=sid)
-        else:
-            logger.warning(f"Authentication failed for token: {token}")
+        try:
+            payload = decode_jwt(token)
+            username = payload.get('sub')
+            if not username:
+                logger.warning("Invalid token: no username found.")
+                await sio.disconnect(sid)
+                return
+            user = await get_user_by_username(username)
+            if user:
+                connected_users[sid] = user
+                logger.info(f"Socket.IO connection accepted for user: {user['username']}")
+                await sio.emit('message', {'content': 'Welcome to the chat!'}, room=sid)
+            else:
+                logger.warning(f"User not found: {username}")
+                await sio.disconnect(sid)
+        except Exception as e:
+            logger.error(f"Error decoding token: {e}")
             await sio.disconnect(sid)
     else:
         logger.warning("No token provided. Rejecting connection.")

@@ -47,6 +47,6 @@ function list_files {
 }
 
 # Start from the directories ./backend/app and ./frontend/src
-list_files "./backend/app"
-list_files "./frontend/src"
+list_files "../backend/app"
+list_files "../frontend/src"
 

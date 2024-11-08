@@ -8,7 +8,7 @@ function SignUpForm({ onLogin }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [company, setCompany] = useState('');
-  // const [password, setPassword] = useState(''); // Password field removed as per your instructions
+  const [token, setToken] = useState(''); // New state for the token
   const [error, setError] = useState(''); // State to hold error messages
   const [loading, setLoading] = useState(false); // State to manage loading
 
@@ -21,12 +21,13 @@ function SignUpForm({ onLogin }) {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/register`, {
         username,
         email,
-        company, // Exclude password
+        company,
+        token, // Include the token in the registration request
       });
       onLogin(response.data);
     } catch (error) {
       console.error(error);
-      if (error.response && error.response.status === 400) {
+      if (error.response) {
         // Display specific error message from backend
         setError(error.response.data.detail || 'Registration failed');
       } else {
@@ -74,18 +75,15 @@ function SignUpForm({ onLogin }) {
             fullWidth
             margin="normal"
           />
-          {/* Password Field Removed */}
-          {/*
           <TextField
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            label="Access Token"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
             required
             fullWidth
             margin="normal"
+            helperText="Enter the access token provided to you"
           />
-          */}
           <Box sx={{ position: 'relative', mt: 2 }}>
             <Button
               type="submit"

@@ -23,7 +23,7 @@ function App() {
         email: userData.email,
         company: userData.company,
       });
-      setSessionId(userData.token);
+      setSessionId(userData.access_token); // Use access_token instead of token
     } else {
       // If userData is null, reset user and sessionId
       setUser(null);
@@ -34,6 +34,7 @@ function App() {
     setTotalPrice(0); // Reset totalPrice on new login or reset
     setItems([]); // Reset items on new login or reset
   };
+
 
   const handleTimeUp = (elapsedTime) => {
     console.log("Timer expired. Elapsed Time:", elapsedTime);

@@ -49,3 +49,18 @@ class GameResultInput(BaseModel):
     items: List[ItemSelection]
     total_price: float
     time_taken: float
+
+class UserRegistrationRequest(BaseModel):
+    username: str
+    email: str
+    company: Optional[str] = None
+    token: str
+
+class TokenValidationRequest(BaseModel):
+    token: str
+
+# Add the TokenResponse model
+class TokenResponse(BaseModel):
+    token: str
+    active: bool
+    created_at: datetime

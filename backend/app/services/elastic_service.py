@@ -3,9 +3,10 @@
 from elasticsearch import AsyncElasticsearch, NotFoundError, RequestError, ConflictError
 from app.config import ELASTICSEARCH_HOST, ELASTICSEARCH_API_KEY
 import logging
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 from fastapi import HTTPException
-
+import uuid
+from datetime import datetime
 
 # Configure logger
 logger = logging.getLogger("elastic_service")
@@ -37,7 +38,8 @@ async def initialize_indices():
                     "email": {"type": "keyword"},
                     "company": {"type": "keyword"},
                     "token": {"type": "keyword"},
-                    "active": {"type": "boolean"}  # New field to track token activity
+                    "is_admin": {"type": "boolean"},
+                    "active": {"type": "boolean"}  # Tracks user activity
                 }
             }
         },
@@ -67,11 +69,12 @@ async def initialize_indices():
             "mappings": {
                 "properties": {
                     "target_price": {"type": "double"},
-                    "time_limit": {"type": "integer"}
+                    "time_limit": {"type": "integer"},
+                    "max_podiums": {"type": "integer"}  # Added to align with frontend
                 }
             }
         },
-        "grocery_items": {  # Added grocery_items index
+        "grocery_items": {  # Existing grocery_items index
             "mappings": {
                 "_meta": {
                     "created_by": "file-data-visualizer"
@@ -122,6 +125,15 @@ async def initialize_indices():
                     }
                 }
             }
+        },
+        "tokens": {  # Integrated tokens index
+            "mappings": {
+                "properties": {
+                    "token": {"type": "keyword"},
+                    "active": {"type": "boolean"},
+                    "created_at": {"type": "date"}
+                }
+            }
         }
     }
 
@@ -135,6 +147,7 @@ async def initialize_indices():
                 logger.info(f"Index already exists: {index}")
         except RequestError as e:
             logger.error(f"Error creating index {index}: {e}")
+
 
 async def get_user_by_username(username: str) -> Optional[dict]:
     """
@@ -153,6 +166,7 @@ async def get_user_by_username(username: str) -> Optional[dict]:
     except Exception as e:
         logger.error(f"Error retrieving user by username: {e}")
         return None
+
 
 async def get_user_by_token(token: str) -> Optional[dict]:
     """
@@ -224,33 +238,42 @@ class TokenAlreadyDeactivatedException(HTTPException):
         super().__init__(status_code=403, detail=detail)
 
 
-async def deactivate_token(token: str):
-    try:
-        response = await es.update_by_query(
-            index="users",
-            body={
-                "script": {
-                    "source": "ctx._source.active = false",
-                    "lang": "painless"
-                },
-                "query": {
-                    "term": {
-                        "token": token  # Corrected
-                    }
-                }
-            }
-        )
-        # Check if any document was updated
-        if response.get('updated') == 0:
-            raise TokenAlreadyDeactivatedException()
-        return response
-    except ConflictError as e:
-        logger.error(f"ConflictError while deactivating token {token}: {e}")
-        raise TokenAlreadyDeactivatedException()
-    except Exception as e:
-        logger.error(f"Unexpected error while deactivating token {token}: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+async def validate_and_deactivate_token(token: str) -> bool:
+    """
+    Validates the token's existence and activity status, then deactivates it.
 
+    :param token: The token string to validate.
+    :return: True if the token is valid and deactivated successfully.
+    :raises HTTPException: If the token is invalid or already used.
+    """
+    try:
+        response = await es.get(index="tokens", id=token)
+        token_doc = response["_source"]
+        if not token_doc.get("active", False):
+            logger.warning(f"Token already used or inactive: {token}")
+            raise TokenAlreadyDeactivatedException()
+
+        # Deactivate the token
+        await es.update(
+            index="tokens",
+            id=token,
+            body={
+                "doc": {
+                    "active": False
+                }
+            },
+            refresh='wait_for'
+        )
+        logger.info(f"Token validated and deactivated: {token}")
+        return True
+    except NotFoundError:
+        logger.warning(f"Token not found: {token}")
+        raise HTTPException(status_code=400, detail="Invalid token.")
+    except TokenAlreadyDeactivatedException as e:
+        raise e
+    except Exception as e:
+        logger.error(f"Error validating token {token}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to validate token")
 
 
 async def store_game_result(game_result: dict) -> None:
@@ -280,7 +303,6 @@ async def store_user(user: dict) -> None:
     except Exception as e:
         logger.error(f"Failed to store user {user['username']}: {e}")
         raise
-
 
 
 async def get_top_scores() -> list:

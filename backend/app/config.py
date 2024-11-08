@@ -22,3 +22,8 @@ AZURE_OPENAI_API_VERSION = os.getenv("AZURE_OPENAI_API_VERSION", "2023-07-01-pre
 # **New Configurable Variables**
 MAX_PODIUMS = int(os.getenv("MAX_PODIUMS", "5"))
 TARGET_PRICE = float(os.getenv("TARGET_PRICE", "100.0"))
+
+import logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger("config")
+logger.debug(f"Loaded ADMIN_TOKEN: {ADMIN_TOKEN}")

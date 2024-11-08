@@ -58,6 +58,8 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     """
     token = credentials.credentials
     payload = decode_jwt(token)
+    logger.debug(f"Decoded JWT payload: {payload}")
+
     username: str = payload.get("sub")
     if username is None:
         raise HTTPException(
@@ -100,8 +102,12 @@ async def authenticate_admin(credentials: HTTPAuthorizationCredentials = Depends
     :raises HTTPException: If authentication fails or user lacks admin privileges.
     """
     token = credentials.credentials
+    logger.debug(f"Sanitized Received token: '{token}'")
+    expected_token = ADMIN_TOKEN.strip()
+    logger.debug(f"Sanitized Expected token: '{expected_token}'")
     try:
         payload = decode_jwt(token)
+        logger.debug(f"Decoded JWT payload: {payload}")
         is_admin = payload.get("is_admin", False)
         if not is_admin:
             raise HTTPException(
