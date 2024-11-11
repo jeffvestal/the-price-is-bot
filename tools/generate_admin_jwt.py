@@ -20,3 +20,14 @@ if __name__ == "__main__":
     admin_username = "admin_user"  # Replace with desired admin username
     admin_jwt = create_admin_jwt(admin_username)
     print(f"Generated Admin JWT:\n{admin_jwt}")
+
+
+"""
+ curl -X POST https://price-is-bot-backend-881345020217.us-central1.run.app/admin/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "admin_user",
+    "password": "<pass>"
+  }'
+
+"""

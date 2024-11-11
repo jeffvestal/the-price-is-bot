@@ -50,3 +50,11 @@ function list_files {
 list_files "../backend/app"
 list_files "../frontend/src"
 
+echo "../backend/Dockerfile"
+cat "../backend/Dockerfile"
+echo '---'
+echo "../frontend/Dockerfile"
+cat "../frontend/Dockerfile"
+echo '---'
+echo "../deploy.sh"
+cat "../deploy.sh"

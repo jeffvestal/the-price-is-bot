@@ -300,3 +300,6 @@ dist
 
 #otherstuff/
 Dockerfile
+deploy.sh
+*/latest.out*
+*/export_code.sh

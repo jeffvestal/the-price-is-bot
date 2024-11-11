@@ -1,4 +1,4 @@
-# app/models.py
+# backend/app/models.py
 
 from pydantic import BaseModel, Field
 from typing import List, Optional
@@ -8,13 +8,17 @@ class User(BaseModel):
     username: str
     email: str
     company: Optional[str] = None
-    token: str
+    token: Optional[str] = None
     is_admin: bool = False
+    active: bool = True
+    # Removed password field for regular users
+    # password: Optional[str] = None  # Removed for regular users
 
 class UserCreate(BaseModel):
     username: str
     email: str
     company: Optional[str] = None
+    # password: str  # Removed for regular users
 
 class Message(BaseModel):
     sender: str  # 'user' or 'bot'
@@ -55,6 +59,7 @@ class UserRegistrationRequest(BaseModel):
     email: str
     company: Optional[str] = None
     token: str
+    # Removed password field
 
 class TokenValidationRequest(BaseModel):
     token: str

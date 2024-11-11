@@ -50,7 +50,7 @@ function App() {
     // Submit game result to backend
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/game/submit`,
+        `${window.REACT_APP_BACKEND_URL}/game/submit`,
         gameResult,
         {
           headers: {

@@ -31,6 +31,7 @@ iniconfig==2.0.0
 jiter==0.6.1
 jsonschema==4.23.0
 jsonschema-specifications==2024.10.1
+PyJWT==2.9.0
 multidict==6.1.0
 openai==1.51.2
 opentelemetry-api==1.27.0

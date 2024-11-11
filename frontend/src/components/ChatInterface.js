@@ -41,7 +41,7 @@ function ChatInterface({
       return;
     }
 
-    const socket = io(process.env.REACT_APP_BACKEND_URL, {
+    const socket = io(window.REACT_APP_BACKEND_URL, {
       query: { token: sessionId },
       transports: ['websocket'],
       path: '/socket.io',

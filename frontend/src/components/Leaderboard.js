@@ -8,7 +8,7 @@ function Leaderboard() {
   useEffect(() => {
     const fetchScores = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/game/leaderboard`);
+        const response = await axios.get(`${window.REACT_APP_BACKEND_URL}/game/leaderboard`);
         setScores(response.data);
       } catch (error) {
         console.error(error);

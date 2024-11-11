@@ -1,26 +1,31 @@
 # File: backend/Dockerfile
 
-# Use an official Python runtime as a parent image
-FROM python:3.12-slim
+# Use an official Python runtime with explicit architecture
+FROM --platform=linux/amd64 python:3.12-slim
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
 # Set work directory
 WORKDIR /app
 
-# Install dependencies
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
 COPY requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 
 # Copy the backend source code
 COPY app ./app
 
-# Expose port (ensure this matches your FastAPI configuration)
-EXPOSE 8000
+# Expose the default port for Cloud Run
+EXPOSE 8080
 
-# Command to run the backend using Uvicorn
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-
+# Specify the command to run the application
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

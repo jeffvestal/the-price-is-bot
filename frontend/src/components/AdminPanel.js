@@ -38,7 +38,7 @@ function AdminPanel() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/admin/settings`, {
+      const response = await axios.get(`${window.REACT_APP_BACKEND_URL}/admin/settings`, {
         headers: {
           'Authorization': `Bearer ${adminToken}`,
         },
@@ -55,7 +55,7 @@ function AdminPanel() {
   const updateSettings = async () => {
     try {
       await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/admin/settings`,
+        `${window.REACT_APP_BACKEND_URL}/admin/settings`,
         settings,
         {
           headers: {
@@ -75,7 +75,7 @@ function AdminPanel() {
   const generateTokens = async () => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/admin/generate-tokens`,
+        `${window.REACT_APP_BACKEND_URL}/admin/generate-tokens`,
         { count: tokenCount },
         {
           headers: {
@@ -95,7 +95,7 @@ function AdminPanel() {
   const deactivateToken = async () => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/admin/deactivate-token`,
+        `${window.REACT_APP_BACKEND_URL}/admin/deactivate-token`,
         { token: tokenToDeactivate },
         {
           headers: {
@@ -120,7 +120,7 @@ function AdminPanel() {
 const listTokens = async (status) => {
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/admin/tokens`,
+      `${window.REACT_APP_BACKEND_URL}/admin/tokens`,
       {
         headers: {
           'Authorization': `Bearer ${adminToken}`,

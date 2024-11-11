@@ -2,13 +2,21 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Container, Typography, Box, Alert, CircularProgress } from '@mui/material';
+import {
+  TextField,
+  Button,
+  Container,
+  Typography,
+  Box,
+  Alert,
+  CircularProgress,
+} from '@mui/material';
 
 function SignUpForm({ onLogin }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [company, setCompany] = useState('');
-  const [token, setToken] = useState(''); // New state for the token
+  const [token, setToken] = useState(''); // State for the token
   const [error, setError] = useState(''); // State to hold error messages
   const [loading, setLoading] = useState(false); // State to manage loading
 
@@ -17,13 +25,17 @@ function SignUpForm({ onLogin }) {
     setError(''); // Reset error message
     setLoading(true); // Start loading
     try {
-      // Register the user
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/register`, {
-        username,
-        email,
-        company,
-        token, // Include the token in the registration request
-      });
+      // Register the user without the password field
+      const response = await axios.post(
+        `${window.REACT_APP_BACKEND_URL}/users/register`,
+        {
+          username,
+          email,
+          company,
+          token, // Include the token in the registration request
+          // Removed password field
+        }
+      );
       onLogin(response.data);
     } catch (error) {
       console.error(error);
@@ -84,6 +96,7 @@ function SignUpForm({ onLogin }) {
             margin="normal"
             helperText="Enter the access token provided to you"
           />
+          {/* Removed Password Field */}
           <Box sx={{ position: 'relative', mt: 2 }}>
             <Button
               type="submit"
