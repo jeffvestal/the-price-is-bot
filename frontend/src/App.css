@@ -161,10 +161,6 @@ h1.euiTitle {
   transform: translateX(24px);
 }
 
-/* .euiPanel {
-  background-color: #282e40;
-} */
-
 @media (max-width: 760px) {
   .themeButton {
     margin-left: 12px;

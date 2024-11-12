@@ -145,8 +145,7 @@ function MainGame({
           </EuiButton>
         </>
       )}
-      {/* <Leaderboard /> */}
-
+      {/* <Leaderboard /> Commented out to avoid showing leaderboard for now */}
       {isResetModalVisible && (
         <EuiModal onClose={closeResetModal}>
           <EuiModalHeader>

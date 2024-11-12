@@ -7,7 +7,7 @@ import AdminPanel from "./components/AdminPanel";
 import axios from "axios";
 import { EuiProvider, EuiPageTemplate, EuiSpacer } from "@elastic/eui";
 import Navbar from "./components/Navbar";
-import "./App.css"; // Import your custom CSS file
+import "./App.css";
 
 function App() {
   const [user, setUser] = useState(null);
