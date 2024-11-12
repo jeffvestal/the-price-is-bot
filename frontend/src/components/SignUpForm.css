@@ -1,0 +1,22 @@
+/* Base styling for the SVGs */
+.svg-left,
+.svg-right {
+  position: absolute;
+  bottom: 5%;
+  z-index: auto;
+}
+
+/* Position adjustments */
+.svg-left {
+  left: 2%;
+}
+
+.svg-right {
+  right: 2%;
+}
+
+/* Media queries for responsiveness */
+
+/* For smaller screens (less than 768px) */
+
+/* For larger screens (greater than 1200px) */
