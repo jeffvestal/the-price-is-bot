@@ -56,10 +56,9 @@ class GameResultInput(BaseModel):
 
 class UserRegistrationRequest(BaseModel):
     username: str
-    email: str
-    company: Optional[str] = None
-    token: str
-    # Removed password field
+    # email: str
+    # company: Optional[str] = None
+    # token: str
 
 class TokenValidationRequest(BaseModel):
     token: str
