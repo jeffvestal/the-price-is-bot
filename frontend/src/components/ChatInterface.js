@@ -204,14 +204,20 @@ function ChatInterface({
             </EuiModalBody>
             <EuiModalFooter>
               <EuiButton
-                onClick={() => setIsProposedSolutionPending(false)}
+                onClick={() => {
+                  setIsProposedSolutionPending(false);
+                  setHasAcceptedSolution(true); // Enable Submit button
+                }}
                 fill
               >
                 Accept
               </EuiButton>
               <EuiButton
                 color="danger"
-                onClick={() => setIsProposedSolutionPending(false)}
+                onClick={() => {
+                  setIsProposedSolutionPending(false);
+                  setHasAcceptedSolution(false); // Optionally handle modification
+                }}
               >
                 Modify
               </EuiButton>
