@@ -1,17 +1,16 @@
-# app/utils/auth.py
+# backend/app/utils/auth.py
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from app.services.elastic_service import get_user_by_token, get_user_by_username
-from app.config import ADMIN_TOKEN, SECRET_KEY
+from app.config import SECRET_KEY
 import jwt
 from jwt import PyJWTError
 from datetime import datetime, timedelta
-import os
 import logging
+from passlib.context import CryptContext
 
 # Configure logger
-logger = logging.getLogger("elastic_service")
+logger = logging.getLogger("auth")
 logger.setLevel(logging.DEBUG)  # Set to DEBUG for detailed logs
 handler = logging.StreamHandler()
 formatter = logging.Formatter(
@@ -26,8 +25,8 @@ security = HTTPBearer()
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60  # 1 hour
 
-ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "your_admin_token_here")
-logger.info(f"Admin Token is set to: {ADMIN_TOKEN}")
+# Password hashing
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def create_jwt(*, data: dict, expires_delta: timedelta = None):
@@ -48,6 +47,46 @@ def create_jwt(*, data: dict, expires_delta: timedelta = None):
     return encoded_jwt
 
 
+def verify_password(plain_password, hashed_password):
+    """
+    Verifies a plain password against a hashed password.
+
+    :param plain_password: The plain text password.
+    :param hashed_password: The hashed password.
+    :return: True if match, False otherwise.
+    """
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password):
+    """
+    Hashes a password.
+
+    :param password: The plain text password.
+    :return: The hashed password.
+    """
+    return pwd_context.hash(password)
+
+
+def decode_jwt(token: str):
+    """
+    Decodes and verifies a JWT token.
+
+    :param token: The JWT token to decode.
+    :return: The decoded payload.
+    :raises HTTPException: If token is invalid or expired.
+    """
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except PyJWTError:
+        logger.error("Failed to decode JWT")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Could not validate credentials",
+        )
+
+
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """
     Retrieves the current user based on the provided JWT.
@@ -66,6 +105,8 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Invalid authentication credentials",
         )
+
+    from app.services.elastic_service import get_user_by_username  # Deferred import to prevent circular import
     user = await get_user_by_username(username)
     if user is None:
         raise HTTPException(
@@ -73,24 +114,6 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
             detail="User not found",
         )
     return user
-
-
-def decode_jwt(token: str):
-    """
-    Decodes and verifies a JWT token.
-
-    :param token: The JWT token to decode.
-    :return: The decoded payload.
-    :raises HTTPException: If token is invalid or expired.
-    """
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload
-    except PyJWTError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Could not validate credentials",
-        )
 
 
 async def authenticate_admin(credentials: HTTPAuthorizationCredentials = Depends(security)) -> bool:
@@ -102,36 +125,15 @@ async def authenticate_admin(credentials: HTTPAuthorizationCredentials = Depends
     :raises HTTPException: If authentication fails or user lacks admin privileges.
     """
     token = credentials.credentials
-    logger.debug(f"Sanitized Received token: '{token}'")
-    expected_token = ADMIN_TOKEN.strip()
-    logger.debug(f"Sanitized Expected token: '{expected_token}'")
+    logger.debug(f"Received admin token: '{token}'")
     try:
         payload = decode_jwt(token)
-        logger.debug(f"Decoded JWT payload: {payload}")
+        logger.debug(f"Decoded JWT payload for admin: {payload}")
         is_admin = payload.get("is_admin", False)
         if not is_admin:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="User does not have admin privileges",
-            )
-        # Retrieve username from 'sub' claim
-        username = payload.get("sub")
-        if not username:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Invalid token payload",
-            )
-        # Fetch user from Elasticsearch
-        user = await get_user_by_username(username)
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="User not found",
-            )
-        if not user.get("active", False):
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="User token is inactive",
             )
         return True  # Return True to indicate successful authentication
     except PyJWTError:
@@ -141,3 +143,42 @@ async def authenticate_admin(credentials: HTTPAuthorizationCredentials = Depends
         )
 
 
+async def authenticate_admin_with_password(username: str, password: str) -> str:
+    """
+    Authenticates an admin user using username and password.
+
+    :param username: Admin username.
+    :param password: Admin password.
+    :return: JWT access token.
+    :raises HTTPException: If authentication fails.
+    """
+    from app.services.elastic_service import get_user_by_username  # Deferred import to prevent circular import
+    user = await get_user_by_username(username)
+    if not user:
+        logger.warning(f"Admin user '{username}' not found.")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Invalid username or password",
+        )
+    if not user.get("is_admin", False):
+        logger.warning(f"User '{username}' is not an admin.")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User does not have admin privileges",
+        )
+    if not verify_password(password, user.get("password", "")):
+        logger.warning(f"Incorrect password for admin user '{username}'.")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Invalid username or password",
+        )
+
+    # Generate JWT
+    jwt_payload = {
+        "sub": user["username"],
+        "email": user["email"],
+        "is_admin": user.get("is_admin", False)
+    }
+    access_token_expires = timedelta(minutes=60)  # 1 hour expiration
+    access_token = create_jwt(data=jwt_payload, expires_delta=access_token_expires)
+    return access_token

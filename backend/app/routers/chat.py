@@ -1,8 +1,7 @@
 # app/routers/chat.py
 
 import logging
-# from app.utils.auth import get_user_by_token
-from app.utils.auth import decode_jwt, get_user_by_username  # Import necessary functions
+from app.utils.auth import decode_jwt  # Import only decode_jwt
 
 from app.sockets import sio  # Import sio from sockets.py
 from urllib.parse import parse_qs
@@ -15,14 +14,13 @@ handler = logging.StreamHandler()
 formatter = logging.Formatter(
     "%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - line %(lineno)d - %(message)s"
 )
-
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 # Define an in-memory mapping of session IDs to user data
 connected_users = {}
 
-@ sio.event
+@sio.event
 async def connect(sid, environ):
     query_string = environ.get('QUERY_STRING', '')
     params = parse_qs(query_string)
@@ -36,6 +34,8 @@ async def connect(sid, environ):
                 logger.warning("Invalid token: no username found.")
                 await sio.disconnect(sid)
                 return
+
+            from app.services.elastic_service import get_user_by_username  # Deferred import to prevent circular import
             user = await get_user_by_username(username)
             if user:
                 connected_users[sid] = user
@@ -50,7 +50,6 @@ async def connect(sid, environ):
     else:
         logger.warning("No token provided. Rejecting connection.")
         await sio.disconnect(sid)
-
 
 @sio.event
 async def disconnect(sid):
