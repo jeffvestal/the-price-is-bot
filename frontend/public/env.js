@@ -1,1 +1,1 @@
-window.REACT_APP_BACKEND_URL = '__BACKEND_URL__';
+process.env.REACT_APP_BACKEND_URL = '__BACKEND_URL__';

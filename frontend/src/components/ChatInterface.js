@@ -1,4 +1,4 @@
-// File: ./frontend/src/components/ChatInterface.js
+// frontend/src/components/ChatInterface.js
 
 import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
@@ -44,7 +44,7 @@ function ChatInterface({
       return;
     }
 
-    const socket = io(window.REACT_APP_BACKEND_URL, {
+    const socket = io(process.env.REACT_APP_BACKEND_URL, { // Updated here
       query: { token: sessionId },
       transports: ["websocket"],
       path: "/socket.io",
