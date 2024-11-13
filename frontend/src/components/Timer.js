@@ -1,8 +1,8 @@
-// src/components/Timer.js
+// frontend/src/components/Timer.js
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Typography, Box } from '@mui/material';
+import { EuiText, EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 import PropTypes from 'prop-types';
 
 function Timer({ onTimeUp, setElapsedTime }) { // Accept setElapsedTime as a prop
@@ -43,16 +43,24 @@ function Timer({ onTimeUp, setElapsedTime }) { // Accept setElapsedTime as a pro
 
   if (timeLeft === null) {
     return (
-      <Box sx={{ mt: 2 }}>
-        <Typography variant="h6">Loading Timer...</Typography>
-      </Box>
+      <EuiFlexGroup justifyContent="center">
+        <EuiFlexItem grow={false}>
+          <EuiText>
+            <h6>Loading Timer...</h6>
+          </EuiText>
+        </EuiFlexItem>
+      </EuiFlexGroup>
     );
   }
 
   return (
-    <Box sx={{ mt: 2 }}>
-      <Typography variant="h6">Time Left: {timeLeft} seconds</Typography>
-    </Box>
+    <EuiFlexGroup justifyContent="center">
+      <EuiFlexItem grow={false}>
+        <EuiText>
+          <h6>Time Left: {timeLeft} seconds</h6>
+        </EuiText>
+      </EuiFlexItem>
+    </EuiFlexGroup>
   );
 }
 

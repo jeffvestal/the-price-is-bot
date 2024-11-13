@@ -5,11 +5,10 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import MainGame from "./components/MainGame";
 import AdminPanel from "./components/AdminPanel";
 import axios from "axios";
-import { EuiProvider, EuiPageTemplate, EuiSpacer } from "@elastic/eui";
+import { EuiProvider, EuiPageTemplate, EuiSpacer, EuiPageTemplateSection } from "@elastic/eui";
 import Navbar from "./components/Navbar";
 import ErrorBoundary from "./components/ErrorBoundary"; // Import Error Boundary
 import "./App.css";
-
 
 function App() {
   const [user, setUser] = useState(null);
@@ -76,27 +75,29 @@ function App() {
             <Navbar />
             <EuiSpacer size="m" />
             <EuiPageTemplate grow restrictWidth>
-              <Routes>
-                <Route path="/admin" element={<AdminPanel />} />
-                <Route
-                  path="/"
-                  element={
-                    <MainGame
-                      user={user}
-                      handleLogin={handleLogin}
-                      sessionId={sessionId}
-                      items={items}
-                      setItems={setItems}
-                      setTotalPrice={setTotalPrice}
-                      totalPrice={totalPrice}
-                      timeUp={timeUp}
-                      timeTaken={timeTaken}
-                      handleTimeUp={handleTimeUp}
-                      handleSubmit={handleSubmit} // Pass the handleSubmit function
-                    />
-                  }
-                />
-              </Routes>
+              <EuiPageTemplate.Section>
+                <Routes>
+                  <Route path="/admin" element={<AdminPanel />} />
+                  <Route
+                    path="/"
+                    element={
+                      <MainGame
+                        user={user}
+                        handleLogin={handleLogin}
+                        sessionId={sessionId}
+                        items={items}
+                        setItems={setItems}
+                        setTotalPrice={setTotalPrice}
+                        totalPrice={totalPrice}
+                        timeUp={timeUp}
+                        timeTaken={timeTaken}
+                        handleTimeUp={handleTimeUp}
+                        handleSubmit={handleSubmit} // Pass the handleSubmit function
+                      />
+                    }
+                  />
+                </Routes>
+              </EuiPageTemplate.Section>
             </EuiPageTemplate>
           </div>
         </Router>
