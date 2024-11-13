@@ -9,14 +9,12 @@ import {
   EuiFieldText,
   EuiButton,
   EuiCallOut,
+  EuiOverlayMask,
   EuiModal,
   EuiModalHeader,
   EuiModalBody,
   EuiModalFooter,
-  EuiOverlayMask,
-  EuiTextArea,
-  EuiListGroup,
-  EuiListGroupItem,
+  EuiModalHeaderTitle,
   EuiPanel,
 } from "@elastic/eui";
 import PropTypes from "prop-types";
@@ -39,12 +37,14 @@ function ChatInterface({
   const socketRef = useRef();
 
   useEffect(() => {
+    console.log("ChatInterface: sessionId =", sessionId);
     if (!sessionId) {
       setError("No session ID found. Please log in.");
       return;
     }
 
-    const socket = io(process.env.REACT_APP_BACKEND_URL, { // Updated here
+    // Initialize the Socket.IO connection
+    const socket = io(process.env.REACT_APP_BACKEND_URL, {
       query: { token: sessionId },
       transports: ["websocket"],
       path: "/socket.io",
@@ -54,15 +54,32 @@ function ChatInterface({
 
     socket.on("connect", () => {
       setError("");
+      console.log("Socket connected");
+    });
+
+    socket.on("connect_error", (err) => {
+      console.error("Socket connection error:", err);
+      setError("Socket connection failed. Please try again.");
     });
 
     socket.on("message", (message) => {
+      console.log("Received message:", message);
       if (message && message.content) {
-        const parsedMessage = JSON.parse(message.content);
+        let parsedMessage;
+
+        // Attempt to parse the message as JSON
+        try {
+          parsedMessage = JSON.parse(message.content);
+        } catch (e) {
+          // If parsing fails, treat it as a plain text message
+          parsedMessage = { content: message.content };
+        }
+
         if (
           parsedMessage.podiums &&
           parsedMessage.overall_total !== undefined
         ) {
+          // Handle structured message
           setItems(
             parsedMessage.podiums.map((p) => ({
               podium: p.podium,
@@ -93,14 +110,28 @@ function ChatInterface({
             setIsProposedSolutionPending(true);
             setHasAcceptedSolution(false);
           }
+        } else if (parsedMessage.content) {
+          // Handle plain text message
+          setMessages((prev) => [
+            ...prev,
+            {
+              sender: "bot",
+              content: parsedMessage.content,
+            },
+          ]);
         }
       }
+    });
+
+    socket.on("disconnect", () => {
+      console.warn("Socket disconnected");
+      setError("Socket disconnected. Please refresh the page.");
     });
 
     return () => {
       socket.disconnect();
     };
-  }, [sessionId, setItems, setTotalPrice]);
+  }, [sessionId, setItems, setTotalPrice, setHasAcceptedSolution]);
 
   const sendMessage = () => {
     if (input.trim() === "") return;
@@ -153,9 +184,7 @@ function ChatInterface({
         <EuiOverlayMask>
           <EuiModal onClose={() => setIsProposedSolutionPending(false)}>
             <EuiModalHeader>
-              <EuiText>
-                <h2>Proposed Solution</h2>
-              </EuiText>
+              <EuiModalHeaderTitle>Proposed Solution</EuiModalHeaderTitle>
             </EuiModalHeader>
             <EuiModalBody>
               {pendingProposedSolution.podiums.map((podium, idx) => (
