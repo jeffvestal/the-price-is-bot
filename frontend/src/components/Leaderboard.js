@@ -1,6 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  EuiText,
+  EuiPanel,
+  EuiTable,
+  EuiTableHeader,
+  EuiTableBody,
+  EuiTableRow,
+  EuiTableRowCell,
+  EuiTableHeaderCell,
+  EuiSpacer,
+} from "@elastic/eui";
 
 function Leaderboard() {
   const [scores, setScores] = useState([]);
@@ -8,7 +18,9 @@ function Leaderboard() {
   useEffect(() => {
     const fetchScores = async () => {
       try {
-        const response = await axios.get(`${window.REACT_APP_BACKEND_URL}/game/leaderboard`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/game/leaderboard`
+        );
         setScores(response.data);
       } catch (error) {
         console.error(error);
@@ -18,35 +30,45 @@ function Leaderboard() {
   }, []);
 
   return (
-    <Box sx={{ mt: 5 }}>
-      <Typography variant="h5" gutterBottom>
-        Leaderboard
-      </Typography>
-      <TableContainer component={Paper}>
-        <Table aria-label="leaderboard">
-          <TableHead>
-            <TableRow>
-              <TableCell>Rank</TableCell>
-              <TableCell>Username</TableCell>
-              <TableCell>Score</TableCell>
-              <TableCell>Total Price</TableCell>
-              <TableCell>Time Taken (s)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {scores.map((score, idx) => (
-              <TableRow key={idx}>
-                <TableCell>{idx + 1}</TableCell>
-                <TableCell>{score.username}</TableCell>
-                <TableCell>{score.score}</TableCell>
-                <TableCell>${score.total_price ? score.total_price.toFixed(2) : '0.00'}</TableCell>
-                <TableCell>{score.time_taken !== undefined ? score.time_taken : 'N/A'}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
+    <EuiPanel paddingSize="l">
+      {/* Great Job! Message */}
+      <EuiText textAlign="center">
+        <h1>Great Job!</h1>
+      </EuiText>
+
+      {/* Slightly Smaller Text */}
+      <EuiText textAlign="center">
+        <p>Keep up the great work! Here's the leaderboard:</p>
+      </EuiText>
+
+      <EuiSpacer size="l" />
+
+      {/* Leaderboard Table */}
+      <EuiTable aria-label="Leaderboard">
+        <EuiTableHeader>
+          <EuiTableHeaderCell>Rank</EuiTableHeaderCell>
+          <EuiTableHeaderCell>Username</EuiTableHeaderCell>
+          <EuiTableHeaderCell>Score</EuiTableHeaderCell>
+          <EuiTableHeaderCell>Total Price</EuiTableHeaderCell>
+          <EuiTableHeaderCell>Time Taken (s)</EuiTableHeaderCell>
+        </EuiTableHeader>
+        <EuiTableBody>
+          {scores.map((score, idx) => (
+            <EuiTableRow key={idx}>
+              <EuiTableRowCell>{idx + 1}</EuiTableRowCell>
+              <EuiTableRowCell>{score.username}</EuiTableRowCell>
+              <EuiTableRowCell>{score.score}</EuiTableRowCell>
+              <EuiTableRowCell>
+                ${score.total_price ? score.total_price.toFixed(2) : "0.00"}
+              </EuiTableRowCell>
+              <EuiTableRowCell>
+                {score.time_taken !== undefined ? score.time_taken : "N/A"}
+              </EuiTableRowCell>
+            </EuiTableRow>
+          ))}
+        </EuiTableBody>
+      </EuiTable>
+    </EuiPanel>
   );
 }
 

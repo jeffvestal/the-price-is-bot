@@ -7,6 +7,18 @@ from pydantic import BaseModel
 from typing import List, Dict, Optional
 from app.models import TokenResponse
 
+import logging
+
+# Configure logger
+logger = logging.getLogger("admin")
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+formatter = logging.Formatter(
+    "%(asctime)s - %(levelname)s - %(message)s"
+)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 class AdminLoginRequest(BaseModel):
@@ -100,7 +112,6 @@ async def list_tokens_endpoint(
     status: Optional[str] = None,
     authorized: bool = Depends(authenticate_admin)
 ):
-    logger = logging.getLogger("admin_router")
     logger.debug(f"Received status parameter: {status}")
     tokens = await list_tokens(status)
     return tokens

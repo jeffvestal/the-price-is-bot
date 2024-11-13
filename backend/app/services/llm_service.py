@@ -270,8 +270,10 @@ async def handle_llm_interaction(username: str, user_message: str) -> str:
         # Append user message to conversation history
         conversation_histories[username].append({"role": "user", "content": user_message})
 
-        max_iterations = 5  # Prevent infinite loops
+        max_iterations = 10  # Increased iterations to 10
         iteration = 0
+
+        last_assistant_response = None  # Initialize variable to store last assistant response
 
         while iteration < max_iterations:
             iteration += 1
@@ -292,6 +294,8 @@ async def handle_llm_interaction(username: str, user_message: str) -> str:
 
             if message.parsed:
                 logger.debug(f"Assistant response for user '{username}': {message.parsed.dict()}")
+                # Store the assistant response
+                last_assistant_response = message.parsed.dict()
                 # Append assistant response to conversation history
                 conversation_histories[username].append({"role": "assistant", "content": json.dumps(message.parsed.dict())})
                 return json.dumps(message.parsed.dict())
@@ -358,6 +362,8 @@ async def handle_llm_interaction(username: str, user_message: str) -> str:
 
                 # Serialize to JSON and append to conversation history
                 assistant_response_json = assistant_response.dict()
+                # Store this as the last assistant response
+                last_assistant_response = assistant_response_json
                 conversation_histories[username].append({
                     "role": "function",
                     "name": function_name,
@@ -388,12 +394,19 @@ async def handle_llm_interaction(username: str, user_message: str) -> str:
 
         # If maximum iterations are reached without a final response
         logger.error(f"Maximum iterations reached for user '{username}' without receiving a final response.")
-        return json.dumps({
-            "podiums": [],
-            "overall_total": 0.0,
-            "other_info": "I'm sorry, I couldn't process your request fully. Please try again later.",
-            "proposed_solution": False
-        })
+
+        if last_assistant_response:
+            # Return the last assistant response
+            logger.debug(f"Returning last assistant response for user '{username}': {last_assistant_response}")
+            return json.dumps(last_assistant_response)
+        else:
+            # No assistant response to return, return an error message
+            return json.dumps({
+                "podiums": [],
+                "overall_total": 0.0,
+                "other_info": "I'm sorry, I couldn't process your request fully. Please try again later.",
+                "proposed_solution": False
+            })
 
     except PydanticValidationError as e:
         logger.error(f"Pydantic validation error for user '{username}': {e}")
