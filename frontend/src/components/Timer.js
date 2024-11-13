@@ -12,7 +12,7 @@ function Timer({ onTimeUp, setElapsedTime }) { // Accept setElapsedTime as a pro
   useEffect(() => {
     const fetchTimeLimit = async () => {
       try {
-        const response = await axios.get(`${window.REACT_APP_BACKEND_URL}/game/settings`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/game/settings`);
         console.log("Fetched time_limit:", response.data.time_limit);
         setTimeLeft(response.data.time_limit);
       } catch (error) {

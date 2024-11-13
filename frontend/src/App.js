@@ -1,4 +1,4 @@
-// File: ./frontend/src/App.js
+// frontend/src/App.js
 
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -7,6 +7,7 @@ import AdminPanel from "./components/AdminPanel";
 import axios from "axios";
 import { EuiProvider, EuiPageTemplate, EuiSpacer } from "@elastic/eui";
 import Navbar from "./components/Navbar";
+import ErrorBoundary from "./components/ErrorBoundary"; // Import Error Boundary
 import "./App.css";
 
 
@@ -19,6 +20,7 @@ function App() {
   const [timeUp, setTimeUp] = useState(false);
 
   const handleLogin = (userData) => {
+    console.log("handleLogin called with:", userData); // Debugging
     if (userData) {
       // If userData is provided, set user and sessionId
       setUser({
@@ -51,7 +53,7 @@ function App() {
     // Submit game result to backend
     try {
       const response = await axios.post(
-        `${window.REACT_APP_BACKEND_URL}/game/submit`,
+        `${process.env.REACT_APP_BACKEND_URL}/game/submit`,
         gameResult,
         {
           headers: {
@@ -68,34 +70,37 @@ function App() {
 
   return (
     <EuiProvider colorMode="dark">
-      <Router>
-        <div>
-          <Navbar />
-          <EuiPageTemplate grow restrictWidth>
-            <Routes>
-              <Route path="/admin" element={<AdminPanel />} />
-              <Route
-                path="/"
-                element={
-                  <MainGame
-                    user={user}
-                    handleLogin={handleLogin}
-                    sessionId={sessionId}
-                    items={items}
-                    setItems={setItems}
-                    setTotalPrice={setTotalPrice}
-                    totalPrice={totalPrice}
-                    timeUp={timeUp}
-                    timeTaken={timeTaken}
-                    handleTimeUp={handleTimeUp}
-                    handleSubmit={handleSubmit} // Pass the handleSubmit function
-                  />
-                }
-              />
-            </Routes>
-          </EuiPageTemplate>
-        </div>
-      </Router>
+      <ErrorBoundary>
+        <Router>
+          <div>
+            <Navbar />
+            <EuiSpacer size="m" />
+            <EuiPageTemplate grow restrictWidth>
+              <Routes>
+                <Route path="/admin" element={<AdminPanel />} />
+                <Route
+                  path="/"
+                  element={
+                    <MainGame
+                      user={user}
+                      handleLogin={handleLogin}
+                      sessionId={sessionId}
+                      items={items}
+                      setItems={setItems}
+                      setTotalPrice={setTotalPrice}
+                      totalPrice={totalPrice}
+                      timeUp={timeUp}
+                      timeTaken={timeTaken}
+                      handleTimeUp={handleTimeUp}
+                      handleSubmit={handleSubmit} // Pass the handleSubmit function
+                    />
+                  }
+                />
+              </Routes>
+            </EuiPageTemplate>
+          </div>
+        </Router>
+      </ErrorBoundary>
     </EuiProvider>
   );
 }
