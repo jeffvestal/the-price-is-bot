@@ -1,11 +1,13 @@
 // File: ./frontend/src/App.js
 
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import MainGame from './components/MainGame';
-import AdminPanel from './components/AdminPanel';
-import axios from 'axios';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import MainGame from "./components/MainGame";
+import AdminPanel from "./components/AdminPanel";
+import axios from "axios";
+import { EuiProvider, EuiPageTemplate, EuiSpacer } from "@elastic/eui";
+import Navbar from "./components/Navbar";
+import "./App.css";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -35,17 +37,16 @@ function App() {
     setItems([]); // Reset items on new login or reset
   };
 
-
   const handleTimeUp = (elapsedTime) => {
     console.log("Timer expired. Elapsed Time:", elapsedTime);
     setTimeUp(true);
     setTimeTaken(elapsedTime);
-    alert('Time is up!');
+    alert("Time is up!");
   };
 
   const handleSubmit = async (gameResult) => {
     if (!user) {
-      throw new Error('User not logged in');
+      throw new Error("User not logged in");
     }
     // Submit game result to backend
     try {
@@ -54,7 +55,7 @@ function App() {
         gameResult,
         {
           headers: {
-            'Authorization': `Bearer ${sessionId}`, // Use Authorization header
+            Authorization: `Bearer ${sessionId}`, // Use Authorization header
           },
         }
       );
@@ -65,45 +66,37 @@ function App() {
     }
   };
 
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: '#1976d2', // Customize as needed
-      },
-      secondary: {
-        main: '#dc004e',
-      },
-    },
-  });
-
   return (
-    <ThemeProvider theme={theme}>
+    <EuiProvider colorMode="dark">
       <Router>
         <div>
-          <Routes>
-            <Route path="/admin" element={<AdminPanel />} />
-            <Route
-              path="/"
-              element={
-                <MainGame
-                  user={user}
-                  handleLogin={handleLogin}
-                  sessionId={sessionId}
-                  items={items}
-                  setItems={setItems}
-                  setTotalPrice={setTotalPrice}
-                  totalPrice={totalPrice}
-                  timeUp={timeUp}
-                  timeTaken={timeTaken}
-                  handleTimeUp={handleTimeUp}
-                  handleSubmit={handleSubmit} // Pass the handleSubmit function
-                />
-              }
-            />
-          </Routes>
+          <Navbar />
+          <EuiPageTemplate grow restrictWidth>
+            <Routes>
+              <Route path="/admin" element={<AdminPanel />} />
+              <Route
+                path="/"
+                element={
+                  <MainGame
+                    user={user}
+                    handleLogin={handleLogin}
+                    sessionId={sessionId}
+                    items={items}
+                    setItems={setItems}
+                    setTotalPrice={setTotalPrice}
+                    totalPrice={totalPrice}
+                    timeUp={timeUp}
+                    timeTaken={timeTaken}
+                    handleTimeUp={handleTimeUp}
+                    handleSubmit={handleSubmit} // Pass the handleSubmit function
+                  />
+                }
+              />
+            </Routes>
+          </EuiPageTemplate>
         </div>
       </Router>
-    </ThemeProvider>
+    </EuiProvider>
   );
 }
 
