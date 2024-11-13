@@ -17,16 +17,11 @@ router = APIRouter(prefix="/users", tags=["users"])
 @router.post("/register", response_model=dict)
 async def register_user(user: UserRegistrationRequest):
     """
-    Registers a new user using a valid token.
+    Registers a new user with only a username.
 
-    :param user: The user registration data along with the token.
+    :param user: The user registration data.
     :return: Confirmation message and user details.
     """
-    # Validate and deactivate the token
-    is_valid = await validate_and_deactivate_token(user.token)
-    if not is_valid:
-        raise HTTPException(status_code=400, detail="Invalid or expired token.")
-
     # Check if the username already exists
     existing_user = await get_user_by_username(user.username)
     if existing_user:
@@ -35,26 +30,11 @@ async def register_user(user: UserRegistrationRequest):
             detail="Username already exists"
         )
 
-    # Generate a new token for the user (optional)
-    new_token = secrets.token_urlsafe(32)
-    token_doc = {
-        "token": new_token,
-        "active": True,
-        "created_at": datetime.utcnow(),
-        "username": user.username  # Associate token with username
-    }
-
-    # Store the new token in the 'tokens' index
-    try:
-        await es.index(index="tokens", document=token_doc, refresh='wait_for')
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Failed to generate user token.")
-
     # Prepare user data for storage
     user_in_db = {
         "username": user.username,
-        "email": user.email,
-        "company": user.company,
+        "email": None,        # Set to None as it's no longer provided
+        "company": None,      # Set to None as it's no longer provided
         "is_admin": False,    # Default to False
         "active": True        # User is active upon registration
         # Removed password field
@@ -71,7 +51,6 @@ async def register_user(user: UserRegistrationRequest):
     # Generate a JWT token for the user
     jwt_payload = {
         "sub": user_in_db["username"],
-        "email": user_in_db["email"],
         "is_admin": user_in_db.get("is_admin", False)
     }
     access_token_expires = timedelta(minutes=60)  # 1 hour expiration
@@ -80,10 +59,8 @@ async def register_user(user: UserRegistrationRequest):
     return {
         "message": "User registered successfully",
         "username": user_in_db['username'],
-        "email": user_in_db['email'],
-        "company": user_in_db['company'],
-        "access_token": access_token,  # Return the JWT token
-        "token": new_token  # Provide the new token if necessary
+        "access_token": access_token  # Return the JWT token
+        # Removed 'email', 'company', and 'token' from the response
     }
 
 @router.post("/validate-token", response_model=dict)

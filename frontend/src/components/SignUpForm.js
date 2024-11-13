@@ -19,9 +19,6 @@ import "./SignUpForm.css";
 
 function SignUpForm({ onLogin }) {
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [company, setCompany] = useState("");
-  const [token, setToken] = useState(""); // New state for the token
   const [error, setError] = useState(""); // State to hold error messages
   const [loading, setLoading] = useState(false); // State to manage loading
 
@@ -34,10 +31,7 @@ function SignUpForm({ onLogin }) {
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/users/register`,
         {
-          username,
-          email,
-          company,
-          token, // Include the token in the registration request
+          username, // Only send username
         }
       );
       onLogin(response.data);
@@ -91,36 +85,7 @@ function SignUpForm({ onLogin }) {
             />
           </EuiFormRow>
 
-          <EuiFormRow label="Email" fullWidth>
-            <EuiFieldText
-              type="email"
-              fullWidth
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </EuiFormRow>
-
-          <EuiFormRow label="Company (optional)" fullWidth>
-            <EuiFieldText
-              fullWidth
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-            />
-          </EuiFormRow>
-
-          <EuiFormRow
-            label="Access Token"
-            helpText="Enter the access token provided to you"
-            fullWidth
-          >
-            <EuiFieldText
-              fullWidth
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-              required
-            />
-          </EuiFormRow>
+          {/* Removed Email, Company, and Token fields */}
 
           <EuiSpacer size="m" />
 

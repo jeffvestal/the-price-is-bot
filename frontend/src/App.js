@@ -9,23 +9,23 @@ import { EuiProvider, EuiPageTemplate, EuiSpacer } from "@elastic/eui";
 import Navbar from "./components/Navbar";
 import "./App.css";
 
+
 function App() {
   const [user, setUser] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [items, setItems] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0); // Ensure this is a number
+  const [totalPrice, setTotalPrice] = useState(0);
   const [timeTaken, setTimeTaken] = useState(0);
-  const [timeUp, setTimeUp] = useState(false); // Initially false
+  const [timeUp, setTimeUp] = useState(false);
 
   const handleLogin = (userData) => {
     if (userData) {
       // If userData is provided, set user and sessionId
       setUser({
         username: userData.username,
-        email: userData.email,
-        company: userData.company,
+        // email and company are no longer provided
       });
-      setSessionId(userData.access_token); // Use access_token instead of token
+      setSessionId(userData.access_token); // Use access_token as before
     } else {
       // If userData is null, reset user and sessionId
       setUser(null);
