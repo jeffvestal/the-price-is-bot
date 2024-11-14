@@ -31,13 +31,17 @@
   --color-dark-success: #7dded8;
   --color-dark-warning: #f3d371;
   --color-dark-danger: #f86b63;
-  --color-dark-empty-shade: #1d1e24;
+  --color-dark-empty-shade: ##343642;
   --color-dark-lightest-shade: #25262e;
   --color-dark-light-shade: #343741;
   --color-dark-medium-shade: #535966;
   --color-dark-dark-shade: #98a2b3;
   --color-dark-darkest-shade: #d4dae5;
   --color-dark-full-shade: #fff;
+  --color-main-background: #343642;
+  --color-main-background-shade: #575b6e;
+  --color-main-background-dark-shade: #24262e;
+  --color-main-button-start-game: #0076cc;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -176,5 +180,73 @@ h1.euiTitle {
   .euiEmptyPrompt__main {
     padding-right: 0 !important;
     padding-left: 0 !important;
+  }
+}
+
+a.main-logo {
+  padding-top: 15px;
+  padding-left: 15px;
+  display: inline-block;
+}
+
+.main-logo>img {
+  height: 50px
+}
+
+@media (min-width: 768px) {
+  /* tablets */
+  a.main-logo {
+    padding-top: 35px;
+    padding-left: 35px;
+    display: inline-block;
+  }
+
+  .main-logo>img {
+    height: 100%
+  }
+}
+
+/* Remove default panel backgrounds */
+.euiPanel {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Additional global styles */
+.euiTitle {
+  color: #FFF !important;
+  text-align: center;
+}
+
+.euiText {
+  color: #D3DAE6 !important;
+}
+
+.page-decorate-background {
+  background-image: url('images/background-circle.png'), url('images/background-lines.png');
+  background-repeat: no-repeat, no-repeat;
+  background-position: top -40px left, bottom right;
+  background-size: 0, 100%;
+}
+
+
+@media (min-width: 575px) {
+  /* landscape phones */
+  .page-decorate-background {
+    background-position: top 120px left, bottom right;
+    background-size: 50%, 60%
+  }
+}
+
+@media (min-width: 768px) {
+  /* tablets */
+}
+
+@media (min-width: 1200px) {
+  /* desktops */
+  .page-decorate-background {
+    background-position: bottom 120px left, bottom right;
+    background-size: 37%, 41%
   }
 }

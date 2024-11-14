@@ -1,22 +1,73 @@
-/* Base styling for the SVGs */
-.svg-left,
-.svg-right {
-  position: absolute;
-  bottom: 5%;
-  z-index: auto;
+/* SignUpForm.css */
+
+.signup-container {
+  position: relative;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 2rem;
 }
 
-/* Position adjustments */
-.svg-left {
-  left: 0%;
+@media (min-width: 1200px) {
+  /* desktops */
+  .signup-container {
+    max-width: 800px;
+  }
 }
 
-.svg-right {
-  right: 0%;
+/* Content styles */
+.signup-content {
+  position: relative;
+  z-index: 1;
 }
 
-/* Media queries for responsiveness */
+/* Form field customization */
+.signup-container .euiFieldText {
+  background-color:  var(--color-main-background);
+  box-shadow: inset 0 0 0 1px var(--color-light-light-shade);
+  border-radius: 2px;
+}
 
-/* For smaller screens (less than 768px) */
+.signup-container .euiFieldText:focus {
+  background-color: var(--color-main-background-dark-shade);
+}
 
-/* For larger screens (greater than 1200px) */
+/* Button customization */
+.signup-container .euiButton {
+  background-color: var(--color-main-button-start-game);
+  border: none;
+  color: var(--color-light-light-shade);
+  border-radius: 2px;
+}
+
+.signup-container .euiButton:hover {
+  background-color: #005b98;
+}
+
+@media (min-width: 768px) {
+  /* tablets */
+  .signup-container .euiTitle {
+    margin-top: 100px
+  }
+
+  .signup-container .euiText {
+    text-align: center;
+  }
+
+  .signup-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .signup-container .euiFieldText {
+    width: 600px;
+  }
+
+  .signup-container .euiButton {
+    padding: 23px
+  }
+}
+
+@media (min-width: 1200px) {
+  /* desktops */
+}

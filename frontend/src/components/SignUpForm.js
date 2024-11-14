@@ -1,114 +1,113 @@
-// src/components/SignUpForm.js
-
-import React, { useState } from "react";
-import axios from "axios";
+// SignUpForm.js
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   EuiFieldText,
-  EuiForm,
-  EuiFormRow,
   EuiButton,
-  EuiPanel,
   EuiText,
-  EuiCallOut,
+  EuiTitle,
   EuiSpacer,
-  EuiLoadingSpinner,
-} from "@elastic/eui";
-import { ReactComponent as LeftSvg } from "../images/left-svg.svg";
-import { ReactComponent as RightSvg } from "../images/right-svg.svg";
-import "./SignUpForm.css";
+  EuiCallOut,
+  EuiFormRow,
+  useCurrentEuiBreakpoint,
+} from '@elastic/eui';
+import { useBackground } from "../contexts/BackgroundContext";
+import './SignUpForm.css';
 
 function SignUpForm({ onLogin }) {
-  const [username, setUsername] = useState("");
-  const [error, setError] = useState(""); // State to hold error messages
-  const [loading, setLoading] = useState(false); // State to manage loading
+  const [username, setUsername] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { setShowBackground } = useBackground();
+  const currentBreakpoint = useCurrentEuiBreakpoint();
+
+  useEffect(() => {
+    setShowBackground(true);
+    return () => setShowBackground(false);
+  }, [setShowBackground]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Reset error message
-    setLoading(true); // Start loading
+    setError('');
+    setLoading(true);
+    
     try {
-      // Register the user
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/users/register`,
-        {
-          username, // Only send username
-        }
+        { username }
       );
       onLogin(response.data);
     } catch (error) {
       console.error(error);
-      if (error.response) {
-        // Display specific error message from backend
-        setError(error.response.data.detail || "Registration failed");
-      } else {
-        // Generic error message
-        setError("An unexpected error occurred. Please try again.");
-      }
+      setError(error.response?.data?.detail || 'Registration failed');
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
   return (
-    <>
-      {/* Left Bottom SVG */}
-      <LeftSvg className="svg-left" />
-      {/* Right Bottom SVG */}
-      <RightSvg className="svg-right" />
-      <EuiPanel
-        paddingSize="l"
-        style={{ maxWidth: "600px", margin: "auto", marginTop: "40px" }}
-      >
-        <EuiText>
+    <div className="signup-container">
+      <div className="signup-content">
+        <EuiTitle size="l">
           <h2>The Price is Bot</h2>
+        </EuiTitle>
+        
+        <EuiSpacer size="l" />
+        
+        <EuiText>
+          <p>
+            To play, select 5 unique items from the grocery store inventory (retrieved from
+            Elasticsearch) to fill the 5 podiums, ensuring the total cost is $100 or less.
+          </p>
         </EuiText>
-        <EuiSpacer size="m" />
 
-        {error && (
-          <EuiCallOut title="Error" color="danger" iconType="alert">
-            {error}
-          </EuiCallOut>
-        )}
+        <EuiSpacer size="xl" />
 
-        <EuiSpacer size="m" />
-
-        <EuiForm component="form" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
+          {error && (
+            <>
+              <EuiCallOut title="Error" color="danger">
+                {error}
+              </EuiCallOut>
+              <EuiSpacer size="m" />
+            </>
+          )}
           <EuiFormRow
-            label="Username (to be displayed on leaderboard)"
-            fullWidth
+            label="Choose a nickname"
+            fullWidth={['xs', 's'].includes(currentBreakpoint)}
           >
             <EuiFieldText
-              fullWidth
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              required
+              fullWidth={['xs', 's'].includes(currentBreakpoint)}
             />
           </EuiFormRow>
 
-          {/* Removed Email, Company, and Token fields */}
+          <EuiSpacer size="l" />
 
-          <EuiSpacer size="m" />
+          <EuiButton
+            type="submit"
+            fill
+            fullWidth={['xs', 's'].includes(currentBreakpoint)}
+            isLoading={loading}
+          >
+            Start the game
+          </EuiButton>
 
-          <div style={{ position: "relative" }}>
-            <EuiButton type="submit" fill isDisabled={loading} fullWidth>
-              Start
-            </EuiButton>
-
-            {loading && (
-              <EuiLoadingSpinner
-                size="m"
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                }}
-              />
-            )}
-          </div>
-        </EuiForm>
-      </EuiPanel>
-    </>
+          {loading && (
+            <EuiLoadingSpinner
+              size="m"
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            />
+          )}
+        </form>
+      </div>
+    </div>
   );
 }
 
