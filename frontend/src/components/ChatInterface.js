@@ -16,8 +16,11 @@ import {
   EuiModalFooter,
   EuiModalHeaderTitle,
   EuiPanel,
+  EuiFormControlLayout,
+  EuiButtonEmpty
 } from "@elastic/eui";
 import PropTypes from "prop-types";
+import BotIcon from '../images/bot.svg' ;
 
 function ChatInterface({
   sessionId,
@@ -152,31 +155,39 @@ function ChatInterface({
           {alertMessage}
         </EuiCallOut>
       )}
-      <EuiPanel style={{ height: "300px", overflowY: "auto" }}>
+      <EuiPanel className="game-main-chat">
         <EuiText>
           {messages.map((msg, idx) => (
             <p key={idx}>
-              <strong>{msg.sender === "user" ? "You" : "Bot"}:</strong>{" "}
-              {msg.content}
+              {msg.sender === "user" ? (
+               <div className="user-response-wrapper">
+                <div className="user-response-content">{msg.content}</div>
+               </div> 
+              ) : (
+                <div className="bot-response-wrapper">
+                  <div><img src={BotIcon} height="25px" width="25px"/></div>
+                  <div>{msg.content}</div>
+                </div> 
+              )}
             </p>
           ))}
         </EuiText>
       </EuiPanel>
       {!timeUp && (
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiFieldText
+        <EuiFlexGroup fullWidth className="chat-controls">
+          <EuiFormControlLayout
+            fullWidth
+            append={<EuiButtonEmpty onClick={sendMessage} size="xs">Send</EuiButtonEmpty>}
+          >
+            <EuiFieldText 
               placeholder="Type your message"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage()} 
+              controlOnly
+              fullWidth
             />
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiButton fill onClick={sendMessage}>
-              Send
-            </EuiButton>
-          </EuiFlexItem>
+          </EuiFormControlLayout>
         </EuiFlexGroup>
       )}
 
@@ -190,7 +201,7 @@ function ChatInterface({
               {pendingProposedSolution.podiums.map((podium, idx) => (
                 <EuiText key={idx}>
                   <p>
-                    <strong>Podium {podium.podium}:</strong> {podium.quantity} x{" "}
+                    <strong>Shopping bag {podium.podium}:</strong> {podium.quantity} x{" "}
                     {podium.item_name} @ ${podium.item_price.toFixed(2)}
                   </p>
                 </EuiText>

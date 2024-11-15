@@ -54,7 +54,7 @@ function Timer({ onTimeUp, setElapsedTime }) { // Accept setElapsedTime as a pro
   }
 
   return (
-    <EuiFlexGroup justifyContent="center">
+    <EuiFlexGroup justifyContent="center" className='game-timer'>
       <EuiFlexItem grow={false}>
         <EuiText>
           <h6>Time Left: {timeLeft} seconds</h6>

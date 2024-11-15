@@ -5,18 +5,20 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import MainGame from "./components/MainGame";
 import AdminPanel from "./components/AdminPanel";
 import axios from "axios";
-import { EuiProvider, EuiPageTemplate, EuiSpacer, EuiPageTemplateSection } from "@elastic/eui";
+import { EuiProvider, EuiPageTemplate } from "@elastic/eui";
 import Navbar from "./components/Navbar";
-import ErrorBoundary from "./components/ErrorBoundary"; // Import Error Boundary
+import ErrorBoundary from "./components/ErrorBoundary";
+import { BackgroundProvider, useBackground } from "./contexts/BackgroundContext";
 import "./App.css";
 
-function App() {
+function AppContent() {
   const [user, setUser] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [items, setItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [timeTaken, setTimeTaken] = useState(0);
   const [timeUp, setTimeUp] = useState(false);
+  const { showBackground } = useBackground();
 
   const handleLogin = (userData) => {
     console.log("handleLogin called with:", userData); // Debugging
@@ -68,40 +70,45 @@ function App() {
   };
 
   return (
+    <Router>
+      <EuiPageTemplate css={{
+        backgroundColor: '#101c3f'
+      }} className={showBackground ? "page-decorate-background" : ""}>
+        <Navbar />
+        <Routes>
+          <Route path="/admin" element={<AdminPanel />} />
+          <Route
+            path="/"
+            element={
+              <MainGame
+                user={user}
+                handleLogin={handleLogin}
+                sessionId={sessionId}
+                items={items}
+                setItems={setItems}
+                setTotalPrice={setTotalPrice}
+                totalPrice={totalPrice}
+                timeUp={timeUp}
+                timeTaken={timeTaken}
+                handleTimeUp={handleTimeUp}
+                handleSubmit={handleSubmit} // Pass the handleSubmit function
+              />
+            }
+          />
+        </Routes>
+      </EuiPageTemplate>
+    </Router>
+  );
+}
+
+function App() {
+  return (
     <EuiProvider colorMode="dark">
-      <ErrorBoundary>
-        <Router>
-          <div>
-            <Navbar />
-            <EuiSpacer size="m" />
-            <EuiPageTemplate grow restrictWidth>
-              <EuiPageTemplate.Section>
-                <Routes>
-                  <Route path="/admin" element={<AdminPanel />} />
-                  <Route
-                    path="/"
-                    element={
-                      <MainGame
-                        user={user}
-                        handleLogin={handleLogin}
-                        sessionId={sessionId}
-                        items={items}
-                        setItems={setItems}
-                        setTotalPrice={setTotalPrice}
-                        totalPrice={totalPrice}
-                        timeUp={timeUp}
-                        timeTaken={timeTaken}
-                        handleTimeUp={handleTimeUp}
-                        handleSubmit={handleSubmit} // Pass the handleSubmit function
-                      />
-                    }
-                  />
-                </Routes>
-              </EuiPageTemplate.Section>
-            </EuiPageTemplate>
-          </div>
-        </Router>
-      </ErrorBoundary>
+      <BackgroundProvider>
+        <ErrorBoundary>
+          <AppContent />
+        </ErrorBoundary>
+      </BackgroundProvider>
     </EuiProvider>
   );
 }
