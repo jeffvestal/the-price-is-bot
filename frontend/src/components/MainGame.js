@@ -155,10 +155,10 @@ function MainGame({
               </p>
               <p>The twist:</p>
               <p>Each bag can contain an unlimited number of any unique items, but your total
-                must stay under $100
+                must stay under $100.
               </p>
               <p>Use creative prompting to guide the LLM and build the perfect shopping cart.</p>
-              <p>Are you up to for the challenge? Let's see what you can do</p>
+              <p>Are you up to for the challenge? Let's see what you can do.</p>
             </EuiText>
           </EuiModalBody>
           <EuiModalFooter>

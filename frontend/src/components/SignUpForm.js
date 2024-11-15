@@ -52,7 +52,7 @@ function SignUpForm({ onLogin }) {
         <EuiText>
           <p>
           Think you are a master of AI prompts? Put your skills to the test and see how Elasticsearch
-            can amplify your results with our powerful Generative AI
+            can amplify your results with our powerful Generative AI.
           </p>
         </EuiText>
 
@@ -88,18 +88,6 @@ function SignUpForm({ onLogin }) {
           >
             Start the game
           </EuiButton>
-
-          {loading && (
-            <EuiLoadingSpinner
-              size="m"
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
-            />
-          )}
         </form>
       </div>
     </div>
