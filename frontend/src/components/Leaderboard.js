@@ -16,7 +16,7 @@ import {
   EuiLoadingSpinner,
 } from "@elastic/eui";
 
-function Leaderboard() {
+function Leaderboard({heading, subHeading, user}) {
   const [scores, setScores] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(""); // Error state
@@ -41,16 +41,18 @@ function Leaderboard() {
   }, []);
 
   return (
-    <EuiPanel paddingSize="l">
-      {/* Great Job! Message */}
-      <EuiText textAlign="center">
-        <h1>Great Job!</h1>
-      </EuiText>
+    <EuiPanel className="panel-leaderboard">
+      {heading && (
+        <EuiText textAlign="center">
+          <h1>{heading}</h1>
+        </EuiText>
+      )}
 
-      {/* Slightly Smaller Text */}
-      <EuiText textAlign="center">
-        <p>Keep up the great work! Here's the leaderboard:</p>
-      </EuiText>
+      {subHeading && (
+        <EuiText textAlign="center">
+          <p>{subHeading}</p>
+        </EuiText>
+      )}
 
       <EuiSpacer size="l" />
 
@@ -75,18 +77,24 @@ function Leaderboard() {
         <>
           {scores.length > 0 ? (
             <EuiTable aria-label="Leaderboard">
-              <EuiTableHeader>
-                <EuiTableHeaderCell>Rank</EuiTableHeaderCell>
-                <EuiTableHeaderCell>Username</EuiTableHeaderCell>
-                <EuiTableHeaderCell>Score</EuiTableHeaderCell>
-                <EuiTableHeaderCell>Total Price</EuiTableHeaderCell>
-                <EuiTableHeaderCell>Time Taken (s)</EuiTableHeaderCell>
+              <EuiTableHeader style={{display: 'table-header-group'}}>
+                <EuiTableHeaderCell className="table-header-cell first">
+                  <span className="table-header-cell first">Rank</span>
+                </EuiTableHeaderCell>
+                <EuiTableHeaderCell className="table-header-cell second">
+                  <span className="table-header-cell">Username</span>
+                </EuiTableHeaderCell>
+                <EuiTableHeaderCell className="table-header-cell third">
+                  <span className="table-header-cell third">Score</span>
+                </EuiTableHeaderCell>
+                <EuiTableHeaderCell><span className="table-header-cell">Total Price</span></EuiTableHeaderCell>
+                <EuiTableHeaderCell><span className="table-header-cell">Time Taken</span></EuiTableHeaderCell>
               </EuiTableHeader>
-              <EuiTableBody>
+              <EuiTableBody className="leaderboard-table-body">
                 {scores.map((score, idx) => (
-                  <EuiTableRow key={idx}>
+                  <EuiTableRow key={idx} className={user && score.username === user.username ? 'current-user' : ''}>
                     <EuiTableRowCell>{idx + 1}</EuiTableRowCell>
-                    <EuiTableRowCell>{score.username}</EuiTableRowCell>
+                    <EuiTableRowCell><span className="overflow-ellipsis">{score.username}</span></EuiTableRowCell>
                     <EuiTableRowCell>{score.score}</EuiTableRowCell>
                     <EuiTableRowCell>
                       $
@@ -96,7 +104,7 @@ function Leaderboard() {
                     </EuiTableRowCell>
                     <EuiTableRowCell>
                       {score.time_taken !== undefined
-                        ? score.time_taken
+                        ? `${score.time_taken}s`
                         : "N/A"}
                     </EuiTableRowCell>
                   </EuiTableRow>

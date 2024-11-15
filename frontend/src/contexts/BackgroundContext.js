@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from 'react';
 const BackgroundContext = createContext();
 
 export function BackgroundProvider({ children }) {
-  const [showBackground, setShowBackground] = useState(false);
+  const [showBackground, setShowBackground] = useState(true);
 
   const value = {
     showBackground,

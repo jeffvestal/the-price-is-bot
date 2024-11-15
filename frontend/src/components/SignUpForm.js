@@ -9,6 +9,7 @@ import {
   EuiSpacer,
   EuiCallOut,
   EuiFormRow,
+  EuiLoadingSpinner,
   useCurrentEuiBreakpoint,
 } from '@elastic/eui';
 import { useBackground } from "../contexts/BackgroundContext";
@@ -18,13 +19,7 @@ function SignUpForm({ onLogin }) {
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { setShowBackground } = useBackground();
   const currentBreakpoint = useCurrentEuiBreakpoint();
-
-  useEffect(() => {
-    setShowBackground(true);
-    return () => setShowBackground(false);
-  }, [setShowBackground]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,8 +51,8 @@ function SignUpForm({ onLogin }) {
         
         <EuiText>
           <p>
-            To play, select 5 unique items from the grocery store inventory (retrieved from
-            Elasticsearch) to fill the 5 podiums, ensuring the total cost is $100 or less.
+          Think you are a master of AI prompts? Put your skills to the test and see how Elasticsearch
+            can amplify your results with our powerful Generative AI
           </p>
         </EuiText>
 
@@ -73,7 +68,7 @@ function SignUpForm({ onLogin }) {
             </>
           )}
           <EuiFormRow
-            label="Choose a nickname"
+            label="Choose a nickname (ensure you nickname allows us to identify you based on the information you provided in the registration form)"
             fullWidth={['xs', 's'].includes(currentBreakpoint)}
           >
             <EuiFieldText

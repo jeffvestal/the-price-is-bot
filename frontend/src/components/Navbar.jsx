@@ -1,5 +1,6 @@
 import React from "react";
-import logo from "../images/logo.png";
+import Elastic from "../images/logo.png";
+import Microsoft from "../images/microsoft2.png";
 import { Link } from "react-router-dom";
 
 
@@ -7,7 +8,8 @@ function Navbar() {
   return (
     <div>
       <Link to="/" className="main-logo">
-        <img src={logo} alt="Logo" />
+        <img src={Elastic} alt="Logo Elastic" />
+        <img src={Microsoft} className="microsoft-logo" alt="Logo Microsoft" />
       </Link>
     </div>
   );

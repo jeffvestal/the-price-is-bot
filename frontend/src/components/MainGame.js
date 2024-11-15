@@ -1,6 +1,6 @@
 // File: ./frontend/src/components/MainGame.js
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SignUpForm from "./SignUpForm";
 import ChatInterface from "./ChatInterface";
 import GameDisplay from "./GameDisplay";
@@ -22,6 +22,8 @@ import {
   EuiText,
 } from "@elastic/eui";
 import PropTypes from "prop-types";
+import './MainGame.css';
+import './Override.css';
 
 function MainGame({
   user,
@@ -42,6 +44,7 @@ function MainGame({
   const [submitted, setSubmitted] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isResetModalVisible, setIsResetModalVisible] = useState(false);
+  const [isShowInfoModalVisible, setShowInfoModalVisible] = useState(true);
 
   const handleFinalSubmit = async () => {
     if (!user) {
@@ -75,9 +78,17 @@ function MainGame({
     setIsResetModalVisible(false);
   };
 
+  const closeInfoModal = () => {
+    setShowInfoModalVisible(false);
+  }
+
   const showResetModal = () => {
     setIsResetModalVisible(true);
   };
+
+  const showInfoModal = () => {
+    setShowInfoModalVisible(true);
+  }
 
   const resetSession = () => {
     handleLogin(null);
@@ -85,16 +96,7 @@ function MainGame({
   };
 
   return (
-    <EuiPanel paddingSize="l" style={{ position: "relative" }}>
-      {user && (
-        <EuiButtonEmpty
-          color="danger"
-          onClick={showResetModal}
-          style={{ position: "absolute", top: 16, right: 16 }}
-        >
-          Reset Session
-        </EuiButtonEmpty>
-      )}
+    <EuiPanel paddingSize="l" style={{ position: "relative" }} className="game-main-panel">
       {!user ? (
         <SignUpForm onLogin={handleLogin} />
       ) : (
@@ -102,9 +104,8 @@ function MainGame({
           {!timeUp && (
             <Timer onTimeUp={handleTimeUp} setElapsedTime={setElapsedTime} />
           )}
-          <EuiSpacer size="l" />
-          <EuiFlexGroup gutterSize="l">
-            <EuiFlexItem>
+          <EuiFlexGroup className="game-main-wrapper" gutterSize="l">
+            <EuiFlexItem className="game-main-chat-wrapper">
               <ChatInterface
                 sessionId={sessionId}
                 items={items}
@@ -114,11 +115,16 @@ function MainGame({
                 setHasAcceptedSolution={setHasAcceptedSolution}
               />
             </EuiFlexItem>
-            <EuiFlexItem>
+            <EuiFlexItem className="game-main-podiums-wrapper">
               <GameDisplay
                 items={items}
                 totalPrice={totalPrice}
                 proposedSolution={!hasAcceptedSolution}
+                onSubmit={handleFinalSubmit}
+                isDisabled={!items.length || !hasAcceptedSolution || submitted || timeUp}
+                submitted={submitted}
+                onReset={showResetModal}
+                onShow={showInfoModal}
               />
             </EuiFlexItem>
           </EuiFlexGroup>
@@ -130,29 +136,45 @@ function MainGame({
           )}
           {submissionSuccess && (
             <EuiCallOut title="Success" color="success" iconType="check">
-              <p>{submissionSuccess}</p>
+              <p className="success-submission">{submissionSuccess}</p>
             </EuiCallOut>
           )}
           <EuiSpacer size="m" />
-          <EuiButton
-            color="primary"
-            onClick={handleFinalSubmit}
-            isDisabled={
-              !items.length || !hasAcceptedSolution || submitted || timeUp
-            }
-          >
-            {submitted ? "Submitted" : "Submit"}
-          </EuiButton>
         </>
       )}
-      <Leaderboard />
+      <Leaderboard heading="Leaderboard" user={user} />
+      {isShowInfoModalVisible && user && (
+        <EuiModal onClose={closeInfoModal}>
+          <EuiModalHeader>
+            <EuiModalHeaderTitle>Our challenge:</EuiModalHeaderTitle>
+          </EuiModalHeader>
+          <EuiModalBody>
+            <EuiText className="modal-main-text">
+              <p>
+                Fill 5 shopping bags with items from our grocery inventory in Elasicsearch.
+              </p>
+              <p>The twist:</p>
+              <p>Each bag can contain an unlimited number of any unique items, but your total
+                must stay under $100
+              </p>
+              <p>Use creative prompting to guide the LLM and build the perfect shopping cart.</p>
+              <p>Are you up to for the challenge? Let's see what you can do</p>
+            </EuiText>
+          </EuiModalBody>
+          <EuiModalFooter>
+            <EuiButton color="primary" onClick={closeInfoModal} fill className="got-it-button">
+              Got it!
+            </EuiButton>
+          </EuiModalFooter>
+        </EuiModal>
+      )}
       {isResetModalVisible && (
         <EuiModal onClose={closeResetModal}>
           <EuiModalHeader>
             <EuiModalHeaderTitle>Reset Session</EuiModalHeaderTitle>
           </EuiModalHeader>
           <EuiModalBody>
-            <EuiText>
+            <EuiText className="modal-main-text">
               Are you sure you want to reset the session? This will clear all
               your current progress and return you to the registration page.
             </EuiText>

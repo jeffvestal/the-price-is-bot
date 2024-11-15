@@ -31,7 +31,7 @@
   --color-dark-success: #7dded8;
   --color-dark-warning: #f3d371;
   --color-dark-danger: #f86b63;
-  --color-dark-empty-shade: ##343642;
+  --color-dark-empty-shade: #343642;
   --color-dark-lightest-shade: #25262e;
   --color-dark-light-shade: #343741;
   --color-dark-medium-shade: #535966;
@@ -41,7 +41,7 @@
   --color-main-background: #343642;
   --color-main-background-shade: #575b6e;
   --color-main-background-dark-shade: #24262e;
-  --color-main-button-start-game: #0076cc;
+  --color-main-button-start-game: #0b64dd;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -186,6 +186,7 @@ h1.euiTitle {
 a.main-logo {
   padding-top: 15px;
   padding-left: 15px;
+  padding-bottom: 10px;
   display: inline-block;
 }
 
@@ -193,23 +194,34 @@ a.main-logo {
   height: 50px
 }
 
+.microsoft-logo {
+  position: absolute;
+  top: 4px;
+  left: 160px;
+  height: 75px !important;
+}
+
 @media (min-width: 768px) {
   /* tablets */
   a.main-logo {
-    padding-top: 35px;
-    padding-left: 35px;
+    height: 100px;
+    padding-top: 25px;
+    padding-left: 25px;
+    padding-bottom: 25px;
     display: inline-block;
   }
 
-  .main-logo>img {
-    height: 100%
+  .microsoft-logo {
+    position: absolute;
+    top: 8px;
+    left: 195px;
+    height: 82px !important;
   }
 }
 
 /* Remove default panel backgrounds */
 .euiPanel {
   background: transparent !important;
-  border: none !important;
   box-shadow: none !important;
 }
 
@@ -246,7 +258,20 @@ a.main-logo {
 @media (min-width: 1200px) {
   /* desktops */
   .page-decorate-background {
-    background-position: bottom 120px left, bottom right;
+    background-position: top 120px left, bottom right;
     background-size: 37%, 41%
   }
+}
+
+.got-it-button {
+  background-color: #0b64dd !important;
+  color: var(--color-light-light-shade) !important;
+}
+
+.got-it-button:hover {
+  background-color: #0a56c0 !important;
+}
+
+.modal-main-text {
+  padding-left: 33px;
 }
