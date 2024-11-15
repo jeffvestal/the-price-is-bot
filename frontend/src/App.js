@@ -72,7 +72,7 @@ function AppContent() {
   return (
     <Router>
       <EuiPageTemplate css={{
-        backgroundColor: '#343642'
+        backgroundColor: '#101c3f'
       }} className={showBackground ? "page-decorate-background" : ""}>
         <Navbar />
         <Routes>
