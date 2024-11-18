@@ -98,7 +98,7 @@ function ChatInterface({
               ...prev,
               {
                 sender: "bot",
-                content: `Podium ${podium.podium}: ${podium.quantity} x ${
+                content: `Shopping Bag ${podium.podium}: ${podium.quantity} x ${
                   podium.item_name
                 } @ $${podium.item_price.toFixed(2)} each`,
               },
