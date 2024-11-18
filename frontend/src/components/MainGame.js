@@ -1,6 +1,6 @@
 // File: ./frontend/src/components/MainGame.js
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import SignUpForm from "./SignUpForm";
 import ChatInterface from "./ChatInterface";
 import GameDisplay from "./GameDisplay";
@@ -45,6 +45,7 @@ function MainGame({
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isResetModalVisible, setIsResetModalVisible] = useState(false);
   const [isShowInfoModalVisible, setShowInfoModalVisible] = useState(true);
+  const leaderboardRef = useRef(null)
 
   const handleFinalSubmit = async () => {
     if (!user) {
@@ -64,6 +65,14 @@ function MainGame({
       const response = await handleSubmit(gameResult);
       setSubmissionSuccess(`Your score is ${response.score}`);
       setSubmissionError("");
+
+      // Scroll to leaderboard after successful submission
+      setTimeout(() => {
+        leaderboardRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 250); 
     } catch (error) {
       console.error(error);
       setSubmissionError(
@@ -142,7 +151,9 @@ function MainGame({
           <EuiSpacer size="m" />
         </>
       )}
-      <Leaderboard heading="Leaderboard" user={user} />
+      <div ref={leaderboardRef}>
+        <Leaderboard heading="Leaderboard" user={user} />
+      </div>
       {isShowInfoModalVisible && user && (
         <EuiModal onClose={closeInfoModal}>
           <EuiModalHeader>
