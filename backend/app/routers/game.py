@@ -67,7 +67,7 @@ async def submit_game_result(game_result: GameResult, user: dict = Depends(get_c
 
         # **Validation: Ensure number of items does not exceed max_podiums**
         if len(game_result_dict['items']) > max_podiums:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Exceeded maximum number of podiums.")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Exceeded maximum number of shopping bags.")
 
         # Calculate score using the scoring utility
         game_result_dict['price_difference'] = abs(target_price - game_result_dict['total_price'])
