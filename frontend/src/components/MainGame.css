@@ -265,8 +265,19 @@
 .podiums-submit-button {
     background-color: #0b64dd !important;
     color: var(--color-light-light-shade) !important;
+    width: 220px;
     border-radius: 2px !important;
 }
+
+
+.podiums-submit-button:disabled {
+    background-color: #5f5f5f !important;
+}
+
+.podiums-submit-button:hover:disabled {
+    background-color: #5f5f5f !important;
+}
+
 
 .podiums-submit-button:hover {
     background-color: #0a56c0 !important;
@@ -280,8 +291,6 @@
 
     .podiums-submit-button {
         margin-top: 30px;
-        padding-left: 20px !important;
-        padding-right: 20px !important;
     }
 
     .game-main-reset-button-wrapper {
