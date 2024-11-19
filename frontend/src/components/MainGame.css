@@ -329,3 +329,10 @@
     text-align: center;
     font-size: 1.25rem;
 }
+
+.modal-main-text {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
