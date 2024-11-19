@@ -34,7 +34,6 @@ function MainGame({
   setTotalPrice,
   totalPrice,
   timeUp,
-  timeTaken,
   handleTimeUp,
   handleSubmit,
 }) {
@@ -45,7 +44,10 @@ function MainGame({
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isResetModalVisible, setIsResetModalVisible] = useState(false);
   const [isShowInfoModalVisible, setShowInfoModalVisible] = useState(true);
+  const [hasGameRestarted, setHasGameRestarted] = useState(false);
   const leaderboardRef = useRef(null)
+  const [localTimeUp, setLocalTimeUp] = useState(timeUp);
+
 
   const handleFinalSubmit = async () => {
     if (!user) {
@@ -89,7 +91,7 @@ function MainGame({
 
   const closeInfoModal = () => {
     setShowInfoModalVisible(false);
-  }
+  };
 
   const showResetModal = () => {
     setIsResetModalVisible(true);
@@ -100,8 +102,24 @@ function MainGame({
   }
 
   const resetSession = () => {
-    handleLogin(null);
+    // Reset all game states
+    setHasAcceptedSolution(false);
+    setSubmissionError("");
+    setSubmissionSuccess("");
+    setSubmitted(false);
+    setElapsedTime(0);
+    setItems([]);
+    setTotalPrice(0);
+    setLocalTimeUp(false);
+    setShowInfoModalVisible(false);
+    setHasGameRestarted(prev => !prev); // Toggle to trigger timer reset
     setIsResetModalVisible(false);
+    handleLogin(null);
+  };
+
+  const handleLocalTimeUp = (elapsed) => {
+    setLocalTimeUp(true);
+    handleTimeUp(elapsed);
   };
 
   return (
@@ -110,8 +128,14 @@ function MainGame({
         <SignUpForm onLogin={handleLogin} />
       ) : (
         <>
-          {!timeUp && (
-            <Timer onTimeUp={handleTimeUp} setElapsedTime={setElapsedTime} />
+          {!localTimeUp && (
+            <Timer 
+              onTimeUp={handleLocalTimeUp} 
+              setElapsedTime={setElapsedTime} 
+              hasGameEnded={submitted}
+              isShowInfoModalVisible={isShowInfoModalVisible}
+              hasGameRestarted={hasGameRestarted}
+            />
           )}
           <EuiFlexGroup className="game-main-wrapper" gutterSize="l">
             <EuiFlexItem className="game-main-chat-wrapper">
@@ -120,7 +144,7 @@ function MainGame({
                 items={items}
                 setItems={setItems}
                 setTotalPrice={setTotalPrice}
-                timeUp={timeUp}
+                timeUp={localTimeUp}
                 setHasAcceptedSolution={setHasAcceptedSolution}
               />
             </EuiFlexItem>
@@ -211,7 +235,6 @@ MainGame.propTypes = {
   setTotalPrice: PropTypes.func.isRequired,
   totalPrice: PropTypes.number.isRequired,
   timeUp: PropTypes.bool.isRequired,
-  timeTaken: PropTypes.number.isRequired,
   handleTimeUp: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
 };

@@ -16,7 +16,6 @@ function AppContent() {
   const [sessionId, setSessionId] = useState(null);
   const [items, setItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [timeTaken, setTimeTaken] = useState(0);
   const [timeUp, setTimeUp] = useState(false);
   const { showBackground } = useBackground();
 
@@ -43,7 +42,6 @@ function AppContent() {
   const handleTimeUp = (elapsedTime) => {
     console.log("Timer expired. Elapsed Time:", elapsedTime);
     setTimeUp(true);
-    setTimeTaken(elapsedTime);
     alert("Time is up!");
   };
 
@@ -89,7 +87,6 @@ function AppContent() {
                 setTotalPrice={setTotalPrice}
                 totalPrice={totalPrice}
                 timeUp={timeUp}
-                timeTaken={timeTaken}
                 handleTimeUp={handleTimeUp}
                 handleSubmit={handleSubmit} // Pass the handleSubmit function
               />
