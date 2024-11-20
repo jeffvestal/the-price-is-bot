@@ -186,7 +186,7 @@ function MainGame({
           <EuiModalBody>
             <EuiText className="modal-main-text">
               <p>
-                Fill 5 shopping bags with items from our grocery inventory in Elasicsearch.
+                Fill 5 shopping bags with items from our grocery inventory in Elasticsearch.
               </p>
               <p>The twist:</p>
               <p>Each bag can contain an unlimited number of any unique items, but your total
