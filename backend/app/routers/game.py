@@ -65,8 +65,8 @@ async def submit_game_result(game_result: GameResult, user: dict = Depends(get_c
         if game_result_dict['total_price'] < 0:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid total_price value.")
 
-        # **Validation: Ensure number of items does not exceed max_podiums**
-        if len(game_result_dict['items']) > max_podiums:
+        # **Validation: Ensure number of items is exactly max_podiums**
+        if len(game_result_dict['items']) != max_podiums:
             game_result_dict['score'] = 0.0  # Assign score 0 for incorrect number of podiums
             logger.info(f"User '{user['username']}' exceeded podium limits. Marked as failed.")
             # raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Exceeded maximum number of shopping bags.")
