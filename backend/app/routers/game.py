@@ -67,23 +67,24 @@ async def submit_game_result(game_result: GameResult, user: dict = Depends(get_c
 
         # **Validation: Ensure number of items does not exceed max_podiums**
         if len(game_result_dict['items']) > max_podiums:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Exceeded maximum number of shopping bags.")
-
-        # Calculate score using the scoring utility
-        game_result_dict['price_difference'] = abs(target_price - game_result_dict['total_price'])
-        game_result_dict['target_price'] = target_price
-        game_result_dict['score'] = calculate_score(
-            target_price=target_price,
-            player_total_price=game_result_dict['total_price'],
-            time_limit=settings.get('time_limit', 300),
-            time_taken=game_result_dict['time_taken']
-        )
-        logger.debug(f"Calculated score: {game_result_dict['score']}")
-
+            game_result_dict['score'] = 0.0  # Assign score 0 for incorrect number of podiums
+            logger.info(f"User '{user['username']}' exceeded podium limits. Marked as failed.")
+            # raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Exceeded maximum number of shopping bags.")
         # **Additional Validation: Check if total_price exceeds target_price**
-        if game_result_dict['total_price'] > target_price:
+        elif game_result_dict['total_price'] > target_price:
             game_result_dict['score'] = 0.0  # Assign score 0 for failed submissions
-            logger.info(f"User '{user['username']}' exceeded limits. Marked as failed.")
+            logger.info(f"User '{user['username']}' exceeded price limits. Marked as failed.")
+        else:
+            # Calculate score using the scoring utility
+            game_result_dict['price_difference'] = abs(target_price - game_result_dict['total_price'])
+            game_result_dict['target_price'] = target_price
+            game_result_dict['score'] = calculate_score(
+                target_price=target_price,
+                player_total_price=game_result_dict['total_price'],
+                time_limit=settings.get('time_limit', 300),
+                time_taken=game_result_dict['time_taken']
+            )
+            logger.debug(f"Calculated score: {game_result_dict['score']}")
 
         # Store the game result in Elasticsearch
         await store_game_result(game_result_dict)
