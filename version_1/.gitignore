@@ -2,7 +2,6 @@
 
 # Environment Variables
 .env
-.env.local
 
 .idea
 # Byte-compiled / optimized / DLL files
@@ -306,4 +305,3 @@ deploy.sh
 */export_code.sh
 .DS_Store
 
-temp

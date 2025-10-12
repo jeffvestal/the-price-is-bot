@@ -1,0 +1,7 @@
+@media (min-width: 1200px) {
+    /* desktops */
+    .page-decorate-background {
+      background-position: bottom 120px left, bottom right !important;
+      background-size: 37%, 41%
+    }
+}
