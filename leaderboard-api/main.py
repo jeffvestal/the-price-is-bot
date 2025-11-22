@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 # Security
 security = HTTPBearer()
+ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "")
 
 # Pydantic Models
 class AccessCodeValidation(BaseModel):
@@ -550,7 +551,8 @@ async def get_settings():
 @app.post("/admin/generate-codes")
 async def generate_access_codes(generation: AccessCodeGeneration, credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Generate new access codes (Admin only)"""
-    # TODO: Add proper admin authentication
+    if not ADMIN_TOKEN or credentials.credentials != ADMIN_TOKEN:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
     codes = await leaderboard_service.generate_access_codes(
         generation.count, 
         generation.expires_at,
@@ -561,14 +563,16 @@ async def generate_access_codes(generation: AccessCodeGeneration, credentials: H
 @app.post("/admin/settings")
 async def update_settings(settings: AdminSettings, credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Update admin settings (Admin only)"""
-    # TODO: Add proper admin authentication
+    if not ADMIN_TOKEN or credentials.credentials != ADMIN_TOKEN:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
     await leaderboard_service.update_admin_settings(settings)
     return {"message": "Settings updated successfully"}
 
 @app.post("/admin/roll-leaderboard")
 async def roll_leaderboard(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Create new leaderboard for the day (Admin only)"""
-    # TODO: Add proper admin authentication
+    if not ADMIN_TOKEN or credentials.credentials != ADMIN_TOKEN:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
     new_suffix = await leaderboard_service.roll_leaderboard()
     return {"message": f"Leaderboard rolled to: {new_suffix}"}
 
@@ -576,6 +580,10 @@ async def roll_leaderboard(credentials: HTTPAuthorizationCredentials = Depends(s
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "timestamp": datetime.utcnow()}
+
+@app.get("/")
+async def root():
+    return {"service": "price-is-bot-leaderboard-api", "status": "ok"}
 
 if __name__ == "__main__":
     import uvicorn

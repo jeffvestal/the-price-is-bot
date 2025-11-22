@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Key, Mail, User, Building, Send } from 'lucide-react';
+import { Key, Mail, User, Building, Send, Gamepad2, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useGameStore } from '@/store/gameStore';
 import toast from 'react-hot-toast';
@@ -12,8 +12,11 @@ interface AccessCodeFormProps {
   className?: string;
 }
 
+type FormMode = 'choose' | 'token' | 'notoken';
+
 export function AccessCodeForm({ onSuccess, className = '' }: AccessCodeFormProps) {
   const { setSession, setLoading, isLoading } = useGameStore();
+  const [mode, setMode] = useState<FormMode>('choose');
   const [formData, setFormData] = useState({
     accessCode: '',
     playerName: '',
@@ -53,7 +56,6 @@ export function AccessCodeForm({ onSuccess, className = '' }: AccessCodeFormProp
     setLoading(true);
 
     try {
-      // In real implementation, this would call the leaderboard API
       const response = await fetch('/api/validate-code', {
         method: 'POST',
         headers: {
@@ -68,14 +70,18 @@ export function AccessCodeForm({ onSuccess, className = '' }: AccessCodeFormProp
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to validate access code');
+        const text = await response.text().catch(() => '');
+        let message = 'Failed to validate access code';
+        try {
+          const maybe = JSON.parse(text);
+          message = maybe.message || message;
+        } catch {}
+        throw new Error(text && !text.startsWith('{') ? text : message);
       }
 
       const data = await response.json();
 
       if (data.success) {
-        // Create session from API response
         setSession({
           sessionId: data.session.sessionId,
           playerName: data.session.playerName,
@@ -92,27 +98,9 @@ export function AccessCodeForm({ onSuccess, className = '' }: AccessCodeFormProp
       } else {
         toast.error(data.message || 'Invalid access code');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Access code validation error:', error);
-      
-      // For demo purposes, simulate success
-      if (formData.accessCode.toUpperCase() === 'DEMO01') {
-        setSession({
-          sessionId: 'demo-session-' + Date.now(),
-          playerName: formData.playerName,
-          playerEmail: formData.playerEmail,
-          company: formData.company,
-          accessCode: formData.accessCode,
-          totalPrice: 0,
-          targetPrice: 100,
-          completed: false,
-        });
-
-        toast.success('Demo mode activated! 🎉');
-        onSuccess();
-      } else {
-        toast.error('Failed to validate access code. Try "DEMO01" for demo mode.');
-      }
+      toast.error(error?.message || 'Failed to validate access code. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -127,6 +115,117 @@ export function AccessCodeForm({ onSuccess, className = '' }: AccessCodeFormProp
     }
   };
 
+  const handlePlayWithoutToken = () => {
+    // Set guest session without validation
+    setSession({
+      sessionId: `guest-${Date.now()}`,
+      playerName: 'Guest Player',
+      playerEmail: '',
+      company: '',
+      accessCode: '',
+      totalPrice: 0,
+      targetPrice: 100, // Default target price for guest play
+      completed: false,
+      eligible: false, // Not eligible for leaderboard
+    });
+
+    toast.success('Welcome! Playing in guest mode 🎮');
+    onSuccess();
+  };
+
+  // Show mode selection screen first
+  if (mode === 'choose') {
+    return (
+      <div className={`max-w-md mx-auto ${className}`}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-colors"
+        >
+          {/* Header */}
+          <div className="bg-gradient-to-r from-vegas-gold via-vegas-red to-purple-600 p-6">
+            <div className="text-center">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2 }}
+                className="w-16 h-16 bg-white/20 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+              >
+                <Gamepad2 className="h-8 w-8 text-white" />
+              </motion.div>
+              <h1 className="text-2xl font-bold text-white mb-2">
+                The Price is Bot 🤖
+              </h1>
+              <p className="text-white/90 text-sm">
+                Choose how you want to play
+              </p>
+            </div>
+          </div>
+
+          {/* Mode Selection */}
+          <div className="p-6 space-y-4">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <Button
+                onClick={() => setMode('token')}
+                variant="vegas"
+                size="lg"
+                className="w-full justify-start"
+              >
+                <Trophy className="h-5 w-5 mr-3" />
+                <div className="text-left">
+                  <div className="font-semibold">I have a token</div>
+                  <div className="text-xs opacity-90">Compete for prizes on the leaderboard</div>
+                </div>
+              </Button>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <Button
+                onClick={handlePlayWithoutToken}
+                variant="ghost"
+                size="lg"
+                className="w-full justify-start border-2 border-gray-300 dark:border-gray-600 hover:border-elastic-blue dark:hover:border-elastic-blue"
+                disabled={isLoading}
+              >
+                <Gamepad2 className="h-5 w-5 mr-3" />
+                <div className="text-left">
+                  <div className="font-semibold">Play without a token</div>
+                  <div className="text-xs opacity-70">Just for fun (not eligible for prizes)</div>
+                </div>
+              </Button>
+            </motion.div>
+          </div>
+
+          {/* Footer */}
+          <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
+            <a 
+              href="https://www.elastic.co" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center justify-center space-x-2 text-sm text-gray-600 hover:text-gray-800 transition-colors cursor-pointer"
+            >
+              <img 
+                src="/elastic-logo.png" 
+                alt="Elastic" 
+                className="h-5 w-5"
+              />
+              <span>Powered by Elastic Agent Builder</span>
+            </a>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Show token form if mode is 'token'
   return (
     <div className={`max-w-md mx-auto ${className}`}>
       <motion.div
@@ -172,7 +271,7 @@ export function AccessCodeForm({ onSuccess, className = '' }: AccessCodeFormProp
                 className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-elastic-blue focus:border-transparent transition-colors ${
                   errors.accessCode ? 'border-red-300 bg-red-50' : 'border-gray-300'
                 }`}
-                placeholder="Enter access code (e.g., DEMO01 or ELASTI-XXXX)"
+                placeholder="Enter access code (e.g., ELASTI-XXXX)"
                 maxLength={20}
               />
             </div>
@@ -185,10 +284,6 @@ export function AccessCodeForm({ onSuccess, className = '' }: AccessCodeFormProp
                 {errors.accessCode}
               </motion.p>
             )}
-            <p className="mt-2 text-xs text-gray-500">
-              Demo codes: <code className="bg-gray-100 px-1 rounded">DEMO01</code>, <code className="bg-gray-100 px-1 rounded">TEST01</code>
-              <br />Generated codes: <code className="bg-gray-100 px-1 rounded">ELASTI-XXXX</code>
-            </p>
           </div>
 
           {/* Player Name */}

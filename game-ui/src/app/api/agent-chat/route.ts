@@ -83,8 +83,8 @@ export async function POST(request: NextRequest) {
       error: 'Internal server error',
       response: "I'm experiencing some technical difficulties right now. Please try your request again, or contact support if the problem persists.",
       items: [],
-      agentId: request.body?.agentId || 'unknown',
-      sessionId: request.body?.sessionId || `error_${Date.now()}`
+      agentId: 'unknown',
+      sessionId: `error_${Date.now()}`
     });
   }
 }
@@ -436,15 +436,33 @@ function generateResponseFromToolResults(agentResponse: any, agentId: string): s
     return `I searched for items but didn't find any matches. Let me try a different approach for you!`;
   }
 
-  // Get unique items only
-  const allItems = tabularData.data.values.filter((item: any) => item && item.length > 0);
+  // Build column index map for name lookup
+  const columns = tabularData.data.columns || [];
+  const columnNames = columns.map((c: any) => (c?.name || '').toString());
+  const nameIdx = columnNames.findIndex((n: string) => n.toLowerCase() === 'name');
+  
+  // Get unique items only using column names
+  const allItems = tabularData.data.values.filter((item: any) => item && Array.isArray(item) && item.length > 0);
   const uniqueItems: any[] = [];
   const seenNames = new Set<string>();
   
   for (const item of allItems) {
-    const name = item[5] || item[4] || `Product ${uniqueItems.length + 1}`;
-    if (!seenNames.has(name)) {
-      seenNames.add(name);
+    let name = '';
+    if (nameIdx >= 0 && item[nameIdx] != null) {
+      name = item[nameIdx].toString();
+    } else {
+      // Fallback: find first non-empty string in the row
+      const firstText = item.find((v: any) => typeof v === 'string' && v.trim() !== '');
+      name = firstText ? firstText.toString() : `Product ${uniqueItems.length + 1}`;
+    }
+    
+    if (!name || name === 'N/A' || name.trim() === '') {
+      continue;
+    }
+    
+    const nameKey = name.toLowerCase();
+    if (!seenNames.has(nameKey)) {
+      seenNames.add(nameKey);
       uniqueItems.push(item);
       if (uniqueItems.length >= 5) break;
     }
@@ -496,64 +514,80 @@ function extractSuggestedItemsFromAgentResponse(agentResponse: any): any[] {
             colIndex[name] = index;
           });
           
+          // Helper to detect name and price column indices with fallbacks
+          function detectIndices(row: any[]): { nameIdx: number; priceIdx: number } {
+            let nameIdx = colIndex['name'];
+            let priceIdx = colIndex['best_price'];
+            if (priceIdx === undefined) priceIdx = colIndex['price'];
+            if (priceIdx === undefined) priceIdx = colIndex['min_price'];
+            if (priceIdx === undefined) priceIdx = colIndex['final_price'];
+            if (priceIdx === undefined) priceIdx = colIndex['current_price'];
+            if (priceIdx === undefined) priceIdx = colIndex['avg_price'];
+            
+            // Fallback: if columns metadata missing, scan array positions
+            if (nameIdx === undefined || priceIdx === undefined) {
+              nameIdx = nameIdx !== undefined ? nameIdx : row.findIndex((v: any) => typeof v === 'string' && v.trim() !== '' && v !== 'N/A');
+              priceIdx = priceIdx !== undefined ? priceIdx : row.findIndex((v: any) => typeof v === 'number' && v > 0);
+            }
+            
+            return { nameIdx, priceIdx };
+          }
+          
           // Process each item from the tabular data (increase limit to compensate for streaming issues)
-          for (let index = 0; index < Math.min(tabularData.values.length, 8); index++) {
+          for (let index = 0; index < Math.min(tabularData.values.length, 12); index++) {
             const item = tabularData.values[index];
             
             if (!item || !Array.isArray(item) || item.length === 0) {
               continue;
             }
             
-            console.log(`🔍 Processing item ${index}:`, { 
-              name: item[colIndex['name']], 
-              item_id: item[colIndex['item_id']],
-              price_fields: {
-                avg_price: item[colIndex['avg_price']],
-                min_price: item[colIndex['min_price']],
-                best_price: item[colIndex['best_price']],
-                final_price: item[colIndex['final_price']],
-                current_price: item[colIndex['current_price']]
-              }
-            });
+            const { nameIdx, priceIdx } = detectIndices(item);
             
-            let bestPrice = 0;
-            let itemId = '';
+            // Extract name
             let name = '';
-            let brand = '';
-            let category = '';
-            let quantity = 1;
-            
-            // Parse by column names (not index positions)
-            itemId = item[colIndex['item_id']] || `item_${index}`;
-            name = item[colIndex['name']] || `Product ${index + 1}`;
-            brand = item[colIndex['brand']] || 'Unknown Brand';
-            category = item[colIndex['category']] || 'Suggested';
-            
-            // Try to get price from various possible columns (prioritize best_price for budget tools)
-            if (colIndex['best_price'] !== undefined && item[colIndex['best_price']] != null) {
-              bestPrice = parseFloat(item[colIndex['best_price']].toString()) || 0;
-            } else if (colIndex['min_price'] !== undefined && item[colIndex['min_price']] != null) {
-              bestPrice = parseFloat(item[colIndex['min_price']].toString()) || 0;
-            } else if (colIndex['final_price'] !== undefined && item[colIndex['final_price']] != null) {
-              bestPrice = parseFloat(item[colIndex['final_price']].toString()) || 0;
-            } else if (colIndex['current_price'] !== undefined && item[colIndex['current_price']] != null) {
-              bestPrice = parseFloat(item[colIndex['current_price']].toString()) || 0;
-            } else if (colIndex['avg_price'] !== undefined && item[colIndex['avg_price']] != null) {
-              bestPrice = parseFloat(item[colIndex['avg_price']].toString()) || 0;
+            if (nameIdx >= 0 && item[nameIdx] != null) {
+              name = item[nameIdx].toString().trim();
+            }
+            if (!name || name === 'N/A') {
+              continue;
             }
             
-            console.log(`✅ Parsed item: name="${name}", price=$${bestPrice}, id=${itemId}`);
-            
-            // Skip items with invalid/missing data only
-            if (bestPrice <= 0) {
+            // Extract price
+            let bestPrice = 0;
+            if (priceIdx >= 0 && item[priceIdx] != null) {
+              bestPrice = parseFloat(item[priceIdx].toString()) || 0;
+            }
+            if (!Number.isFinite(bestPrice) || bestPrice <= 0) {
               console.log(`⚠️ Skipping item with invalid price: ${name} - $${bestPrice}`);
               continue;
             }
             
-            // Skip items with no proper name
-            if (!name || name === 'N/A' || name.trim() === '') {
-              console.log(`⚠️ Skipping item with no name: price $${bestPrice}`);
-              continue;
+            // Extract item_id with fallback
+            let itemId = '';
+            if (colIndex['item_id'] !== undefined && item[colIndex['item_id']] != null) {
+              itemId = item[colIndex['item_id']].toString();
+            } else {
+              // Generate stable ID from name
+              itemId = `item_${name.toLowerCase().replace(/\s+/g, '_')}_${index}`;
+            }
+            
+            console.log(`✅ Parsed item: name="${name}", price=$${bestPrice}, id=${itemId}`);
+            
+            let brand = '';
+            let category = '';
+            let quantity = 1;
+            
+            // Optional fields (may not exist in simplified tool output)
+            if (colIndex['brand'] !== undefined && item[colIndex['brand']] != null) {
+              brand = item[colIndex['brand']].toString();
+            } else {
+              brand = 'Suggested';
+            }
+            
+            if (colIndex['category'] !== undefined && item[colIndex['category']] != null) {
+              category = item[colIndex['category']].toString();
+            } else {
+              category = 'Suggested';
             }
             
             // Try to extract quantity from agent response text if available

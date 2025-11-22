@@ -1,0 +1,342 @@
+[
+  {
+    "store_id": "STORE_0001",
+    "store_name": "Dice Mart Downtown",
+    "chain_name": "Dice Mart",
+    "chain_tier": "discount",
+    "address": {
+      "street": "425 Fremont Street",
+      "city": "Las Vegas",
+      "state": "NV",
+      "zip_code": "89101",
+      "coordinates": {
+        "lat": 36.1699,
+        "lon": -115.1398
+      }
+    },
+    "phone": "702-555-0147",
+    "hours": {
+      "monday": "7:00 AM - 11:00 PM",
+      "tuesday": "7:00 AM - 11:00 PM",
+      "wednesday": "7:00 AM - 11:00 PM",
+      "thursday": "7:00 AM - 11:00 PM",
+      "friday": "7:00 AM - 12:00 AM",
+      "saturday": "7:00 AM - 12:00 AM",
+      "sunday": "8:00 AM - 11:00 PM"
+    },
+    "specialties": [
+      "Everyday low prices",
+      "Bulk items",
+      "Generic brands",
+      "Weekly specials"
+    ],
+    "created_date": "2025-10-25T14:20:44.731906",
+    "last_updated": "2025-10-25T14:20:44.731920"
+  },
+  {
+    "store_id": "STORE_0002",
+    "store_name": "Jackpot Grocers Paradise Road",
+    "chain_name": "Jackpot Grocers",
+    "chain_tier": "mid-range",
+    "address": {
+      "street": "3847 Paradise Road",
+      "city": "Las Vegas",
+      "state": "NV",
+      "zip_code": "89169",
+      "coordinates": {
+        "lat": 36.1089,
+        "lon": -115.1456
+      }
+    },
+    "phone": "702-555-0283",
+    "hours": {
+      "monday": "6:00 AM - 11:00 PM",
+      "tuesday": "6:00 AM - 11:00 PM",
+      "wednesday": "6:00 AM - 11:00 PM",
+      "thursday": "6:00 AM - 11:00 PM",
+      "friday": "6:00 AM - 12:00 AM",
+      "saturday": "6:00 AM - 12:00 AM",
+      "sunday": "7:00 AM - 11:00 PM"
+    },
+    "specialties": [
+      "Fresh produce",
+      "Deli counter",
+      "Prepared meals",
+      "Loyalty rewards program"
+    ],
+    "created_date": "2025-10-25T14:20:44.731932",
+    "last_updated": "2025-10-25T14:20:44.731935"
+  },
+  {
+    "store_id": "STORE_0003",
+    "store_name": "All-In Foods Summerlin",
+    "chain_name": "All-In Foods",
+    "chain_tier": "mid-range",
+    "address": {
+      "street": "2156 Festival Plaza Drive",
+      "city": "Las Vegas",
+      "state": "NV",
+      "zip_code": "89135",
+      "coordinates": {
+        "lat": 36.1234,
+        "lon": -115.2789
+      }
+    },
+    "phone": "702-555-0456",
+    "hours": {
+      "monday": "7:00 AM - 10:00 PM",
+      "tuesday": "7:00 AM - 10:00 PM",
+      "wednesday": "7:00 AM - 10:00 PM",
+      "thursday": "7:00 AM - 10:00 PM",
+      "friday": "7:00 AM - 11:00 PM",
+      "saturday": "7:00 AM - 11:00 PM",
+      "sunday": "8:00 AM - 10:00 PM"
+    },
+    "specialties": [
+      "Organic produce",
+      "Natural foods",
+      "Gluten-free selection",
+      "Local artisan products"
+    ],
+    "created_date": "2025-10-25T14:20:44.731943",
+    "last_updated": "2025-10-25T14:20:44.731958"
+  },
+  {
+    "store_id": "STORE_0004",
+    "store_name": "Lucky Strike Market Henderson",
+    "chain_name": "Lucky Strike Market",
+    "chain_tier": "premium",
+    "address": {
+      "street": "1425 Green Valley Parkway",
+      "city": "Henderson",
+      "state": "NV",
+      "zip_code": "89014",
+      "coordinates": {
+        "lat": 36.0395,
+        "lon": -115.0789
+      }
+    },
+    "phone": "702-555-0612",
+    "hours": {
+      "monday": "6:00 AM - 11:00 PM",
+      "tuesday": "6:00 AM - 11:00 PM",
+      "wednesday": "6:00 AM - 11:00 PM",
+      "thursday": "6:00 AM - 11:00 PM",
+      "friday": "6:00 AM - 12:00 AM",
+      "saturday": "6:00 AM - 12:00 AM",
+      "sunday": "7:00 AM - 11:00 PM"
+    },
+    "specialties": [
+      "International foods",
+      "Seafood counter",
+      "Wine selection",
+      "Community events"
+    ],
+    "created_date": "2025-10-25T14:20:44.731964",
+    "last_updated": "2025-10-25T14:20:44.731966"
+  },
+  {
+    "store_id": "STORE_0005",
+    "store_name": "High Roller Gourmet The Strip",
+    "chain_name": "High Roller Gourmet",
+    "chain_tier": "luxury",
+    "address": {
+      "street": "3799 Las Vegas Boulevard South",
+      "city": "Las Vegas",
+      "state": "NV",
+      "zip_code": "89109",
+      "coordinates": {
+        "lat": 36.0894,
+        "lon": -115.1734
+      }
+    },
+    "phone": "702-555-0789",
+    "hours": {
+      "monday": "8:00 AM - 10:00 PM",
+      "tuesday": "8:00 AM - 10:00 PM",
+      "wednesday": "8:00 AM - 10:00 PM",
+      "thursday": "8:00 AM - 10:00 PM",
+      "friday": "8:00 AM - 11:00 PM",
+      "saturday": "8:00 AM - 11:00 PM",
+      "sunday": "9:00 AM - 10:00 PM"
+    },
+    "specialties": [
+      "Imported delicacies",
+      "Caviar and truffles",
+      "Champagne selection",
+      "Personal shopping service"
+    ],
+    "created_date": "2025-10-25T14:20:44.731971",
+    "last_updated": "2025-10-25T14:20:44.731974"
+  },
+  {
+    "store_id": "STORE_0006",
+    "store_name": "Dice Mart Eastside",
+    "chain_name": "Dice Mart",
+    "chain_tier": "discount",
+    "address": {
+      "street": "2891 Boulder Highway",
+      "city": "Las Vegas",
+      "state": "NV",
+      "zip_code": "89121",
+      "coordinates": {
+        "lat": 36.1456,
+        "lon": -115.0923
+      }
+    },
+    "phone": "702-555-0834",
+    "hours": {
+      "monday": "7:00 AM - 11:00 PM",
+      "tuesday": "7:00 AM - 11:00 PM",
+      "wednesday": "7:00 AM - 11:00 PM",
+      "thursday": "7:00 AM - 11:00 PM",
+      "friday": "7:00 AM - 12:00 AM",
+      "saturday": "7:00 AM - 12:00 AM",
+      "sunday": "8:00 AM - 11:00 PM"
+    },
+    "specialties": [
+      "Value pricing",
+      "Clearance section",
+      "Household essentials",
+      "Budget-friendly brands"
+    ],
+    "created_date": "2025-10-25T14:20:44.731978",
+    "last_updated": "2025-10-25T14:20:44.731980"
+  },
+  {
+    "store_id": "STORE_0007",
+    "store_name": "Jackpot Grocers Centennial",
+    "chain_name": "Jackpot Grocers",
+    "chain_tier": "mid-range",
+    "address": {
+      "street": "8650 South Eastern Avenue",
+      "city": "Las Vegas",
+      "state": "NV",
+      "zip_code": "89123",
+      "coordinates": {
+        "lat": 35.9876,
+        "lon": -115.1234
+      }
+    },
+    "phone": "702-555-0945",
+    "hours": {
+      "monday": "6:00 AM - 11:00 PM",
+      "tuesday": "6:00 AM - 11:00 PM",
+      "wednesday": "6:00 AM - 11:00 PM",
+      "thursday": "6:00 AM - 11:00 PM",
+      "friday": "6:00 AM - 12:00 AM",
+      "saturday": "6:00 AM - 12:00 AM",
+      "sunday": "7:00 AM - 11:00 PM"
+    },
+    "specialties": [
+      "Bakery items",
+      "Pharmacy services",
+      "Floral arrangements",
+      "Catering services"
+    ],
+    "created_date": "2025-10-25T14:20:44.731985",
+    "last_updated": "2025-10-25T14:20:44.731987"
+  },
+  {
+    "store_id": "STORE_0008",
+    "store_name": "All-In Foods Northwest",
+    "chain_name": "All-In Foods",
+    "chain_tier": "mid-range",
+    "address": {
+      "street": "7425 West Lake Mead Boulevard",
+      "city": "Las Vegas",
+      "state": "NV",
+      "zip_code": "89128",
+      "coordinates": {
+        "lat": 36.2145,
+        "lon": -115.2567
+      }
+    },
+    "phone": "702-555-1056",
+    "hours": {
+      "monday": "7:00 AM - 10:00 PM",
+      "tuesday": "7:00 AM - 10:00 PM",
+      "wednesday": "7:00 AM - 10:00 PM",
+      "thursday": "7:00 AM - 10:00 PM",
+      "friday": "7:00 AM - 11:00 PM",
+      "saturday": "7:00 AM - 11:00 PM",
+      "sunday": "8:00 AM - 10:00 PM"
+    },
+    "specialties": [
+      "Farm-to-table produce",
+      "Grass-fed beef",
+      "Sustainable seafood",
+      "Organic dairy products"
+    ],
+    "created_date": "2025-10-25T14:20:44.731991",
+    "last_updated": "2025-10-25T14:20:44.731993"
+  },
+  {
+    "store_id": "STORE_0009",
+    "store_name": "Lucky Strike Market North Las Vegas",
+    "chain_name": "Lucky Strike Market",
+    "chain_tier": "premium",
+    "address": {
+      "street": "1847 North Las Vegas Boulevard",
+      "city": "North Las Vegas",
+      "state": "NV",
+      "zip_code": "89030",
+      "coordinates": {
+        "lat": 36.2089,
+        "lon": -115.1145
+      }
+    },
+    "phone": "702-555-1167",
+    "hours": {
+      "monday": "6:00 AM - 11:00 PM",
+      "tuesday": "6:00 AM - 11:00 PM",
+      "wednesday": "6:00 AM - 11:00 PM",
+      "thursday": "6:00 AM - 11:00 PM",
+      "friday": "6:00 AM - 12:00 AM",
+      "saturday": "6:00 AM - 12:00 AM",
+      "sunday": "7:00 AM - 11:00 PM"
+    },
+    "specialties": [
+      "Hispanic foods",
+      "Fresh tortillas",
+      "Butcher shop",
+      "Ethnic produce"
+    ],
+    "created_date": "2025-10-25T14:20:44.731997",
+    "last_updated": "2025-10-25T14:20:44.732000"
+  },
+  {
+    "store_id": "STORE_0010",
+    "store_name": "High Roller Gourmet Downtown Arts District",
+    "chain_name": "High Roller Gourmet",
+    "chain_tier": "luxury",
+    "address": {
+      "street": "1028 South Main Street",
+      "city": "Las Vegas",
+      "state": "NV",
+      "zip_code": "89155",
+      "coordinates": {
+        "lat": 36.1534,
+        "lon": -115.1567
+      }
+    },
+    "phone": "702-555-1278",
+    "hours": {
+      "monday": "8:00 AM - 10:00 PM",
+      "tuesday": "8:00 AM - 10:00 PM",
+      "wednesday": "8:00 AM - 10:00 PM",
+      "thursday": "8:00 AM - 10:00 PM",
+      "friday": "8:00 AM - 11:00 PM",
+      "saturday": "8:00 AM - 11:00 PM",
+      "sunday": "9:00 AM - 10:00 PM"
+    },
+    "specialties": [
+      "Artisanal cheeses",
+      "Gourmet prepared foods",
+      "Wine tastings",
+      "Chef consultation services"
+    ],
+    "created_date": "2025-10-25T14:20:44.732004",
+    "last_updated": "2025-10-25T14:20:44.732006"
+  }
+]

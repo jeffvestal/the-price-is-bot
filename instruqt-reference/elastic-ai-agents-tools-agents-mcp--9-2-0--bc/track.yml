@@ -1,0 +1,24 @@
+slug: elastic-ai-agents-tools-agents-mcp--9-2-0--bc
+id: su7dspcvy39c
+title: Elastic Agent Builder - Chat, Tools, Agents, and MCP -v02
+description: ""
+icon: ""
+tags: []
+owner: elastic
+developers:
+- jeff.vestal@elastic.co
+instructors:
+- shankerlingayya.nagappa@elastic.co
+- jeff.vestal@elastic.co
+idle_timeout: 3600
+timelimit: 10800
+sandbox_preset: managed-vm-elastic-9-2-0-snapshot
+lab_config:
+  sidebar_enabled: true
+  feedback_recap_enabled: true
+  feedback_tab_enabled: false
+  loadingMessages: true
+  override_challenge_layout: false
+  hideStopButton: false
+checksum: "8356120864003428153"
+enhanced_loading: false

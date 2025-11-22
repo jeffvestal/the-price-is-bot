@@ -20,7 +20,7 @@ echo ""
 
 # Step 1: Deploy base tools from elastic-grocery-core
 echo "🔧 Step 1: Deploying base grocery tools from elastic-grocery-core..."
-python3 ../elastic-grocery-core/scripts/deploy_base_tools.py "$@"
+python -m elastic_grocery_core.scripts.deploy_base_tools "$@"
 
 if [ $? -ne 0 ]; then
     echo "❌ Failed to deploy base tools"
@@ -31,7 +31,7 @@ echo ""
 
 # Step 2: Deploy game-specific agents
 echo "🤖 Step 2: Deploying game agents..."
-python3 scripts/deploy_game.py "$@"
+python scripts/deploy_game.py "$@"
 
 if [ $? -ne 0 ]; then
     echo "❌ Failed to deploy game agents"

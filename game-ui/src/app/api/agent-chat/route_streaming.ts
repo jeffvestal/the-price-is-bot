@@ -75,8 +75,8 @@ export async function POST(request: NextRequest) {
       error: 'Internal server error',
       response: "I'm experiencing some technical difficulties right now. Please try your request again, or contact support if the problem persists.",
       items: [],
-      agentId: request.body?.agentId || 'unknown',
-      sessionId: request.body?.sessionId || `error_${Date.now()}`
+      agentId: 'unknown',
+      sessionId: `error_${Date.now()}`
     });
   }
 }
@@ -284,15 +284,33 @@ function generateResponseFromToolResults(agentResponse: any, agentId: string): s
     return `I searched for items but didn't find any matches. Let me try a different approach for you!`;
   }
 
-  // Get unique items only
-  const allItems = tabularData.data.values.filter((item: any) => item && item.length > 0);
+  // Build column index map for name lookup
+  const columns = tabularData.data.columns || [];
+  const columnNames = columns.map((c: any) => (c?.name || '').toString());
+  const nameIdx = columnNames.findIndex((n: string) => n.toLowerCase() === 'name');
+  
+  // Get unique items only using column names
+  const allItems = tabularData.data.values.filter((item: any) => item && Array.isArray(item) && item.length > 0);
   const uniqueItems: any[] = [];
   const seenNames = new Set<string>();
   
   for (const item of allItems) {
-    const name = item[5] || item[4] || `Product ${uniqueItems.length + 1}`;
-    if (!seenNames.has(name)) {
-      seenNames.add(name);
+    let name = '';
+    if (nameIdx >= 0 && item[nameIdx] != null) {
+      name = item[nameIdx].toString();
+    } else {
+      // Fallback: find first non-empty string in the row
+      const firstText = item.find((v: any) => typeof v === 'string' && v.trim() !== '');
+      name = firstText ? firstText.toString() : `Product ${uniqueItems.length + 1}`;
+    }
+    
+    if (!name || name === 'N/A' || name.trim() === '') {
+      continue;
+    }
+    
+    const nameKey = name.toLowerCase();
+    if (!seenNames.has(nameKey)) {
+      seenNames.add(nameKey);
       uniqueItems.push(item);
       if (uniqueItems.length >= 5) break;
     }
@@ -319,46 +337,86 @@ function extractSuggestedItemsFromAgentResponse(agentResponse: any): any[] {
       for (const result of results) {
         if (result.type === 'tabular_data' && result.data?.values) {
           const tabularData = result.data;
+          const columns = tabularData.columns || [];
+          const columnNames = columns.map((c: any) => (c?.name || '').toString());
+          
+          // Create column index map
+          const colIndex: { [key: string]: number } = {};
+          columnNames.forEach((name: string, index: number) => {
+            colIndex[name] = index;
+          });
+          
+          // Helper to detect name and price column indices with fallbacks
+          function detectIndices(row: any[]): { nameIdx: number; priceIdx: number } {
+            let nameIdx = colIndex['name'];
+            let priceIdx = colIndex['best_price'];
+            if (priceIdx === undefined) priceIdx = colIndex['price'];
+            if (priceIdx === undefined) priceIdx = colIndex['min_price'];
+            if (priceIdx === undefined) priceIdx = colIndex['final_price'];
+            if (priceIdx === undefined) priceIdx = colIndex['current_price'];
+            if (priceIdx === undefined) priceIdx = colIndex['avg_price'];
+            
+            // Fallback: if columns metadata missing, scan array positions
+            if (nameIdx === undefined || priceIdx === undefined) {
+              nameIdx = nameIdx !== undefined ? nameIdx : row.findIndex((v: any) => typeof v === 'string' && v.trim() !== '' && v !== 'N/A');
+              priceIdx = priceIdx !== undefined ? priceIdx : row.findIndex((v: any) => typeof v === 'number' && v > 0);
+            }
+            
+            return { nameIdx, priceIdx };
+          }
           
           // Process each item from the tabular data
-          for (let index = 0; index < Math.min(tabularData.values.length, 5); index++) {
+          for (let index = 0; index < Math.min(tabularData.values.length, 12); index++) {
             const item = tabularData.values[index];
             
             if (!item || !Array.isArray(item) || item.length === 0) {
               continue;
             }
             
-            let bestPrice = 0;
-            let itemId = '';
+            const { nameIdx, priceIdx } = detectIndices(item);
+            
+            // Extract name
             let name = '';
+            if (nameIdx >= 0 && item[nameIdx] != null) {
+              name = item[nameIdx].toString().trim();
+            }
+            if (!name || name === 'N/A') {
+              continue;
+            }
+            
+            // Extract price
+            let bestPrice = 0;
+            if (priceIdx >= 0 && item[priceIdx] != null) {
+              bestPrice = parseFloat(item[priceIdx].toString()) || 0;
+            }
+            if (!Number.isFinite(bestPrice) || bestPrice <= 0) {
+              continue;
+            }
+            
+            // Extract item_id with fallback
+            let itemId = '';
+            if (colIndex['item_id'] !== undefined && item[colIndex['item_id']] != null) {
+              itemId = item[colIndex['item_id']].toString();
+            } else {
+              // Generate stable ID from name
+              itemId = `item_${name.toLowerCase().replace(/\s+/g, '_')}_${index}`;
+            }
+            
             let brand = '';
             let category = '';
             let quantity = 1;
             
-            // Handle different data structures returned by different tools
-            if (item.length === 12) {
-              // New search_grocery_items structure: [avg_price, min_price, max_price, stores_available, item_id, name, brand, category, unit_size, organic, gluten_free, vegan]
-              const [avgPrice, minPrice, maxPrice, storesAvailable, id, itemName, brandName, cat] = item;
-              bestPrice = parseFloat(avgPrice.toString()) || 0;
-              itemId = id || `item_${index}`;
-              name = itemName || `Product ${index + 1}`;
-              brand = brandName || 'Unknown Brand';
-              category = cat || 'Suggested';
-            } else if (item.length <= 11) {
-              // Budget/simple tool structure: [best_price, avg_price, stores_count, max_discount_score, item_id, name, brand, category, unit_size, organic, value_score]
-              [bestPrice, , , , itemId, name, brand, category] = item;
+            // Optional fields (may not exist in simplified tool output)
+            if (colIndex['brand'] !== undefined && item[colIndex['brand']] != null) {
+              brand = item[colIndex['brand']].toString();
             } else {
-              // Detailed tool structure (fallback for other tools)
-              bestPrice = parseFloat(item[0]?.toString()) || 0;
-              itemId = item[4] || `item_${index}`;
-              name = item[5] || `Product ${index + 1}`;
-              brand = item[6] || 'Unknown Brand';
-              category = item[7] || 'Suggested';
+              brand = 'Suggested';
             }
             
-            // Skip items that are too cheap (likely data errors)
-            if (bestPrice < 1) {
-              continue;
+            if (colIndex['category'] !== undefined && item[colIndex['category']] != null) {
+              category = item[colIndex['category']].toString();
+            } else {
+              category = 'Suggested';
             }
             
             // Try to extract quantity from agent response text if available

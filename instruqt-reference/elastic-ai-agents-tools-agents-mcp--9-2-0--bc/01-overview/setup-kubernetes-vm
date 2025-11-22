@@ -1,0 +1,7 @@
+/opt/workshops/elastic-snapshot.sh \
+    -p portfolio_pilot_financial \
+    -b instruqt-workshop-snapshot-public \
+    -c sa \
+    -n repo1 \
+    -s dataset_portfolio_pilot_001 \
+    -g false 

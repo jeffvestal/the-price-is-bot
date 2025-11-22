@@ -3,6 +3,10 @@
 # Environment Variables
 .env
 .env.local
+.env.elasticsearch
+.env.kibana
+.env.gcp
+.env.secrets
 
 .idea
 # Byte-compiled / optimized / DLL files

@@ -1,0 +1,12 @@
+echo "Generating ES API Key"
+echo "export ELASTICSEARCH_API_KEY=$(curl -s -X POST -u "$ELASTICSEARCH_USER:$ELASTICSEARCH_PASSWORD" "$ELASTICSEARCH_URL/_security/api_key" -H "Content-Type: application/json" -d'{"name": "permanent-script-key"}' | jq -r '.encoded')" >> ~/.bashrc
+source ~/.bashrc
+
+export ELASTICSEARCH_API_KEY=$(curl -s -X POST -u "$ELASTICSEARCH_USER:$ELASTICSEARCH_PASSWORD" "$ELASTICSEARCH_URL/_security/api_key" -H "Content-Type: application/json" -d'{"name": "permanent-script-key"}' | jq -r '.encoded')
+echo "ELASTICSEARCH_API_KEY set to $ELASTICSEARCH_API_KEY"
+
+echo "KIBANA_URL_UI set to $KIBANA_URL_UI"
+
+echo "setting ELASTICSEARCH_API_KEY and KIBANA_URL_UI with agent variable set to use in assignment"
+agent variable set KIBANA_URL_UI $KIBANA_URL_UI
+agent variable set ELASTICSEARCH_API_KEY $ELASTICSEARCH_API_KEY

@@ -18,7 +18,7 @@ export function ShoppingCart({ className = '' }: ShoppingCartProps) {
     session
   } = useGameStore();
 
-  const totalPrice = currentItems.reduce((sum, item) => sum + (parseFloat(item.price || 0) * item.quantity), 0);
+  const totalPrice = currentItems.reduce((sum, item) => sum + (Number(item.price || 0) * item.quantity), 0);
   const targetPrice = session?.targetPrice || 100;
   const remainingBudget = targetPrice - totalPrice;
   const isOverBudget = totalPrice > targetPrice;
@@ -150,7 +150,7 @@ export function ShoppingCart({ className = '' }: ShoppingCartProps) {
                   <div className="flex items-center space-x-2">
                     <div className="text-right">
                       <div className="text-lg font-bold text-gray-900 dark:text-white">
-                        ${(parseFloat(bag.item!.price || 0) * bag.item!.quantity).toFixed(2)}
+                        ${(Number(bag.item!.price || 0) * bag.item!.quantity).toFixed(2)}
                       </div>
                     </div>
                     <Button
@@ -183,7 +183,7 @@ export function ShoppingCart({ className = '' }: ShoppingCartProps) {
                   {/* Quantity and Price Description */}
                   <div className="flex items-center justify-between">
                     <div className="text-sm text-gray-600 dark:text-gray-400">
-                      {bag.item!.quantity}x @ ${parseFloat(bag.item!.price || 0).toFixed(2)} each
+                      {bag.item!.quantity}x @ ${Number(bag.item!.price || 0).toFixed(2)} each
                     </div>
                     
                     {/* Quantity Controls */}

@@ -3,9 +3,8 @@
 
 # ===== Core Library Dependency =====
 # Install elastic-grocery-core for data generation and agent tools
-# For development: pip install -e ../elastic-grocery-core
-# For production: pip install git+https://github.com/elastic/elastic-grocery-core.git@main
-# elastic-grocery-core @ git+https://github.com/elastic/elastic-grocery-core.git@main
+# Editable install from local directory
+-e ../elastic-grocery-core
 
 # ===== Core Web Framework =====
 fastapi>=0.115.0
