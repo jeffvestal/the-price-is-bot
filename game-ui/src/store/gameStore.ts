@@ -27,6 +27,7 @@ export interface GameSession {
   targetPrice: number;
   score?: number;
   completed: boolean;
+  eligible?: boolean; // Whether player is eligible for leaderboard (has valid token)
 }
 
 export interface Agent {

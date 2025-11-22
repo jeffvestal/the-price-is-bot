@@ -1,0 +1,13 @@
+# Start VSCode
+echo "starting /opt/workshops/vscode-start.sh"
+/opt/workshops/vscode-start.sh
+
+
+echo "cloning simple-mcp-client repo"
+cd /workspace/workshop
+git clone https://github.com/jeffvestal/simple-mcp-client.git
+cd /workspace/workshop/simple-mcp-client
+echo "running setup script"
+chmod +x setup.sh
+./setup.sh
+

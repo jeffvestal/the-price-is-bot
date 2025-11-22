@@ -199,7 +199,7 @@ export default function GameLayout() {
     endGame();
   };
 
-  const totalPrice = currentItems.reduce((sum, item) => sum + (parseFloat(item.price || 0) * item.quantity), 0);
+  const totalPrice = currentItems.reduce((sum, item) => sum + (Number(item.price || 0) * item.quantity), 0);
   const targetPrice = session?.targetPrice || 100;
 
   if (gamePhase === 'login') {
@@ -520,7 +520,7 @@ export default function GameLayout() {
                             <h4 className="font-medium text-sm text-gray-900 dark:text-white transition-colors truncate">
                               {item.quantity && item.quantity > 1 ? `${item.quantity}x ` : ''}{item.name}
                             </h4>
-                            <p className="text-xs text-elastic-blue font-semibold">${parseFloat(item.price || 0).toFixed(2)}</p>
+                            <p className="text-xs text-elastic-blue font-semibold">${Number(item.price || 0).toFixed(2)}</p>
                           </div>
                           <Button
                             size="sm"
@@ -582,7 +582,7 @@ export default function GameLayout() {
                             <div className="text-xs text-red-600 font-medium mb-1">⚠️ Invalid Game - Score will be 0:</div>
                             <div className="text-xs text-red-500 space-y-1">
                               {isWrongBagCount && <div>• Need exactly 5 bags (currently {uniqueItems})</div>}
-                              {isOverBudget && <div>• Over budget: ${totalPrice.toFixed(2)} > $100.00</div>}
+                              {isOverBudget && <div>• Over budget: ${totalPrice.toFixed(2)} {'>'} $100.00</div>}
                               {hasOverMaxItems && <div>• Max 5 items per bag (some bags exceed limit)</div>}
                             </div>
                           </div>

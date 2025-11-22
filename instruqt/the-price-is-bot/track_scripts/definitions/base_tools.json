@@ -1,0 +1,162 @@
+[
+  {
+    "id": "find_deals",
+    "type": "esql",
+    "description": "# Find Promotional Deals and Sales\n\nSearches for items currently on sale or promotion across all stores.\n\n## When to Use\n- Customer asks for \"deals\", \"sales\", \"discounts\", \"promotions\"\n- Looking for items with significant savings\n- Finding the best value items\n\n## Parameters\n- **min_discount** (double): Minimum discount percentage to filter by\n  - Default: 10 (shows items with at least 10% off)\n  - Use 20-30 for \"big savings\" or \"major deals\"\n  - Use 5-15 for \"any discount\"\n\n## Returns\n- Item name, brand, category\n- Original price vs sale price\n- Savings amount and discount percentage\n- Store location and availability\n- Sorted by highest savings first\n\n## Example Usage\n- \"Show me deals with at least 20% off\" → min_discount: 20\n- \"What's on sale?\" → min_discount: 10 (default)\n- \"Find the best discounts\" → min_discount: 25",
+    "tags": [
+      "deals",
+      "promotions"
+    ],
+    "configuration": {
+      "query": "\nFROM store_inventory\n| WHERE on_sale == true\n| WHERE sale_price IS NOT NULL\n| LOOKUP JOIN grocery_items ON item_id\n| LOOKUP JOIN store_locations ON store_id\n| WHERE stock_status != \"out_of_stock\"\n| EVAL savings = current_price - sale_price\n| EVAL discount_percent = ROUND((savings / current_price) * 100, 1)\n| WHERE discount_percent >= ?min_discount\n| SORT savings DESC, sale_price ASC\n| LIMIT 20\n                ",
+      "params": {
+        "min_discount": {
+          "type": "double",
+          "description": "Minimum discount percentage (default: 10)"
+        }
+      }
+    },
+    "readonly": false
+  },
+  {
+    "id": "check_nutrition",
+    "type": "esql",
+    "description": "# Check Nutritional Information\n\nRetrieves detailed nutritional data for specific items, including calorie content, macros, and dietary compatibility.\n\n## When to Use\n- Customer asks about nutritional content, calories, protein, carbs, etc.\n- Checking if items meet dietary restrictions\n- Looking for healthy or specific nutrition profile items\n\n## Parameters\n- **item_search** (keyword): Item name or ingredient to search for\n  - Examples: \"chicken breast\", \"quinoa\", \"greek yogurt\"\n  - Can be partial names or ingredients\n  \n- **dietary_restriction** (keyword): Filter by dietary requirements\n  - Valid values: \"vegan\", \"gluten_free\", \"organic\"\n  - Use empty string or \"none\" to skip dietary filtering\n\n## Returns\n- Complete nutritional facts (calories, protein, carbs, fat, fiber, sugar)\n- Ingredients list\n- Dietary flags (vegan, gluten-free, organic)\n- Price and availability\n- Sorted by lowest calories first\n\n## Example Usage\n- \"What's the nutrition for chicken?\" → item_search: \"chicken\", dietary_restriction: \"\"\n- \"Show me vegan protein sources\" → item_search: \"protein\", dietary_restriction: \"vegan\"\n- \"Gluten-free bread nutrition\" → item_search: \"bread\", dietary_restriction: \"gluten_free\"",
+    "tags": [
+      "nutrition",
+      "dietary"
+    ],
+    "configuration": {
+      "query": "\nFROM nutrition_facts METADATA _score\n| WHERE item_id: ?item_search OR ingredients: ?item_search\n| LOOKUP JOIN grocery_items ON item_id\n| LOOKUP JOIN store_inventory ON item_id\n| WHERE stock_status != \"out_of_stock\"\n| EVAL meets_dietary = CASE(\n    ?dietary_restriction == \"vegan\", vegan,\n    ?dietary_restriction == \"gluten_free\", gluten_free,\n    ?dietary_restriction == \"organic\", organic,\n    true\n  )\n| WHERE meets_dietary == true\n| SORT _score DESC\n| LIMIT 15\n                ",
+      "params": {
+        "item_search": {
+          "type": "keyword",
+          "description": "Item name or ingredient to search for"
+        },
+        "dietary_restriction": {
+          "type": "keyword",
+          "description": "Dietary restriction: vegan, gluten_free, or organic"
+        }
+      }
+    },
+    "readonly": false
+  },
+  {
+    "id": "seasonal_recommendations",
+    "type": "esql",
+    "description": "# Get Seasonal Product Recommendations\n\nFinds items that are currently in season, at peak freshness, or traditionally associated with specific times of year.\n\n## When to Use\n- Customer asks about seasonal items, \"what's in season\", fresh produce\n- Looking for items for specific holidays or seasons\n- Finding items at their peak quality or best price\n\n## Parameters\n- **season_query** (keyword): Season, month, or seasonal description\n  - **Seasons**: \"spring\", \"summer\", \"fall\", \"autumn\", \"winter\"\n  - **Months**: \"january\", \"february\", \"october\", etc.\n  - **Holidays**: \"thanksgiving\", \"christmas\", \"halloween\", \"easter\"\n  - **Descriptions**: \"harvest\", \"fresh\", \"peak season\"\n\n## Returns\n- Items currently in season or at peak availability\n- Availability score (0-1, higher = more in season)\n- Current prices (often better when in season)\n- Store locations with stock\n- Sorted by seasonal relevance and price\n\n## Example Usage\n- \"What produce is in season now?\" → season_query: \"fall\" or current season\n- \"Show me summer fruits\" → season_query: \"summer\"\n- \"Thanksgiving ingredients\" → season_query: \"thanksgiving\"\n- \"What's fresh in October?\" → season_query: \"october\"",
+    "tags": [
+      "seasonal",
+      "recommendations"
+    ],
+    "configuration": {
+      "query": "\nFROM seasonal_availability METADATA _score\n| WHERE season: ?season_query OR description: ?season_query\n| WHERE availability_score >= 0.5\n| LOOKUP JOIN grocery_items ON item_id\n| LOOKUP JOIN store_inventory ON item_id\n| WHERE stock_status != \"out_of_stock\"\n| EVAL final_price = CASE(on_sale, sale_price, current_price)\n| EVAL seasonal_score = availability_score * price_multiplier\n| SORT _score DESC\n| LIMIT 15\n                ",
+      "params": {
+        "season_query": {
+          "type": "keyword",
+          "description": "Season, month, or seasonal description to search for"
+        }
+      }
+    },
+    "readonly": false
+  },
+  {
+    "id": "dietary_filter",
+    "type": "esql",
+    "description": "# Filter by Dietary Restrictions\n\nFilters all available grocery items to show only those meeting specific dietary requirements or nutritional goals.\n\n## When to Use\n- Customer has dietary restrictions or preferences\n- Looking for items that fit a specific diet plan\n- Need to filter out items with certain ingredients or properties\n\n## Parameters\n- **restriction** (keyword): Type of dietary restriction to apply\n  - **\"vegan\"**: No animal products (dairy, eggs, meat, honey)\n  - **\"gluten_free\"**: No wheat, barley, rye, or gluten-containing ingredients\n  - **\"organic\"**: Certified organic products only\n  - **\"low_carb\"**: Items with less than 10g total carbs (keto-friendly)\n  - **\"high_protein\"**: Items with more than 15g protein per serving\n\n## Returns\n- All available items matching the restriction\n- Nutritional information\n- Prices and store availability\n- No specific sort order (returns items in natural order)\n\n## Example Usage\n- \"I'm vegan, what can I buy?\" → restriction: \"vegan\"\n- \"Show me gluten-free options\" → restriction: \"gluten_free\"\n- \"I need high protein foods\" → restriction: \"high_protein\"\n- \"Only organic produce\" → restriction: \"organic\"\n- \"Keto-friendly items\" → restriction: \"low_carb\"",
+    "tags": [
+      "dietary",
+      "filter"
+    ],
+    "configuration": {
+      "query": "\nFROM grocery_items\n| LOOKUP JOIN nutrition_facts ON item_id\n| LOOKUP JOIN store_inventory ON item_id\n| WHERE stock_status != \"out_of_stock\"\n| EVAL meets_restriction = CASE(\n    ?restriction == \"vegan\", vegan == true,\n    ?restriction == \"gluten_free\", gluten_free == true,\n    ?restriction == \"organic\", organic == true,\n    ?restriction == \"low_carb\", total_carbs < 10,\n    ?restriction == \"high_protein\", protein > 15,\n    true\n  )\n| WHERE meets_restriction == true\n| EVAL final_price = CASE(on_sale, sale_price, current_price)\n| KEEP item_id, name, brand, category, unit_size, organic, gluten_free, vegan, calories, protein, total_carbs, final_price, stock_status\n| LIMIT 20\n                ",
+      "params": {
+        "restriction": {
+          "type": "keyword",
+          "description": "Dietary restriction: vegan, gluten_free, organic, low_carb, or high_protein"
+        }
+      }
+    },
+    "readonly": false
+  },
+  {
+    "id": "check_store_inventory",
+    "type": "esql",
+    "description": "# Check Store Inventory Levels\n\nChecks real-time stock availability and inventory levels for specific items across all store locations.\n\n## When to Use\n- Customer wants to know if an item is in stock\n- Checking which stores have an item available\n- Looking for stock levels before purchasing\n- Comparing availability across locations\n\n## Parameters\n- **item_query** (keyword): Item name or item ID to search for\n  - Can be full or partial item names\n  - Case-insensitive\n  - Examples: \"milk\", \"chicken breast\", \"tomatoes\"\n  - Use specific names for better results\n\n## Returns\n- Stock status (in_stock, low_stock, out_of_stock)\n- Stock level category (high, medium, low)\n- Exact stock quantities\n- Store name, location, and chain\n- Current price at each store\n- Sorted by stock level (highest first) then price\n\n## Example Usage\n- \"Is there milk in stock?\" → item_query: \"milk\"\n- \"Which stores have chicken breast?\" → item_query: \"chicken breast\"\n- \"Check if tomatoes are available\" → item_query: \"tomatoes\"\n- \"Where can I find greek yogurt?\" → item_query: \"greek yogurt\"\n\n## Important Notes\n- Only returns items that are currently IN STOCK (not out of stock)\n- Shows availability across multiple stores\n- Stock levels are categorized as high (>50), medium (11-50), or low (1-10)",
+    "tags": [
+      "inventory",
+      "stores"
+    ],
+    "configuration": {
+      "query": "FROM store_inventory METADATA _score\n| WHERE name: ?item_query OR item_id: ?item_query\n| LOOKUP JOIN grocery_items ON item_id\n| LOOKUP JOIN store_locations ON store_id\n| EVAL final_price = CASE(on_sale, sale_price, current_price)\n| EVAL stock_level_category = CASE(\n    stock_status == \"in_stock\" AND stock_level > 50, \"high\",\n    stock_status == \"in_stock\" AND stock_level > 10, \"medium\", \n    stock_status == \"in_stock\", \"low\",\n    \"out_of_stock\"\n  )\n| WHERE stock_status != \"out_of_stock\"\n| SORT _score DESC\n| LIMIT 15",
+      "params": {
+        "item_query": {
+          "type": "keyword",
+          "description": "Item name or ID to check inventory for"
+        }
+      }
+    },
+    "readonly": false
+  },
+  {
+    "id": "find_budget_items",
+    "type": "esql",
+    "description": "# Find Items by Price Range\n\n**PRIMARY TOOL FOR PRICE-BASED QUERIES**\n\nSearches for grocery items within a specific price range. Use this tool whenever the customer mentions prices, costs, or dollar amounts.\n\n## When to Use\n- Customer mentions SPECIFIC PRICES: \"$20\", \"around $10\", \"under $15\"\n- Price RANGES: \"between $5 and $10\", \"$15-$25\"\n- Budget queries: \"cheap items\", \"expensive items\", \"mid-range\"\n- **THIS IS THE ONLY TOOL THAT FILTERS BY PRICE**\n\n## Parameters\n- **min_price** (double): Minimum price in dollars\n  - Default: 15\n  - Set to 0 for \"cheap\" or \"under $X\"\n  - Examples: 0, 5, 10, 15, 20, 50\n  \n- **max_price** (double): Maximum price in dollars\n  - Default: 25\n  - Set high (100+) for \"expensive\" items\n  - Examples: 5, 10, 20, 30, 50, 100\n\n- **sort_order** (keyword): How to sort results by price\n  - **\"asc\"** (default): Cheapest items first - use for \"cheap items\", \"under $X\", \"budget options\"\n  - **\"desc\"**: Most expensive items first - use for \"a $X item\", \"around $X\", \"expensive items\"\n  - When customer asks for \"A $X ITEM\" (singular), use DESC to get items NEAR that price\n  - When customer asks for \"items UNDER $X\" (plural/range), use ASC for best deals\n\n## Returns\n- Items within the price range\n- Best price (lowest across all stores)\n- Average price across stores\n- Number of stores carrying the item\n- Brand, category, unit size\n- Sorted by price (ascending or descending based on sort_order)\n\n## Example Usage\n- \"A $5 item\" → min_price: 4, max_price: 6, sort_order: \"desc\" (get items near $5)\n- \"Items around $20\" → min_price: 15, max_price: 25, sort_order: \"desc\" (near $20)\n- \"Under $10\" → min_price: 0, max_price: 10, sort_order: \"asc\" (cheapest first)\n- \"Between $5 and $15\" → min_price: 5, max_price: 15, sort_order: \"asc\" (best deals)\n- \"Cheap snacks\" → min_price: 0, max_price: 5, sort_order: \"asc\" (cheapest first)\n- \"Expensive steaks\" → min_price: 30, max_price: 100, sort_order: \"desc\" (premium first)\n\n## Important Notes\n- **Sort order matters!** Use DESC when customer wants items NEAR a price, ASC for best deals\n- For \"A $5 item\": narrow range (4-6) + DESC = items close to $5\n- For \"Under $10\": wide range (0-10) + ASC = cheapest options first\n- Returns aggregated data across all stores (best price shown first)",
+    "tags": [
+      "budget",
+      "deals",
+      "savings"
+    ],
+    "configuration": {
+      "query": "FROM grocery_items\n| LOOKUP JOIN store_inventory ON item_id\n| WHERE stock_status != \"out_of_stock\"\n| EVAL final_price = CASE(on_sale, sale_price, current_price)\n| WHERE final_price >= ?min_price AND final_price <= ?max_price\n| LOOKUP JOIN store_locations ON store_id\n| EVAL discount_score = CASE(chain_tier == \"Discount\", 3, on_sale, 2, 1)\n| STATS\n      best_price = MIN(final_price),\n      avg_price = AVG(final_price),\n      stores_count = COUNT_DISTINCT(store_id),\n      max_discount_score = MAX(discount_score)\n      BY item_id, name, brand, category, unit_size, organic\n| EVAL sort_price = best_price\n| SORT CASE(?sort_order == \"desc\", sort_price * -1, sort_price) ASC\n| LIMIT 20",
+      "params": {
+        "min_price": {
+          "type": "double",
+          "description": "Minimum price for items (default: 15)"
+        },
+        "max_price": {
+          "type": "double",
+          "description": "Maximum price for items (default: 25)"
+        },
+        "sort_order": {
+          "type": "keyword",
+          "description": "Sort order: 'asc' for cheapest first (default), 'desc' for most expensive first"
+        }
+      }
+    },
+    "readonly": false
+  },
+  {
+    "id": "search_grocery_items",
+    "type": "esql",
+    "description": "# Search for Grocery Items\n\n**PRIMARY TOOL FOR FOOD/ITEM NAME QUERIES**\n\nSearches for grocery items by name, type, category, or description using semantic search. Use this tool when the customer asks for specific FOOD ITEMS (not prices).\n\n## When to Use\n- Customer mentions FOOD TYPES: \"chicken\", \"vegetables\", \"snacks\", \"bread\"\n- Category queries: \"dairy products\", \"produce\", \"meat\"\n- General food searches: \"breakfast items\", \"protein sources\"\n- Natural language: \"things for tacos\", \"sandwich ingredients\"\n- **DO NOT use for price queries** (use find_budget_items instead)\n\n## Parameters\n- **search_term** (text): Food item, category, or description\n  - Supports semantic search (understands meaning, not just keywords)\n  - Examples: \"chicken breast\", \"vegetables\", \"pasta\", \"milk\"\n  - Can be general (\"protein\") or specific (\"boneless skinless chicken thighs\")\n  - Natural language works: \"things to make a salad\"\n\n## Returns\n- Items matching the search term\n- Average price across all stores\n- Min and max price range\n- Number of stores carrying the item\n- Brand, category, unit size\n- Dietary flags (organic, gluten-free, vegan)\n- **Sorted by RELEVANCE** (best semantic matches first, NOT by price)\n\n## Example Usage\n- \"Do you have chicken?\" → search_term: \"chicken\"\n- \"Show me vegetables\" → search_term: \"vegetables\"\n- \"I need pasta\" → search_term: \"pasta\"\n- \"Dairy products\" → search_term: \"dairy\"\n- \"Things for breakfast\" → search_term: \"breakfast\"\n\n## Semantic Search Features\n- Understands synonyms: \"veggies\" finds \"vegetables\"\n- Handles natural language: \"meat\" finds beef, chicken, pork, etc.\n- Works with categories: \"produce\" finds fruits and vegetables\n- Searches names AND descriptions for better matches\n\n## Important Notes\n- Returns AGGREGATED data (one row per unique item)\n- Shows price ranges across all stores\n- Does NOT filter by price (use find_budget_items for that)\n- **Sorted by semantic relevance (_score), NOT price** - most relevant items appear first",
+    "tags": [],
+    "configuration": {
+      "query": "FROM grocery_items METADATA _score\n| WHERE name.semantic: ?search_term OR category: ?search_term OR description.semantic: ?search_term\n| EVAL item_key = CONCAT(item_id, \"_\", name)\n| LOOKUP JOIN store_inventory ON item_id\n| WHERE stock_status != \"out_of_stock\"\n| EVAL final_price = CASE(on_sale, sale_price, current_price)\n| SORT _score DESC\n| STATS avg_price = AVG(final_price), \n        min_price = MIN(final_price),\n        max_price = MAX(final_price),\n        stores_available = COUNT_DISTINCT(store_id)\n  BY item_id, name, brand, category, unit_size, organic, gluten_free, vegan\n| WHERE stores_available > 0\n| LIMIT 20",
+      "params": {
+        "search_term": {
+          "type": "text",
+          "description": "Search term for item name, category, or description (supports semantic search for natural language queries)"
+        }
+      }
+    },
+    "readonly": false
+  },
+  {
+    "id": "find_recipe_items",
+    "type": "esql",
+    "description": "# Find Recipe Ingredients\n\n**SPECIALIZED TOOL FOR RECIPE AND COOKING QUERIES**\n\nFinds ingredients and items needed for specific recipes, dishes, or cooking styles. Returns complete ingredient possibilities with full details.\n\n## When to Use\n- Customer asks for ingredients for a SPECIFIC DISH: \"pasta carbonara\", \"chicken tacos\", \"greek salad\"\n- Recipe-based queries: \"what do I need for...\", \"ingredients for...\"\n- Cooking style queries: \"Italian cooking\", \"Thai cuisine\", \"BBQ ingredients\"\n- Meal planning: \"dinner for 4\", \"breakfast ingredients\"\n\n## Parameters\n- **recipe_query** (text): Recipe name, dish, or cooking style\n  - Supports semantic search across names, descriptions, AND tags\n  - Examples: \"pasta carbonara\", \"tacos\", \"stir fry\", \"salad\"\n  - Works with cuisines: \"Italian\", \"Mexican\", \"Asian\"\n  - Meal types: \"breakfast\", \"dinner\", \"appetizers\"\n\n## Returns\n- ALL matching items (full details, not aggregated)\n- Complete item information for each store\n- Individual store prices and stock status\n- Brand, category, unit size\n- Dietary information\n- **Sorted by RELEVANCE** (best semantic matches first, NOT by price)\n\n## Example Usage\n- \"Ingredients for pasta carbonara\" → recipe_query: \"pasta carbonara\"\n- \"What do I need for tacos?\" → recipe_query: \"tacos\"\n- \"Show me stir fry ingredients\" → recipe_query: \"stir fry\"\n- \"Italian cooking items\" → recipe_query: \"Italian\"\n- \"Things for a salad\" → recipe_query: \"salad\"\n\n## Semantic Search Features\n- Searches item names, descriptions, AND tags\n- Understands recipe context: \"carbonara\" finds pasta, eggs, bacon, cheese\n- Works with cooking styles: \"Italian\" finds relevant ingredients\n- Natural language friendly: \"things for making pizza\"\n\n## Important Differences from search_grocery_items\n- Returns FULL DATA for each store (not aggregated)\n- Searches item TAGS in addition to name/description\n- Better for recipe/meal context\n- Shows individual store inventory records\n- **Sorted by semantic relevance (_score), NOT price** - most relevant items appear first",
+    "tags": [],
+    "configuration": {
+      "query": "FROM grocery_items METADATA _score\n| WHERE name.semantic: ?recipe_query OR category: ?recipe_query OR description.semantic: ?recipe_query OR tags.semantic: ?recipe_query\n| LOOKUP JOIN store_inventory ON item_id\n| WHERE stock_status != \"out_of_stock\"\n| EVAL final_price = CASE(on_sale, sale_price, current_price)\n| SORT _score DESC\n| LIMIT 20",
+      "params": {
+        "recipe_query": {
+          "type": "text",
+          "description": "Recipe name, cooking style, or ingredient type (supports semantic search for natural language queries)"
+        }
+      }
+    },
+    "readonly": false
+  }
+]
+

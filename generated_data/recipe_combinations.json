@@ -1,0 +1,3006 @@
+[
+  {
+    "combo_id": "RECIPE_0001",
+    "theme": "italian_dinner",
+    "primary_item_id": "ITEM_002973",
+    "complementary_items": [
+      "ITEM_003683",
+      "ITEM_004068",
+      "ITEM_001834"
+    ],
+    "recipe_name": "Roman Almond Milk Unsweetened Recipe",
+    "description": "A delicious italian dinner recipe featuring Almond Milk Unsweetened",
+    "difficulty": "medium",
+    "prep_time": 79,
+    "serving_size": 6,
+    "cuisine_type": "Italian",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free"
+    ],
+    "popularity_score": 0.4,
+    "created_date": "2025-10-25T16:13:27.212661",
+    "last_updated": "2025-10-25T16:13:27.212666"
+  },
+  {
+    "combo_id": "RECIPE_0002",
+    "theme": "healthy_breakfast",
+    "primary_item_id": "ITEM_003170",
+    "complementary_items": [
+      "ITEM_000372",
+      "ITEM_001914",
+      "ITEM_002628",
+      "ITEM_003237"
+    ],
+    "recipe_name": "Energizing Organic Coconut Oil Shampoo Recipe",
+    "description": "A delicious healthy breakfast recipe featuring Organic Coconut Oil Shampoo",
+    "difficulty": "easy",
+    "prep_time": 120,
+    "serving_size": 2,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.57,
+    "created_date": "2025-10-25T16:13:27.212681",
+    "last_updated": "2025-10-25T16:13:27.212682"
+  },
+  {
+    "combo_id": "RECIPE_0003",
+    "theme": "mexican_fiesta",
+    "primary_item_id": "ITEM_001353",
+    "complementary_items": [
+      "ITEM_001435",
+      "ITEM_001624",
+      "ITEM_002349",
+      "ITEM_001330",
+      "ITEM_004093",
+      "ITEM_000165",
+      "ITEM_002175",
+      "ITEM_001790"
+    ],
+    "recipe_name": "Hacienda Artisan Sourdough Bread Recipe",
+    "description": "A delicious mexican fiesta recipe featuring Artisan Sourdough Bread",
+    "difficulty": "hard",
+    "prep_time": 65,
+    "serving_size": 5,
+    "cuisine_type": "Mexican",
+    "dietary_tags": [
+      "vegetarian",
+      "low_calorie"
+    ],
+    "popularity_score": 0.94,
+    "created_date": "2025-10-25T16:13:27.212696",
+    "last_updated": "2025-10-25T16:13:27.212697"
+  },
+  {
+    "combo_id": "RECIPE_0004",
+    "theme": "asian_stir_fry",
+    "primary_item_id": "ITEM_000654",
+    "complementary_items": [
+      "ITEM_001854",
+      "ITEM_004915",
+      "ITEM_002148",
+      "ITEM_004423",
+      "ITEM_000089",
+      "ITEM_002620"
+    ],
+    "recipe_name": "Garden Greek Yogurt Plain Recipe",
+    "description": "A delicious asian stir fry recipe featuring Greek Yogurt Plain",
+    "difficulty": "easy",
+    "prep_time": 97,
+    "serving_size": 7,
+    "cuisine_type": "Asian",
+    "dietary_tags": [],
+    "popularity_score": 0.44,
+    "created_date": "2025-10-25T16:13:27.212705",
+    "last_updated": "2025-10-25T16:13:27.212707"
+  },
+  {
+    "combo_id": "RECIPE_0005",
+    "theme": "comfort_food",
+    "primary_item_id": "ITEM_001275",
+    "complementary_items": [
+      "ITEM_004867",
+      "ITEM_004426",
+      "ITEM_004928",
+      "ITEM_004499",
+      "ITEM_002047",
+      "ITEM_002836",
+      "ITEM_000509",
+      "ITEM_002956"
+    ],
+    "recipe_name": "Homestyle Bamboo Paper Towels Recipe",
+    "description": "A delicious comfort food recipe featuring Bamboo Paper Towels",
+    "difficulty": "medium",
+    "prep_time": 66,
+    "serving_size": 3,
+    "cuisine_type": "American",
+    "dietary_tags": [],
+    "popularity_score": 0.32,
+    "created_date": "2025-10-25T16:13:27.212715",
+    "last_updated": "2025-10-25T16:13:27.212716"
+  },
+  {
+    "combo_id": "RECIPE_0006",
+    "theme": "summer_bbq",
+    "primary_item_id": "ITEM_001548",
+    "complementary_items": [
+      "ITEM_002819",
+      "ITEM_003554",
+      "ITEM_001607"
+    ],
+    "recipe_name": "Smoky Frozen Organic Blueberries Recipe",
+    "description": "A delicious summer bbq recipe featuring Frozen Organic Blueberries",
+    "difficulty": "hard",
+    "prep_time": 101,
+    "serving_size": 3,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegan",
+      "dairy_free"
+    ],
+    "popularity_score": 0.86,
+    "created_date": "2025-10-25T16:13:27.212724",
+    "last_updated": "2025-10-25T16:13:27.212725"
+  },
+  {
+    "combo_id": "RECIPE_0007",
+    "theme": "holiday_baking",
+    "primary_item_id": "ITEM_004272",
+    "complementary_items": [
+      "ITEM_004110",
+      "ITEM_002549",
+      "ITEM_003460"
+    ],
+    "recipe_name": "Special Artisan Sourdough Bread Recipe",
+    "description": "A delicious holiday baking recipe featuring Artisan Sourdough Bread",
+    "difficulty": "medium",
+    "prep_time": 19,
+    "serving_size": 7,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "dairy_free"
+    ],
+    "popularity_score": 0.94,
+    "created_date": "2025-10-25T16:13:27.212732",
+    "last_updated": "2025-10-25T16:13:27.212733"
+  },
+  {
+    "combo_id": "RECIPE_0008",
+    "theme": "quick_snacks",
+    "primary_item_id": "ITEM_002563",
+    "complementary_items": [
+      "ITEM_003478",
+      "ITEM_004896",
+      "ITEM_004033",
+      "ITEM_001446",
+      "ITEM_002916",
+      "ITEM_001021",
+      "ITEM_003905"
+    ],
+    "recipe_name": "Special Greek Yogurt Plain Non-Fat Recipe",
+    "description": "A delicious quick snacks recipe featuring Greek Yogurt Plain Non-Fat",
+    "difficulty": "easy",
+    "prep_time": 25,
+    "serving_size": 3,
+    "cuisine_type": "American",
+    "dietary_tags": [],
+    "popularity_score": 0.15,
+    "created_date": "2025-10-25T16:13:27.212741",
+    "last_updated": "2025-10-25T16:13:27.212742"
+  },
+  {
+    "combo_id": "RECIPE_0009",
+    "theme": "mediterranean_bowl",
+    "primary_item_id": "ITEM_002082",
+    "complementary_items": [
+      "ITEM_002313",
+      "ITEM_003423",
+      "ITEM_004975",
+      "ITEM_004299",
+      "ITEM_003762",
+      "ITEM_003387"
+    ],
+    "recipe_name": "Special Artisan Sourdough Bread Recipe",
+    "description": "A delicious mediterranean bowl recipe featuring Artisan Sourdough Bread",
+    "difficulty": "easy",
+    "prep_time": 36,
+    "serving_size": 5,
+    "cuisine_type": "Mediterranean",
+    "dietary_tags": [
+      "vegetarian"
+    ],
+    "popularity_score": 0.12,
+    "created_date": "2025-10-25T16:13:27.212750",
+    "last_updated": "2025-10-25T16:13:27.212751"
+  },
+  {
+    "combo_id": "RECIPE_0010",
+    "theme": "breakfast_smoothie",
+    "primary_item_id": "ITEM_001862",
+    "complementary_items": [
+      "ITEM_003333",
+      "ITEM_003889",
+      "ITEM_003374"
+    ],
+    "recipe_name": "Special Organic Almond Butter Recipe",
+    "description": "A delicious breakfast smoothie recipe featuring Organic Almond Butter",
+    "difficulty": "easy",
+    "prep_time": 56,
+    "serving_size": 7,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free"
+    ],
+    "popularity_score": 0.4,
+    "created_date": "2025-10-25T16:13:27.212758",
+    "last_updated": "2025-10-25T16:13:27.212760"
+  },
+  {
+    "combo_id": "RECIPE_0011",
+    "theme": "pasta_night",
+    "primary_item_id": "ITEM_004442",
+    "complementary_items": [
+      "ITEM_001381",
+      "ITEM_001878",
+      "ITEM_001862",
+      "ITEM_000942",
+      "ITEM_003498",
+      "ITEM_002982",
+      "ITEM_003011"
+    ],
+    "recipe_name": "Special Dark Chocolate Almonds Recipe",
+    "description": "A delicious pasta night recipe featuring Dark Chocolate Almonds",
+    "difficulty": "medium",
+    "prep_time": 102,
+    "serving_size": 6,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free"
+    ],
+    "popularity_score": 0.65,
+    "created_date": "2025-10-25T16:13:27.212768",
+    "last_updated": "2025-10-25T16:13:27.212769"
+  },
+  {
+    "combo_id": "RECIPE_0012",
+    "theme": "taco_tuesday",
+    "primary_item_id": "ITEM_002155",
+    "complementary_items": [
+      "ITEM_000435",
+      "ITEM_004568",
+      "ITEM_001759"
+    ],
+    "recipe_name": "Special Organic Coconut Oil Recipe",
+    "description": "A delicious taco tuesday recipe featuring Organic Coconut Oil",
+    "difficulty": "medium",
+    "prep_time": 27,
+    "serving_size": 4,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegan",
+      "dairy_free"
+    ],
+    "popularity_score": 0.93,
+    "created_date": "2025-10-25T16:13:27.212775",
+    "last_updated": "2025-10-25T16:13:27.212776"
+  },
+  {
+    "combo_id": "RECIPE_0013",
+    "theme": "italian_dinner",
+    "primary_item_id": "ITEM_002494",
+    "complementary_items": [
+      "ITEM_001331",
+      "ITEM_003968",
+      "ITEM_003853",
+      "ITEM_001857",
+      "ITEM_004100",
+      "ITEM_000331"
+    ],
+    "recipe_name": "Italiano Bamboo Paper Towels Recipe",
+    "description": "A delicious italian dinner recipe featuring Bamboo Paper Towels",
+    "difficulty": "hard",
+    "prep_time": 35,
+    "serving_size": 7,
+    "cuisine_type": "Italian",
+    "dietary_tags": [],
+    "popularity_score": 0.69,
+    "created_date": "2025-10-25T16:13:27.212783",
+    "last_updated": "2025-10-25T16:13:27.212784"
+  },
+  {
+    "combo_id": "RECIPE_0014",
+    "theme": "healthy_breakfast",
+    "primary_item_id": "ITEM_003391",
+    "complementary_items": [
+      "ITEM_004391",
+      "ITEM_004518",
+      "ITEM_004354",
+      "ITEM_001428"
+    ],
+    "recipe_name": "Fresh Dark Chocolate Almonds Recipe",
+    "description": "A delicious healthy breakfast recipe featuring Dark Chocolate Almonds",
+    "difficulty": "medium",
+    "prep_time": 119,
+    "serving_size": 3,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.45,
+    "created_date": "2025-10-25T16:13:27.212791",
+    "last_updated": "2025-10-25T16:13:27.212792"
+  },
+  {
+    "combo_id": "RECIPE_0015",
+    "theme": "mexican_fiesta",
+    "primary_item_id": "ITEM_002518",
+    "complementary_items": [
+      "ITEM_002604",
+      "ITEM_002840",
+      "ITEM_003897",
+      "ITEM_003657",
+      "ITEM_003966",
+      "ITEM_001654",
+      "ITEM_004515"
+    ],
+    "recipe_name": "Cantina Bamboo Paper Towels Recipe",
+    "description": "A delicious mexican fiesta recipe featuring Bamboo Paper Towels",
+    "difficulty": "easy",
+    "prep_time": 81,
+    "serving_size": 8,
+    "cuisine_type": "Mexican",
+    "dietary_tags": [
+      "gluten_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.94,
+    "created_date": "2025-10-25T16:13:27.212800",
+    "last_updated": "2025-10-25T16:13:27.212801"
+  },
+  {
+    "combo_id": "RECIPE_0016",
+    "theme": "asian_stir_fry",
+    "primary_item_id": "ITEM_004497",
+    "complementary_items": [
+      "ITEM_000538",
+      "ITEM_002207",
+      "ITEM_000456",
+      "ITEM_004076",
+      "ITEM_001749",
+      "ITEM_002514",
+      "ITEM_004771",
+      "ITEM_003343"
+    ],
+    "recipe_name": "Garden Organic Quinoa Recipe",
+    "description": "A delicious asian stir fry recipe featuring Organic Quinoa",
+    "difficulty": "hard",
+    "prep_time": 103,
+    "serving_size": 3,
+    "cuisine_type": "Asian",
+    "dietary_tags": [
+      "quick_prep"
+    ],
+    "popularity_score": 0.87,
+    "created_date": "2025-10-25T16:13:27.212809",
+    "last_updated": "2025-10-25T16:13:27.212810"
+  },
+  {
+    "combo_id": "RECIPE_0017",
+    "theme": "comfort_food",
+    "primary_item_id": "ITEM_002431",
+    "complementary_items": [
+      "ITEM_003277",
+      "ITEM_000832",
+      "ITEM_000018",
+      "ITEM_003685",
+      "ITEM_003951"
+    ],
+    "recipe_name": "Homestyle Eco-Friendly Dish Soap Recipe",
+    "description": "A delicious comfort food recipe featuring Eco-Friendly Dish Soap",
+    "difficulty": "easy",
+    "prep_time": 64,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free"
+    ],
+    "popularity_score": 0.93,
+    "created_date": "2025-10-25T16:13:27.212817",
+    "last_updated": "2025-10-25T16:13:27.212818"
+  },
+  {
+    "combo_id": "RECIPE_0018",
+    "theme": "summer_bbq",
+    "primary_item_id": "ITEM_000089",
+    "complementary_items": [
+      "ITEM_000483",
+      "ITEM_001595",
+      "ITEM_004981",
+      "ITEM_001269",
+      "ITEM_001356"
+    ],
+    "recipe_name": "Grilled Wild-Caught Atlantic Salmon Fillets Recipe",
+    "description": "A delicious summer bbq recipe featuring Wild-Caught Atlantic Salmon Fillets",
+    "difficulty": "medium",
+    "prep_time": 18,
+    "serving_size": 5,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free"
+    ],
+    "popularity_score": 0.5,
+    "created_date": "2025-10-25T16:13:27.212825",
+    "last_updated": "2025-10-25T16:13:27.212826"
+  },
+  {
+    "combo_id": "RECIPE_0019",
+    "theme": "holiday_baking",
+    "primary_item_id": "ITEM_002747",
+    "complementary_items": [
+      "ITEM_000647",
+      "ITEM_001888",
+      "ITEM_003971"
+    ],
+    "recipe_name": "Special Wild-Caught Atlantic Salmon Fillets Recipe",
+    "description": "A delicious holiday baking recipe featuring Wild-Caught Atlantic Salmon Fillets",
+    "difficulty": "easy",
+    "prep_time": 31,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.42,
+    "created_date": "2025-10-25T16:13:27.212833",
+    "last_updated": "2025-10-25T16:13:27.212834"
+  },
+  {
+    "combo_id": "RECIPE_0020",
+    "theme": "quick_snacks",
+    "primary_item_id": "ITEM_002663",
+    "complementary_items": [
+      "ITEM_004711",
+      "ITEM_001578",
+      "ITEM_002654",
+      "ITEM_001709",
+      "ITEM_004777",
+      "ITEM_001594",
+      "ITEM_000414",
+      "ITEM_003814"
+    ],
+    "recipe_name": "Special Organic Quinoa Recipe",
+    "description": "A delicious quick snacks recipe featuring Organic Quinoa",
+    "difficulty": "medium",
+    "prep_time": 72,
+    "serving_size": 7,
+    "cuisine_type": "American",
+    "dietary_tags": [],
+    "popularity_score": 0.53,
+    "created_date": "2025-10-25T16:13:27.212842",
+    "last_updated": "2025-10-25T16:13:27.212843"
+  },
+  {
+    "combo_id": "RECIPE_0021",
+    "theme": "mediterranean_bowl",
+    "primary_item_id": "ITEM_004583",
+    "complementary_items": [
+      "ITEM_002324",
+      "ITEM_000370",
+      "ITEM_000244",
+      "ITEM_003514",
+      "ITEM_004186",
+      "ITEM_001951"
+    ],
+    "recipe_name": "Special Organic Sprouted Grain Bread Recipe",
+    "description": "A delicious mediterranean bowl recipe featuring Organic Sprouted Grain Bread",
+    "difficulty": "hard",
+    "prep_time": 85,
+    "serving_size": 3,
+    "cuisine_type": "Mediterranean",
+    "dietary_tags": [
+      "vegetarian"
+    ],
+    "popularity_score": 0.89,
+    "created_date": "2025-10-25T16:13:27.212851",
+    "last_updated": "2025-10-25T16:13:27.212852"
+  },
+  {
+    "combo_id": "RECIPE_0022",
+    "theme": "breakfast_smoothie",
+    "primary_item_id": "ITEM_002985",
+    "complementary_items": [
+      "ITEM_001447",
+      "ITEM_003102",
+      "ITEM_003927",
+      "ITEM_004764",
+      "ITEM_000562",
+      "ITEM_000161",
+      "ITEM_004812"
+    ],
+    "recipe_name": "Special Cold-Pressed Orange Juice Recipe",
+    "description": "A delicious breakfast smoothie recipe featuring Cold-Pressed Orange Juice",
+    "difficulty": "hard",
+    "prep_time": 91,
+    "serving_size": 4,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free"
+    ],
+    "popularity_score": 0.94,
+    "created_date": "2025-10-25T16:13:27.212861",
+    "last_updated": "2025-10-25T16:13:27.212862"
+  },
+  {
+    "combo_id": "RECIPE_0023",
+    "theme": "pasta_night",
+    "primary_item_id": "ITEM_003747",
+    "complementary_items": [
+      "ITEM_001766",
+      "ITEM_001430",
+      "ITEM_003650",
+      "ITEM_001914",
+      "ITEM_002635"
+    ],
+    "recipe_name": "Special Sparkling Water Lemon Lime Recipe",
+    "description": "A delicious pasta night recipe featuring Sparkling Water Lemon Lime",
+    "difficulty": "hard",
+    "prep_time": 105,
+    "serving_size": 3,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free"
+    ],
+    "popularity_score": 0.93,
+    "created_date": "2025-10-25T16:13:27.212869",
+    "last_updated": "2025-10-25T16:13:27.212870"
+  },
+  {
+    "combo_id": "RECIPE_0024",
+    "theme": "taco_tuesday",
+    "primary_item_id": "ITEM_003049",
+    "complementary_items": [
+      "ITEM_003962",
+      "ITEM_003558",
+      "ITEM_001220"
+    ],
+    "recipe_name": "Special Eco-Friendly Bamboo Paper Towels Recipe",
+    "description": "A delicious taco tuesday recipe featuring Eco-Friendly Bamboo Paper Towels",
+    "difficulty": "hard",
+    "prep_time": 39,
+    "serving_size": 4,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegan",
+      "gluten_free",
+      "dairy_free",
+      "quick_prep",
+      "low_calorie"
+    ],
+    "popularity_score": 0.63,
+    "created_date": "2025-10-25T16:13:27.212876",
+    "last_updated": "2025-10-25T16:13:27.212877"
+  },
+  {
+    "combo_id": "RECIPE_0025",
+    "theme": "italian_dinner",
+    "primary_item_id": "ITEM_003921",
+    "complementary_items": [
+      "ITEM_000944",
+      "ITEM_003815",
+      "ITEM_000615",
+      "ITEM_002000",
+      "ITEM_002155",
+      "ITEM_000485",
+      "ITEM_004153"
+    ],
+    "recipe_name": "Roman Almond Milk Unsweetened Recipe",
+    "description": "A delicious italian dinner recipe featuring Almond Milk Unsweetened",
+    "difficulty": "hard",
+    "prep_time": 28,
+    "serving_size": 7,
+    "cuisine_type": "Italian",
+    "dietary_tags": [
+      "gluten_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.42,
+    "created_date": "2025-10-25T16:13:27.212885",
+    "last_updated": "2025-10-25T16:13:27.212886"
+  },
+  {
+    "combo_id": "RECIPE_0026",
+    "theme": "healthy_breakfast",
+    "primary_item_id": "ITEM_001733",
+    "complementary_items": [
+      "ITEM_001383",
+      "ITEM_001578",
+      "ITEM_004228",
+      "ITEM_000275",
+      "ITEM_001978",
+      "ITEM_002821"
+    ],
+    "recipe_name": "Wholesome Almond Milk Unsweetened Recipe",
+    "description": "A delicious healthy breakfast recipe featuring Almond Milk Unsweetened",
+    "difficulty": "medium",
+    "prep_time": 17,
+    "serving_size": 2,
+    "cuisine_type": "American",
+    "dietary_tags": [],
+    "popularity_score": 0.53,
+    "created_date": "2025-10-25T16:13:27.212894",
+    "last_updated": "2025-10-25T16:13:27.212895"
+  },
+  {
+    "combo_id": "RECIPE_0027",
+    "theme": "mexican_fiesta",
+    "primary_item_id": "ITEM_000684",
+    "complementary_items": [
+      "ITEM_001668",
+      "ITEM_000213",
+      "ITEM_004378"
+    ],
+    "recipe_name": "Fiesta Charcoal Toothpaste Recipe",
+    "description": "A delicious mexican fiesta recipe featuring Charcoal Toothpaste",
+    "difficulty": "medium",
+    "prep_time": 66,
+    "serving_size": 3,
+    "cuisine_type": "Mexican",
+    "dietary_tags": [
+      "vegan",
+      "gluten_free",
+      "dairy_free"
+    ],
+    "popularity_score": 0.86,
+    "created_date": "2025-10-25T16:13:27.212901",
+    "last_updated": "2025-10-25T16:13:27.212902"
+  },
+  {
+    "combo_id": "RECIPE_0028",
+    "theme": "asian_stir_fry",
+    "primary_item_id": "ITEM_003422",
+    "complementary_items": [
+      "ITEM_002228",
+      "ITEM_002732",
+      "ITEM_003620",
+      "ITEM_003975",
+      "ITEM_000482",
+      "ITEM_001616",
+      "ITEM_002301",
+      "ITEM_002697"
+    ],
+    "recipe_name": "Wok Wild-Caught Atlantic Salmon Fillets Recipe",
+    "description": "A delicious asian stir fry recipe featuring Wild-Caught Atlantic Salmon Fillets",
+    "difficulty": "easy",
+    "prep_time": 26,
+    "serving_size": 6,
+    "cuisine_type": "Asian",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free"
+    ],
+    "popularity_score": 0.69,
+    "created_date": "2025-10-25T16:13:27.212910",
+    "last_updated": "2025-10-25T16:13:27.212911"
+  },
+  {
+    "combo_id": "RECIPE_0029",
+    "theme": "comfort_food",
+    "primary_item_id": "ITEM_003580",
+    "complementary_items": [
+      "ITEM_002438",
+      "ITEM_002672",
+      "ITEM_004531"
+    ],
+    "recipe_name": "Classic Roasted Turkey Breast Recipe",
+    "description": "A delicious comfort food recipe featuring Roasted Turkey Breast",
+    "difficulty": "hard",
+    "prep_time": 103,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free"
+    ],
+    "popularity_score": 0.32,
+    "created_date": "2025-10-25T16:13:27.212918",
+    "last_updated": "2025-10-25T16:13:27.212919"
+  },
+  {
+    "combo_id": "RECIPE_0030",
+    "theme": "summer_bbq",
+    "primary_item_id": "ITEM_002303",
+    "complementary_items": [
+      "ITEM_004732",
+      "ITEM_004648",
+      "ITEM_001667",
+      "ITEM_003218",
+      "ITEM_000437",
+      "ITEM_003587",
+      "ITEM_000825"
+    ],
+    "recipe_name": "Smoky Almond Milk Unsweetened Recipe",
+    "description": "A delicious summer bbq recipe featuring Almond Milk Unsweetened",
+    "difficulty": "hard",
+    "prep_time": 95,
+    "serving_size": 4,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free"
+    ],
+    "popularity_score": 0.77,
+    "created_date": "2025-10-25T16:13:27.212928",
+    "last_updated": "2025-10-25T16:13:27.212929"
+  },
+  {
+    "combo_id": "RECIPE_0031",
+    "theme": "holiday_baking",
+    "primary_item_id": "ITEM_003902",
+    "complementary_items": [
+      "ITEM_002302",
+      "ITEM_003032",
+      "ITEM_000758",
+      "ITEM_003821",
+      "ITEM_004488",
+      "ITEM_001124",
+      "ITEM_000168"
+    ],
+    "recipe_name": "Special Organic Spinach Recipe",
+    "description": "A delicious holiday baking recipe featuring Organic Spinach",
+    "difficulty": "hard",
+    "prep_time": 63,
+    "serving_size": 2,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free"
+    ],
+    "popularity_score": 0.13,
+    "created_date": "2025-10-25T16:13:27.212988",
+    "last_updated": "2025-10-25T16:13:27.212993"
+  },
+  {
+    "combo_id": "RECIPE_0032",
+    "theme": "quick_snacks",
+    "primary_item_id": "ITEM_003083",
+    "complementary_items": [
+      "ITEM_004245",
+      "ITEM_004957",
+      "ITEM_002256",
+      "ITEM_000265",
+      "ITEM_004020",
+      "ITEM_004267",
+      "ITEM_003952",
+      "ITEM_004268"
+    ],
+    "recipe_name": "Special Dark Chocolate Almonds Recipe",
+    "description": "A delicious quick snacks recipe featuring Dark Chocolate Almonds",
+    "difficulty": "medium",
+    "prep_time": 80,
+    "serving_size": 6,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.61,
+    "created_date": "2025-10-25T16:13:27.213016",
+    "last_updated": "2025-10-25T16:13:27.213018"
+  },
+  {
+    "combo_id": "RECIPE_0033",
+    "theme": "mediterranean_bowl",
+    "primary_item_id": "ITEM_001344",
+    "complementary_items": [
+      "ITEM_000739",
+      "ITEM_000742",
+      "ITEM_002283"
+    ],
+    "recipe_name": "Special Wild-Caught Atlantic Salmon Fillets Recipe",
+    "description": "A delicious mediterranean bowl recipe featuring Wild-Caught Atlantic Salmon Fillets",
+    "difficulty": "hard",
+    "prep_time": 90,
+    "serving_size": 6,
+    "cuisine_type": "Mediterranean",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free",
+      "quick_prep",
+      "low_calorie"
+    ],
+    "popularity_score": 0.31,
+    "created_date": "2025-10-25T16:13:27.213026",
+    "last_updated": "2025-10-25T16:13:27.213027"
+  },
+  {
+    "combo_id": "RECIPE_0034",
+    "theme": "breakfast_smoothie",
+    "primary_item_id": "ITEM_003571",
+    "complementary_items": [
+      "ITEM_002247",
+      "ITEM_003334",
+      "ITEM_003764",
+      "ITEM_003405",
+      "ITEM_004141"
+    ],
+    "recipe_name": "Special Wild-Caught Atlantic Salmon Fillets Recipe",
+    "description": "A delicious breakfast smoothie recipe featuring Wild-Caught Atlantic Salmon Fillets",
+    "difficulty": "medium",
+    "prep_time": 79,
+    "serving_size": 7,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "dairy_free",
+      "quick_prep",
+      "low_calorie"
+    ],
+    "popularity_score": 0.35,
+    "created_date": "2025-10-25T16:13:27.213034",
+    "last_updated": "2025-10-25T16:13:27.213035"
+  },
+  {
+    "combo_id": "RECIPE_0035",
+    "theme": "pasta_night",
+    "primary_item_id": "ITEM_000800",
+    "complementary_items": [
+      "ITEM_001628",
+      "ITEM_002445",
+      "ITEM_001207",
+      "ITEM_001338",
+      "ITEM_001551",
+      "ITEM_002109",
+      "ITEM_002975"
+    ],
+    "recipe_name": "Special Organic Hass Avocados Recipe",
+    "description": "A delicious pasta night recipe featuring Organic Hass Avocados",
+    "difficulty": "medium",
+    "prep_time": 89,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegan",
+      "dairy_free"
+    ],
+    "popularity_score": 0.96,
+    "created_date": "2025-10-25T16:13:27.213043",
+    "last_updated": "2025-10-25T16:13:27.213044"
+  },
+  {
+    "combo_id": "RECIPE_0036",
+    "theme": "taco_tuesday",
+    "primary_item_id": "ITEM_003063",
+    "complementary_items": [
+      "ITEM_001271",
+      "ITEM_001815",
+      "ITEM_000996",
+      "ITEM_000037",
+      "ITEM_003994",
+      "ITEM_001357"
+    ],
+    "recipe_name": "Special Organic Roasted Turkey Breast Recipe",
+    "description": "A delicious taco tuesday recipe featuring Organic Roasted Turkey Breast",
+    "difficulty": "medium",
+    "prep_time": 42,
+    "serving_size": 5,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free"
+    ],
+    "popularity_score": 0.58,
+    "created_date": "2025-10-25T16:13:27.213052",
+    "last_updated": "2025-10-25T16:13:27.213053"
+  },
+  {
+    "combo_id": "RECIPE_0037",
+    "theme": "italian_dinner",
+    "primary_item_id": "ITEM_001422",
+    "complementary_items": [
+      "ITEM_004355",
+      "ITEM_002564",
+      "ITEM_002474",
+      "ITEM_002187",
+      "ITEM_004374",
+      "ITEM_000488",
+      "ITEM_001682",
+      "ITEM_000728"
+    ],
+    "recipe_name": "Roman Frozen Wild Blueberries Recipe",
+    "description": "A delicious italian dinner recipe featuring Frozen Wild Blueberries",
+    "difficulty": "hard",
+    "prep_time": 57,
+    "serving_size": 8,
+    "cuisine_type": "Italian",
+    "dietary_tags": [
+      "gluten_free"
+    ],
+    "popularity_score": 0.84,
+    "created_date": "2025-10-25T16:13:27.213061",
+    "last_updated": "2025-10-25T16:13:27.213062"
+  },
+  {
+    "combo_id": "RECIPE_0038",
+    "theme": "healthy_breakfast",
+    "primary_item_id": "ITEM_000768",
+    "complementary_items": [
+      "ITEM_000462",
+      "ITEM_000866",
+      "ITEM_002090",
+      "ITEM_003288",
+      "ITEM_001492",
+      "ITEM_003479",
+      "ITEM_000607",
+      "ITEM_002331"
+    ],
+    "recipe_name": "Wholesome Frozen Organic Blueberries Recipe",
+    "description": "A delicious healthy breakfast recipe featuring Frozen Organic Blueberries",
+    "difficulty": "hard",
+    "prep_time": 91,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian"
+    ],
+    "popularity_score": 0.66,
+    "created_date": "2025-10-25T16:13:27.213070",
+    "last_updated": "2025-10-25T16:13:27.213071"
+  },
+  {
+    "combo_id": "RECIPE_0039",
+    "theme": "mexican_fiesta",
+    "primary_item_id": "ITEM_002988",
+    "complementary_items": [
+      "ITEM_000968",
+      "ITEM_000072",
+      "ITEM_000295",
+      "ITEM_000711",
+      "ITEM_002057"
+    ],
+    "recipe_name": "Fiesta Eco-Friendly Bamboo Paper Towels Recipe",
+    "description": "A delicious mexican fiesta recipe featuring Eco-Friendly Bamboo Paper Towels",
+    "difficulty": "hard",
+    "prep_time": 75,
+    "serving_size": 7,
+    "cuisine_type": "Mexican",
+    "dietary_tags": [
+      "vegan",
+      "dairy_free"
+    ],
+    "popularity_score": 0.44,
+    "created_date": "2025-10-25T16:13:27.213077",
+    "last_updated": "2025-10-25T16:13:27.213078"
+  },
+  {
+    "combo_id": "RECIPE_0040",
+    "theme": "asian_stir_fry",
+    "primary_item_id": "ITEM_000689",
+    "complementary_items": [
+      "ITEM_001930",
+      "ITEM_003567",
+      "ITEM_001841",
+      "ITEM_000321",
+      "ITEM_000895",
+      "ITEM_003102"
+    ],
+    "recipe_name": "Wok Grass-Fed Ground Beef Recipe",
+    "description": "A delicious asian stir fry recipe featuring Grass-Fed Ground Beef",
+    "difficulty": "medium",
+    "prep_time": 101,
+    "serving_size": 2,
+    "cuisine_type": "Asian",
+    "dietary_tags": [],
+    "popularity_score": 0.17,
+    "created_date": "2025-10-25T16:13:27.213085",
+    "last_updated": "2025-10-25T16:13:27.213086"
+  },
+  {
+    "combo_id": "RECIPE_0041",
+    "theme": "comfort_food",
+    "primary_item_id": "ITEM_001382",
+    "complementary_items": [
+      "ITEM_000863",
+      "ITEM_002493",
+      "ITEM_003429",
+      "ITEM_001860",
+      "ITEM_004125",
+      "ITEM_000883",
+      "ITEM_004455",
+      "ITEM_001771"
+    ],
+    "recipe_name": "Hearty Wild-Caught Atlantic Salmon Fillets Recipe",
+    "description": "A delicious comfort food recipe featuring Wild-Caught Atlantic Salmon Fillets",
+    "difficulty": "medium",
+    "prep_time": 22,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [],
+    "popularity_score": 0.79,
+    "created_date": "2025-10-25T16:13:27.213093",
+    "last_updated": "2025-10-25T16:13:27.213094"
+  },
+  {
+    "combo_id": "RECIPE_0042",
+    "theme": "summer_bbq",
+    "primary_item_id": "ITEM_002716",
+    "complementary_items": [
+      "ITEM_003668",
+      "ITEM_001136",
+      "ITEM_001227",
+      "ITEM_002288"
+    ],
+    "recipe_name": "Smoky Dark Chocolate Almonds Recipe",
+    "description": "A delicious summer bbq recipe featuring Dark Chocolate Almonds",
+    "difficulty": "easy",
+    "prep_time": 74,
+    "serving_size": 7,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free"
+    ],
+    "popularity_score": 0.51,
+    "created_date": "2025-10-25T16:13:27.213100",
+    "last_updated": "2025-10-25T16:13:27.213101"
+  },
+  {
+    "combo_id": "RECIPE_0043",
+    "theme": "holiday_baking",
+    "primary_item_id": "ITEM_003421",
+    "complementary_items": [
+      "ITEM_000375",
+      "ITEM_004756",
+      "ITEM_004880",
+      "ITEM_001694",
+      "ITEM_004454",
+      "ITEM_000548"
+    ],
+    "recipe_name": "Special Organic Hass Avocados Recipe",
+    "description": "A delicious holiday baking recipe featuring Organic Hass Avocados",
+    "difficulty": "hard",
+    "prep_time": 107,
+    "serving_size": 3,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "quick_prep"
+    ],
+    "popularity_score": 0.43,
+    "created_date": "2025-10-25T16:13:27.213108",
+    "last_updated": "2025-10-25T16:13:27.213109"
+  },
+  {
+    "combo_id": "RECIPE_0044",
+    "theme": "quick_snacks",
+    "primary_item_id": "ITEM_004072",
+    "complementary_items": [
+      "ITEM_004538",
+      "ITEM_003055",
+      "ITEM_004523",
+      "ITEM_002130"
+    ],
+    "recipe_name": "Special Artisan Sourdough Bread Recipe",
+    "description": "A delicious quick snacks recipe featuring Artisan Sourdough Bread",
+    "difficulty": "hard",
+    "prep_time": 102,
+    "serving_size": 3,
+    "cuisine_type": "American",
+    "dietary_tags": [],
+    "popularity_score": 0.97,
+    "created_date": "2025-10-25T16:13:27.213115",
+    "last_updated": "2025-10-25T16:13:27.213116"
+  },
+  {
+    "combo_id": "RECIPE_0045",
+    "theme": "mediterranean_bowl",
+    "primary_item_id": "ITEM_001945",
+    "complementary_items": [
+      "ITEM_000191",
+      "ITEM_003422",
+      "ITEM_000231",
+      "ITEM_003316",
+      "ITEM_004305",
+      "ITEM_002187",
+      "ITEM_004420"
+    ],
+    "recipe_name": "Special Plant-Based Laundry Detergent Recipe",
+    "description": "A delicious mediterranean bowl recipe featuring Plant-Based Laundry Detergent",
+    "difficulty": "hard",
+    "prep_time": 71,
+    "serving_size": 6,
+    "cuisine_type": "Mediterranean",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free"
+    ],
+    "popularity_score": 0.72,
+    "created_date": "2025-10-25T16:13:27.213123",
+    "last_updated": "2025-10-25T16:13:27.213124"
+  },
+  {
+    "combo_id": "RECIPE_0046",
+    "theme": "breakfast_smoothie",
+    "primary_item_id": "ITEM_000224",
+    "complementary_items": [
+      "ITEM_002667",
+      "ITEM_003386",
+      "ITEM_000171",
+      "ITEM_001889",
+      "ITEM_003923",
+      "ITEM_003927",
+      "ITEM_001583"
+    ],
+    "recipe_name": "Special Roasted Turkey Breast Slices Recipe",
+    "description": "A delicious breakfast smoothie recipe featuring Roasted Turkey Breast Slices",
+    "difficulty": "easy",
+    "prep_time": 81,
+    "serving_size": 3,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.79,
+    "created_date": "2025-10-25T16:13:27.213131",
+    "last_updated": "2025-10-25T16:13:27.213132"
+  },
+  {
+    "combo_id": "RECIPE_0047",
+    "theme": "pasta_night",
+    "primary_item_id": "ITEM_000979",
+    "complementary_items": [
+      "ITEM_004897",
+      "ITEM_003043",
+      "ITEM_002062",
+      "ITEM_002685",
+      "ITEM_004142",
+      "ITEM_004616"
+    ],
+    "recipe_name": "Special Organic Coconut Oil Recipe",
+    "description": "A delicious pasta night recipe featuring Organic Coconut Oil",
+    "difficulty": "easy",
+    "prep_time": 15,
+    "serving_size": 6,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free"
+    ],
+    "popularity_score": 0.57,
+    "created_date": "2025-10-25T16:13:27.213138",
+    "last_updated": "2025-10-25T16:13:27.213139"
+  },
+  {
+    "combo_id": "RECIPE_0048",
+    "theme": "taco_tuesday",
+    "primary_item_id": "ITEM_003262",
+    "complementary_items": [
+      "ITEM_004338",
+      "ITEM_001878",
+      "ITEM_004668",
+      "ITEM_002592",
+      "ITEM_001553"
+    ],
+    "recipe_name": "Special Wild-Caught Atlantic Salmon Fillets Recipe",
+    "description": "A delicious taco tuesday recipe featuring Wild-Caught Atlantic Salmon Fillets",
+    "difficulty": "hard",
+    "prep_time": 49,
+    "serving_size": 6,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "quick_prep"
+    ],
+    "popularity_score": 0.15,
+    "created_date": "2025-10-25T16:13:27.213145",
+    "last_updated": "2025-10-25T16:13:27.213146"
+  },
+  {
+    "combo_id": "RECIPE_0049",
+    "theme": "italian_dinner",
+    "primary_item_id": "ITEM_004195",
+    "complementary_items": [
+      "ITEM_000793",
+      "ITEM_000838",
+      "ITEM_002603"
+    ],
+    "recipe_name": "Italiano Bamboo Paper Towels Recipe",
+    "description": "A delicious italian dinner recipe featuring Bamboo Paper Towels",
+    "difficulty": "hard",
+    "prep_time": 44,
+    "serving_size": 3,
+    "cuisine_type": "Italian",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.44,
+    "created_date": "2025-10-25T16:13:27.213152",
+    "last_updated": "2025-10-25T16:13:27.213153"
+  },
+  {
+    "combo_id": "RECIPE_0050",
+    "theme": "healthy_breakfast",
+    "primary_item_id": "ITEM_001827",
+    "complementary_items": [
+      "ITEM_001269",
+      "ITEM_000855",
+      "ITEM_000829",
+      "ITEM_001258",
+      "ITEM_001711",
+      "ITEM_004426"
+    ],
+    "recipe_name": "Fresh Organic Hass Avocados Recipe",
+    "description": "A delicious healthy breakfast recipe featuring Organic Hass Avocados",
+    "difficulty": "hard",
+    "prep_time": 23,
+    "serving_size": 5,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "low_calorie"
+    ],
+    "popularity_score": 0.79,
+    "created_date": "2025-10-25T16:13:27.213159",
+    "last_updated": "2025-10-25T16:13:27.213160"
+  },
+  {
+    "combo_id": "RECIPE_0051",
+    "theme": "mexican_fiesta",
+    "primary_item_id": "ITEM_001585",
+    "complementary_items": [
+      "ITEM_001502",
+      "ITEM_003047",
+      "ITEM_000435",
+      "ITEM_001695",
+      "ITEM_001702",
+      "ITEM_002139"
+    ],
+    "recipe_name": "Hacienda Almond Milk Unsweetened Recipe",
+    "description": "A delicious mexican fiesta recipe featuring Almond Milk Unsweetened",
+    "difficulty": "medium",
+    "prep_time": 91,
+    "serving_size": 4,
+    "cuisine_type": "Mexican",
+    "dietary_tags": [
+      "quick_prep"
+    ],
+    "popularity_score": 0.71,
+    "created_date": "2025-10-25T16:13:27.213167",
+    "last_updated": "2025-10-25T16:13:27.213168"
+  },
+  {
+    "combo_id": "RECIPE_0052",
+    "theme": "asian_stir_fry",
+    "primary_item_id": "ITEM_002905",
+    "complementary_items": [
+      "ITEM_000270",
+      "ITEM_003850",
+      "ITEM_001347",
+      "ITEM_000759",
+      "ITEM_004773"
+    ],
+    "recipe_name": "Dragon Organic Hass Avocados Recipe",
+    "description": "A delicious asian stir fry recipe featuring Organic Hass Avocados",
+    "difficulty": "easy",
+    "prep_time": 29,
+    "serving_size": 5,
+    "cuisine_type": "Asian",
+    "dietary_tags": [
+      "gluten_free"
+    ],
+    "popularity_score": 0.32,
+    "created_date": "2025-10-25T16:13:27.213174",
+    "last_updated": "2025-10-25T16:13:27.213175"
+  },
+  {
+    "combo_id": "RECIPE_0053",
+    "theme": "comfort_food",
+    "primary_item_id": "ITEM_001625",
+    "complementary_items": [
+      "ITEM_003425",
+      "ITEM_000832",
+      "ITEM_003509",
+      "ITEM_003119"
+    ],
+    "recipe_name": "Homestyle Eco-Friendly Dish Soap Recipe",
+    "description": "A delicious comfort food recipe featuring Eco-Friendly Dish Soap",
+    "difficulty": "medium",
+    "prep_time": 43,
+    "serving_size": 3,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free"
+    ],
+    "popularity_score": 0.54,
+    "created_date": "2025-10-25T16:13:27.213181",
+    "last_updated": "2025-10-25T16:13:27.213182"
+  },
+  {
+    "combo_id": "RECIPE_0054",
+    "theme": "summer_bbq",
+    "primary_item_id": "ITEM_004440",
+    "complementary_items": [
+      "ITEM_001592",
+      "ITEM_004789",
+      "ITEM_000873",
+      "ITEM_003176"
+    ],
+    "recipe_name": "Grilled Frozen Organic Blueberries Recipe",
+    "description": "A delicious summer bbq recipe featuring Frozen Organic Blueberries",
+    "difficulty": "medium",
+    "prep_time": 83,
+    "serving_size": 6,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "low_calorie"
+    ],
+    "popularity_score": 0.8,
+    "created_date": "2025-10-25T16:13:27.213188",
+    "last_updated": "2025-10-25T16:13:27.213189"
+  },
+  {
+    "combo_id": "RECIPE_0055",
+    "theme": "holiday_baking",
+    "primary_item_id": "ITEM_004572",
+    "complementary_items": [
+      "ITEM_000260",
+      "ITEM_004099",
+      "ITEM_003746"
+    ],
+    "recipe_name": "Special Organic Hass Avocados Recipe",
+    "description": "A delicious holiday baking recipe featuring Organic Hass Avocados",
+    "difficulty": "easy",
+    "prep_time": 53,
+    "serving_size": 4,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free",
+      "low_calorie"
+    ],
+    "popularity_score": 0.48,
+    "created_date": "2025-10-25T16:13:27.213196",
+    "last_updated": "2025-10-25T16:13:27.213197"
+  },
+  {
+    "combo_id": "RECIPE_0056",
+    "theme": "quick_snacks",
+    "primary_item_id": "ITEM_003716",
+    "complementary_items": [
+      "ITEM_004329",
+      "ITEM_002779",
+      "ITEM_001412",
+      "ITEM_002213",
+      "ITEM_000543",
+      "ITEM_001658",
+      "ITEM_003791",
+      "ITEM_003133"
+    ],
+    "recipe_name": "Special Sliced Roasted Turkey Breast Recipe",
+    "description": "A delicious quick snacks recipe featuring Sliced Roasted Turkey Breast",
+    "difficulty": "easy",
+    "prep_time": 95,
+    "serving_size": 2,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "low_calorie"
+    ],
+    "popularity_score": 0.66,
+    "created_date": "2025-10-25T16:13:27.213207",
+    "last_updated": "2025-10-25T16:13:27.213208"
+  },
+  {
+    "combo_id": "RECIPE_0057",
+    "theme": "mediterranean_bowl",
+    "primary_item_id": "ITEM_001915",
+    "complementary_items": [
+      "ITEM_000563",
+      "ITEM_001375",
+      "ITEM_004615"
+    ],
+    "recipe_name": "Special Organic Quinoa Recipe",
+    "description": "A delicious mediterranean bowl recipe featuring Organic Quinoa",
+    "difficulty": "medium",
+    "prep_time": 24,
+    "serving_size": 6,
+    "cuisine_type": "Mediterranean",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.12,
+    "created_date": "2025-10-25T16:13:27.213215",
+    "last_updated": "2025-10-25T16:13:27.213217"
+  },
+  {
+    "combo_id": "RECIPE_0058",
+    "theme": "breakfast_smoothie",
+    "primary_item_id": "ITEM_000738",
+    "complementary_items": [
+      "ITEM_002988",
+      "ITEM_004832",
+      "ITEM_001319",
+      "ITEM_000932",
+      "ITEM_002172",
+      "ITEM_004099",
+      "ITEM_004149",
+      "ITEM_002200"
+    ],
+    "recipe_name": "Special Organic Hass Avocados Recipe",
+    "description": "A delicious breakfast smoothie recipe featuring Organic Hass Avocados",
+    "difficulty": "hard",
+    "prep_time": 26,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free"
+    ],
+    "popularity_score": 0.36,
+    "created_date": "2025-10-25T16:13:27.213225",
+    "last_updated": "2025-10-25T16:13:27.213226"
+  },
+  {
+    "combo_id": "RECIPE_0059",
+    "theme": "pasta_night",
+    "primary_item_id": "ITEM_001066",
+    "complementary_items": [
+      "ITEM_002440",
+      "ITEM_001668",
+      "ITEM_004700",
+      "ITEM_004469",
+      "ITEM_000718",
+      "ITEM_002887",
+      "ITEM_002788"
+    ],
+    "recipe_name": "Special Organic Coconut Oil Recipe",
+    "description": "A delicious pasta night recipe featuring Organic Coconut Oil",
+    "difficulty": "easy",
+    "prep_time": 81,
+    "serving_size": 5,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free"
+    ],
+    "popularity_score": 0.67,
+    "created_date": "2025-10-25T16:13:27.213234",
+    "last_updated": "2025-10-25T16:13:27.213235"
+  },
+  {
+    "combo_id": "RECIPE_0060",
+    "theme": "taco_tuesday",
+    "primary_item_id": "ITEM_000879",
+    "complementary_items": [
+      "ITEM_002295",
+      "ITEM_002164",
+      "ITEM_001088"
+    ],
+    "recipe_name": "Special Almond Milk Unsweetened Recipe",
+    "description": "A delicious taco tuesday recipe featuring Almond Milk Unsweetened",
+    "difficulty": "easy",
+    "prep_time": 62,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free"
+    ],
+    "popularity_score": 0.87,
+    "created_date": "2025-10-25T16:13:27.213241",
+    "last_updated": "2025-10-25T16:13:27.213242"
+  },
+  {
+    "combo_id": "RECIPE_0061",
+    "theme": "italian_dinner",
+    "primary_item_id": "ITEM_002925",
+    "complementary_items": [
+      "ITEM_003961",
+      "ITEM_001462",
+      "ITEM_000616",
+      "ITEM_000436",
+      "ITEM_003361",
+      "ITEM_002350"
+    ],
+    "recipe_name": "Italiano Organic Coconut Oil Recipe",
+    "description": "A delicious italian dinner recipe featuring Organic Coconut Oil",
+    "difficulty": "easy",
+    "prep_time": 69,
+    "serving_size": 6,
+    "cuisine_type": "Italian",
+    "dietary_tags": [
+      "gluten_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.13,
+    "created_date": "2025-10-25T16:13:27.213250",
+    "last_updated": "2025-10-25T16:13:27.213251"
+  },
+  {
+    "combo_id": "RECIPE_0062",
+    "theme": "healthy_breakfast",
+    "primary_item_id": "ITEM_003275",
+    "complementary_items": [
+      "ITEM_000014",
+      "ITEM_004035",
+      "ITEM_002133"
+    ],
+    "recipe_name": "Energizing Greek Yogurt Plain Recipe",
+    "description": "A delicious healthy breakfast recipe featuring Greek Yogurt Plain",
+    "difficulty": "easy",
+    "prep_time": 65,
+    "serving_size": 7,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "quick_prep",
+      "low_calorie"
+    ],
+    "popularity_score": 0.34,
+    "created_date": "2025-10-25T16:13:27.213256",
+    "last_updated": "2025-10-25T16:13:27.213257"
+  },
+  {
+    "combo_id": "RECIPE_0063",
+    "theme": "mexican_fiesta",
+    "primary_item_id": "ITEM_003370",
+    "complementary_items": [
+      "ITEM_002841",
+      "ITEM_001683",
+      "ITEM_003084"
+    ],
+    "recipe_name": "Hacienda Artisan Sourdough Bread Recipe",
+    "description": "A delicious mexican fiesta recipe featuring Artisan Sourdough Bread",
+    "difficulty": "medium",
+    "prep_time": 30,
+    "serving_size": 5,
+    "cuisine_type": "Mexican",
+    "dietary_tags": [
+      "vegan",
+      "dairy_free"
+    ],
+    "popularity_score": 0.12,
+    "created_date": "2025-10-25T16:13:27.213263",
+    "last_updated": "2025-10-25T16:13:27.213265"
+  },
+  {
+    "combo_id": "RECIPE_0064",
+    "theme": "asian_stir_fry",
+    "primary_item_id": "ITEM_004197",
+    "complementary_items": [
+      "ITEM_001306",
+      "ITEM_004617",
+      "ITEM_003108",
+      "ITEM_001258",
+      "ITEM_002365"
+    ],
+    "recipe_name": "Dragon Roasted Turkey Breast Recipe",
+    "description": "A delicious asian stir fry recipe featuring Roasted Turkey Breast",
+    "difficulty": "medium",
+    "prep_time": 83,
+    "serving_size": 8,
+    "cuisine_type": "Asian",
+    "dietary_tags": [
+      "gluten_free"
+    ],
+    "popularity_score": 0.87,
+    "created_date": "2025-10-25T16:13:27.213271",
+    "last_updated": "2025-10-25T16:13:27.213273"
+  },
+  {
+    "combo_id": "RECIPE_0065",
+    "theme": "comfort_food",
+    "primary_item_id": "ITEM_000687",
+    "complementary_items": [
+      "ITEM_000268",
+      "ITEM_002539",
+      "ITEM_002427",
+      "ITEM_000052",
+      "ITEM_001764"
+    ],
+    "recipe_name": "Classic Sliced Roasted Turkey Breast Recipe",
+    "description": "A delicious comfort food recipe featuring Sliced Roasted Turkey Breast",
+    "difficulty": "easy",
+    "prep_time": 98,
+    "serving_size": 5,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.37,
+    "created_date": "2025-10-25T16:13:27.213279",
+    "last_updated": "2025-10-25T16:13:27.213281"
+  },
+  {
+    "combo_id": "RECIPE_0066",
+    "theme": "summer_bbq",
+    "primary_item_id": "ITEM_001834",
+    "complementary_items": [
+      "ITEM_000220",
+      "ITEM_002237",
+      "ITEM_004428",
+      "ITEM_003493",
+      "ITEM_004981"
+    ],
+    "recipe_name": "Grilled Organic Coconut Oil Recipe",
+    "description": "A delicious summer bbq recipe featuring Organic Coconut Oil",
+    "difficulty": "hard",
+    "prep_time": 97,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "quick_prep",
+      "low_calorie"
+    ],
+    "popularity_score": 0.93,
+    "created_date": "2025-10-25T16:13:27.213288",
+    "last_updated": "2025-10-25T16:13:27.213289"
+  },
+  {
+    "combo_id": "RECIPE_0067",
+    "theme": "holiday_baking",
+    "primary_item_id": "ITEM_002921",
+    "complementary_items": [
+      "ITEM_000765",
+      "ITEM_004363",
+      "ITEM_000550",
+      "ITEM_001839",
+      "ITEM_002194"
+    ],
+    "recipe_name": "Special Grass-Fed Ground Beef Recipe",
+    "description": "A delicious holiday baking recipe featuring Grass-Fed Ground Beef",
+    "difficulty": "medium",
+    "prep_time": 90,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "low_calorie"
+    ],
+    "popularity_score": 0.9,
+    "created_date": "2025-10-25T16:13:27.213296",
+    "last_updated": "2025-10-25T16:13:27.213297"
+  },
+  {
+    "combo_id": "RECIPE_0068",
+    "theme": "quick_snacks",
+    "primary_item_id": "ITEM_001966",
+    "complementary_items": [
+      "ITEM_003971",
+      "ITEM_002913",
+      "ITEM_003875",
+      "ITEM_001968",
+      "ITEM_002118",
+      "ITEM_000994",
+      "ITEM_000981",
+      "ITEM_000583"
+    ],
+    "recipe_name": "Special Frozen Organic Blueberries Recipe",
+    "description": "A delicious quick snacks recipe featuring Frozen Organic Blueberries",
+    "difficulty": "hard",
+    "prep_time": 49,
+    "serving_size": 7,
+    "cuisine_type": "American",
+    "dietary_tags": [],
+    "popularity_score": 0.64,
+    "created_date": "2025-10-25T16:13:27.213305",
+    "last_updated": "2025-10-25T16:13:27.213306"
+  },
+  {
+    "combo_id": "RECIPE_0069",
+    "theme": "mediterranean_bowl",
+    "primary_item_id": "ITEM_002996",
+    "complementary_items": [
+      "ITEM_003008",
+      "ITEM_001112",
+      "ITEM_003544",
+      "ITEM_000660",
+      "ITEM_004448",
+      "ITEM_002958",
+      "ITEM_002592",
+      "ITEM_001994"
+    ],
+    "recipe_name": "Special Frozen Organic Blueberries Recipe",
+    "description": "A delicious mediterranean bowl recipe featuring Frozen Organic Blueberries",
+    "difficulty": "medium",
+    "prep_time": 65,
+    "serving_size": 6,
+    "cuisine_type": "Mediterranean",
+    "dietary_tags": [
+      "gluten_free"
+    ],
+    "popularity_score": 0.42,
+    "created_date": "2025-10-25T16:13:27.213314",
+    "last_updated": "2025-10-25T16:13:27.213315"
+  },
+  {
+    "combo_id": "RECIPE_0070",
+    "theme": "breakfast_smoothie",
+    "primary_item_id": "ITEM_001902",
+    "complementary_items": [
+      "ITEM_004662",
+      "ITEM_001361",
+      "ITEM_001431",
+      "ITEM_000232",
+      "ITEM_002730",
+      "ITEM_000392"
+    ],
+    "recipe_name": "Special Organic Quinoa Recipe",
+    "description": "A delicious breakfast smoothie recipe featuring Organic Quinoa",
+    "difficulty": "hard",
+    "prep_time": 25,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free"
+    ],
+    "popularity_score": 0.14,
+    "created_date": "2025-10-25T16:13:27.213322",
+    "last_updated": "2025-10-25T16:13:27.213323"
+  },
+  {
+    "combo_id": "RECIPE_0071",
+    "theme": "pasta_night",
+    "primary_item_id": "ITEM_002067",
+    "complementary_items": [
+      "ITEM_004860",
+      "ITEM_001948",
+      "ITEM_003671",
+      "ITEM_003735"
+    ],
+    "recipe_name": "Special Organic Coconut Oil Recipe",
+    "description": "A delicious pasta night recipe featuring Organic Coconut Oil",
+    "difficulty": "medium",
+    "prep_time": 117,
+    "serving_size": 2,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.1,
+    "created_date": "2025-10-25T16:13:27.213330",
+    "last_updated": "2025-10-25T16:13:27.213331"
+  },
+  {
+    "combo_id": "RECIPE_0072",
+    "theme": "taco_tuesday",
+    "primary_item_id": "ITEM_003237",
+    "complementary_items": [
+      "ITEM_002929",
+      "ITEM_001480",
+      "ITEM_000073",
+      "ITEM_001251",
+      "ITEM_004113",
+      "ITEM_001034",
+      "ITEM_001268",
+      "ITEM_001063"
+    ],
+    "recipe_name": "Special Wild-Caught Atlantic Salmon Fillets Recipe",
+    "description": "A delicious taco tuesday recipe featuring Wild-Caught Atlantic Salmon Fillets",
+    "difficulty": "hard",
+    "prep_time": 15,
+    "serving_size": 4,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "dairy_free",
+      "low_calorie"
+    ],
+    "popularity_score": 0.51,
+    "created_date": "2025-10-25T16:13:27.213338",
+    "last_updated": "2025-10-25T16:13:27.213339"
+  },
+  {
+    "combo_id": "RECIPE_0073",
+    "theme": "italian_dinner",
+    "primary_item_id": "ITEM_004333",
+    "complementary_items": [
+      "ITEM_000554",
+      "ITEM_000765",
+      "ITEM_001227",
+      "ITEM_003969",
+      "ITEM_000031",
+      "ITEM_004199"
+    ],
+    "recipe_name": "Tuscan Sourdough Bread Recipe",
+    "description": "A delicious italian dinner recipe featuring Sourdough Bread",
+    "difficulty": "easy",
+    "prep_time": 67,
+    "serving_size": 7,
+    "cuisine_type": "Italian",
+    "dietary_tags": [
+      "vegetarian",
+      "low_calorie"
+    ],
+    "popularity_score": 0.3,
+    "created_date": "2025-10-25T16:13:27.213346",
+    "last_updated": "2025-10-25T16:13:27.213347"
+  },
+  {
+    "combo_id": "RECIPE_0074",
+    "theme": "healthy_breakfast",
+    "primary_item_id": "ITEM_001053",
+    "complementary_items": [
+      "ITEM_001921",
+      "ITEM_001025",
+      "ITEM_000793",
+      "ITEM_002674"
+    ],
+    "recipe_name": "Wholesome Organic Coconut Oil Recipe",
+    "description": "A delicious healthy breakfast recipe featuring Organic Coconut Oil",
+    "difficulty": "medium",
+    "prep_time": 35,
+    "serving_size": 6,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian"
+    ],
+    "popularity_score": 0.79,
+    "created_date": "2025-10-25T16:13:27.213354",
+    "last_updated": "2025-10-25T16:13:27.213355"
+  },
+  {
+    "combo_id": "RECIPE_0075",
+    "theme": "mexican_fiesta",
+    "primary_item_id": "ITEM_000018",
+    "complementary_items": [
+      "ITEM_004156",
+      "ITEM_003947",
+      "ITEM_000663",
+      "ITEM_003174",
+      "ITEM_000991",
+      "ITEM_004112",
+      "ITEM_002101"
+    ],
+    "recipe_name": "Cantina Frozen Organic Blueberries Recipe",
+    "description": "A delicious mexican fiesta recipe featuring Frozen Organic Blueberries",
+    "difficulty": "hard",
+    "prep_time": 63,
+    "serving_size": 4,
+    "cuisine_type": "Mexican",
+    "dietary_tags": [
+      "vegetarian"
+    ],
+    "popularity_score": 0.94,
+    "created_date": "2025-10-25T16:13:27.213362",
+    "last_updated": "2025-10-25T16:13:27.213363"
+  },
+  {
+    "combo_id": "RECIPE_0076",
+    "theme": "asian_stir_fry",
+    "primary_item_id": "ITEM_004849",
+    "complementary_items": [
+      "ITEM_001484",
+      "ITEM_000754",
+      "ITEM_003929",
+      "ITEM_004044",
+      "ITEM_000122",
+      "ITEM_003665",
+      "ITEM_002771",
+      "ITEM_002052"
+    ],
+    "recipe_name": "Garden Organic Quinoa Recipe",
+    "description": "A delicious asian stir fry recipe featuring Organic Quinoa",
+    "difficulty": "easy",
+    "prep_time": 39,
+    "serving_size": 4,
+    "cuisine_type": "Asian",
+    "dietary_tags": [
+      "gluten_free",
+      "quick_prep",
+      "low_calorie"
+    ],
+    "popularity_score": 0.79,
+    "created_date": "2025-10-25T16:13:27.213371",
+    "last_updated": "2025-10-25T16:13:27.213372"
+  },
+  {
+    "combo_id": "RECIPE_0077",
+    "theme": "comfort_food",
+    "primary_item_id": "ITEM_002747",
+    "complementary_items": [
+      "ITEM_004965",
+      "ITEM_004468",
+      "ITEM_002476",
+      "ITEM_004142",
+      "ITEM_001360",
+      "ITEM_001910",
+      "ITEM_003388"
+    ],
+    "recipe_name": "Homestyle Wild-Caught Atlantic Salmon Fillets Recipe",
+    "description": "A delicious comfort food recipe featuring Wild-Caught Atlantic Salmon Fillets",
+    "difficulty": "hard",
+    "prep_time": 17,
+    "serving_size": 7,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "dairy_free"
+    ],
+    "popularity_score": 0.28,
+    "created_date": "2025-10-25T16:13:27.213379",
+    "last_updated": "2025-10-25T16:13:27.213380"
+  },
+  {
+    "combo_id": "RECIPE_0078",
+    "theme": "summer_bbq",
+    "primary_item_id": "ITEM_003653",
+    "complementary_items": [
+      "ITEM_003900",
+      "ITEM_000688",
+      "ITEM_003704",
+      "ITEM_000357",
+      "ITEM_001863"
+    ],
+    "recipe_name": "Smoky Sourdough Bread Recipe",
+    "description": "A delicious summer bbq recipe featuring Sourdough Bread",
+    "difficulty": "easy",
+    "prep_time": 33,
+    "serving_size": 4,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "dairy_free"
+    ],
+    "popularity_score": 0.41,
+    "created_date": "2025-10-25T16:13:27.213388",
+    "last_updated": "2025-10-25T16:13:27.213389"
+  },
+  {
+    "combo_id": "RECIPE_0079",
+    "theme": "holiday_baking",
+    "primary_item_id": "ITEM_000305",
+    "complementary_items": [
+      "ITEM_004442",
+      "ITEM_003366",
+      "ITEM_001907",
+      "ITEM_002340",
+      "ITEM_004713",
+      "ITEM_002769"
+    ],
+    "recipe_name": "Special Organic Quinoa Recipe",
+    "description": "A delicious holiday baking recipe featuring Organic Quinoa",
+    "difficulty": "medium",
+    "prep_time": 117,
+    "serving_size": 2,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free"
+    ],
+    "popularity_score": 0.76,
+    "created_date": "2025-10-25T16:13:27.213396",
+    "last_updated": "2025-10-25T16:13:27.213397"
+  },
+  {
+    "combo_id": "RECIPE_0080",
+    "theme": "quick_snacks",
+    "primary_item_id": "ITEM_001388",
+    "complementary_items": [
+      "ITEM_004056",
+      "ITEM_004397",
+      "ITEM_004645"
+    ],
+    "recipe_name": "Special Bamboo Toothbrush Set Recipe",
+    "description": "A delicious quick snacks recipe featuring Bamboo Toothbrush Set",
+    "difficulty": "easy",
+    "prep_time": 20,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian"
+    ],
+    "popularity_score": 0.19,
+    "created_date": "2025-10-25T16:13:27.213405",
+    "last_updated": "2025-10-25T16:13:27.213406"
+  },
+  {
+    "combo_id": "RECIPE_0081",
+    "theme": "mediterranean_bowl",
+    "primary_item_id": "ITEM_003228",
+    "complementary_items": [
+      "ITEM_003682",
+      "ITEM_000195",
+      "ITEM_003677",
+      "ITEM_001830"
+    ],
+    "recipe_name": "Special Frozen Organic Blueberries Recipe",
+    "description": "A delicious mediterranean bowl recipe featuring Frozen Organic Blueberries",
+    "difficulty": "hard",
+    "prep_time": 111,
+    "serving_size": 8,
+    "cuisine_type": "Mediterranean",
+    "dietary_tags": [
+      "vegan",
+      "gluten_free",
+      "dairy_free"
+    ],
+    "popularity_score": 0.81,
+    "created_date": "2025-10-25T16:13:27.213414",
+    "last_updated": "2025-10-25T16:13:27.213415"
+  },
+  {
+    "combo_id": "RECIPE_0082",
+    "theme": "breakfast_smoothie",
+    "primary_item_id": "ITEM_003208",
+    "complementary_items": [
+      "ITEM_003562",
+      "ITEM_001680",
+      "ITEM_002986",
+      "ITEM_000557",
+      "ITEM_003035",
+      "ITEM_001737",
+      "ITEM_004822"
+    ],
+    "recipe_name": "Special Artisan Sourdough Bread Recipe",
+    "description": "A delicious breakfast smoothie recipe featuring Artisan Sourdough Bread",
+    "difficulty": "hard",
+    "prep_time": 32,
+    "serving_size": 2,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian"
+    ],
+    "popularity_score": 0.75,
+    "created_date": "2025-10-25T16:13:27.213423",
+    "last_updated": "2025-10-25T16:13:27.213424"
+  },
+  {
+    "combo_id": "RECIPE_0083",
+    "theme": "pasta_night",
+    "primary_item_id": "ITEM_001412",
+    "complementary_items": [
+      "ITEM_002867",
+      "ITEM_002123",
+      "ITEM_000861"
+    ],
+    "recipe_name": "Special Vitamin C Serum with Hyaluronic Acid Recipe",
+    "description": "A delicious pasta night recipe featuring Vitamin C Serum with Hyaluronic Acid",
+    "difficulty": "easy",
+    "prep_time": 107,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.9,
+    "created_date": "2025-10-25T16:13:27.213430",
+    "last_updated": "2025-10-25T16:13:27.213432"
+  },
+  {
+    "combo_id": "RECIPE_0084",
+    "theme": "taco_tuesday",
+    "primary_item_id": "ITEM_000888",
+    "complementary_items": [
+      "ITEM_001981",
+      "ITEM_004118",
+      "ITEM_003918",
+      "ITEM_001699",
+      "ITEM_003319"
+    ],
+    "recipe_name": "Special Organic Quinoa Recipe",
+    "description": "A delicious taco tuesday recipe featuring Organic Quinoa",
+    "difficulty": "easy",
+    "prep_time": 19,
+    "serving_size": 7,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "low_calorie"
+    ],
+    "popularity_score": 0.25,
+    "created_date": "2025-10-25T16:13:27.213439",
+    "last_updated": "2025-10-25T16:13:27.213440"
+  },
+  {
+    "combo_id": "RECIPE_0085",
+    "theme": "italian_dinner",
+    "primary_item_id": "ITEM_000817",
+    "complementary_items": [
+      "ITEM_002214",
+      "ITEM_000307",
+      "ITEM_004316",
+      "ITEM_002637",
+      "ITEM_004008",
+      "ITEM_001930",
+      "ITEM_004850",
+      "ITEM_001025"
+    ],
+    "recipe_name": "Italiano Frozen Organic Blueberries Recipe",
+    "description": "A delicious italian dinner recipe featuring Frozen Organic Blueberries",
+    "difficulty": "medium",
+    "prep_time": 89,
+    "serving_size": 3,
+    "cuisine_type": "Italian",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.52,
+    "created_date": "2025-10-25T16:13:27.213448",
+    "last_updated": "2025-10-25T16:13:27.213449"
+  },
+  {
+    "combo_id": "RECIPE_0086",
+    "theme": "healthy_breakfast",
+    "primary_item_id": "ITEM_002422",
+    "complementary_items": [
+      "ITEM_002552",
+      "ITEM_002795",
+      "ITEM_001113"
+    ],
+    "recipe_name": "Wholesome Organic Coconut Oil Recipe",
+    "description": "A delicious healthy breakfast recipe featuring Organic Coconut Oil",
+    "difficulty": "medium",
+    "prep_time": 63,
+    "serving_size": 4,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "low_calorie"
+    ],
+    "popularity_score": 0.17,
+    "created_date": "2025-10-25T16:13:27.213455",
+    "last_updated": "2025-10-25T16:13:27.213457"
+  },
+  {
+    "combo_id": "RECIPE_0087",
+    "theme": "mexican_fiesta",
+    "primary_item_id": "ITEM_004851",
+    "complementary_items": [
+      "ITEM_002966",
+      "ITEM_003918",
+      "ITEM_000538",
+      "ITEM_001555",
+      "ITEM_002678",
+      "ITEM_002160",
+      "ITEM_001076",
+      "ITEM_002367"
+    ],
+    "recipe_name": "Hacienda Cold Brew Coffee Recipe",
+    "description": "A delicious mexican fiesta recipe featuring Cold Brew Coffee",
+    "difficulty": "medium",
+    "prep_time": 90,
+    "serving_size": 3,
+    "cuisine_type": "Mexican",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free",
+      "low_calorie"
+    ],
+    "popularity_score": 0.73,
+    "created_date": "2025-10-25T16:13:27.213465",
+    "last_updated": "2025-10-25T16:13:27.213466"
+  },
+  {
+    "combo_id": "RECIPE_0088",
+    "theme": "asian_stir_fry",
+    "primary_item_id": "ITEM_003134",
+    "complementary_items": [
+      "ITEM_004192",
+      "ITEM_001629",
+      "ITEM_001183",
+      "ITEM_001450",
+      "ITEM_002408",
+      "ITEM_001086",
+      "ITEM_003256",
+      "ITEM_002388"
+    ],
+    "recipe_name": "Dragon Eco-Friendly Dish Soap Recipe",
+    "description": "A delicious asian stir fry recipe featuring Eco-Friendly Dish Soap",
+    "difficulty": "medium",
+    "prep_time": 96,
+    "serving_size": 3,
+    "cuisine_type": "Asian",
+    "dietary_tags": [
+      "vegetarian"
+    ],
+    "popularity_score": 0.26,
+    "created_date": "2025-10-25T16:13:27.213475",
+    "last_updated": "2025-10-25T16:13:27.213476"
+  },
+  {
+    "combo_id": "RECIPE_0089",
+    "theme": "comfort_food",
+    "primary_item_id": "ITEM_000416",
+    "complementary_items": [
+      "ITEM_004087",
+      "ITEM_003927",
+      "ITEM_004508",
+      "ITEM_003434",
+      "ITEM_004187",
+      "ITEM_003265"
+    ],
+    "recipe_name": "Homestyle Greek Yogurt Plain Recipe",
+    "description": "A delicious comfort food recipe featuring Greek Yogurt Plain",
+    "difficulty": "medium",
+    "prep_time": 66,
+    "serving_size": 6,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "quick_prep",
+      "low_calorie"
+    ],
+    "popularity_score": 0.11,
+    "created_date": "2025-10-25T16:13:27.213483",
+    "last_updated": "2025-10-25T16:13:27.213484"
+  },
+  {
+    "combo_id": "RECIPE_0090",
+    "theme": "summer_bbq",
+    "primary_item_id": "ITEM_004228",
+    "complementary_items": [
+      "ITEM_004108",
+      "ITEM_001030",
+      "ITEM_003444"
+    ],
+    "recipe_name": "BBQ Grass-Fed Whole Milk Yogurt Recipe",
+    "description": "A delicious summer bbq recipe featuring Grass-Fed Whole Milk Yogurt",
+    "difficulty": "easy",
+    "prep_time": 26,
+    "serving_size": 3,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free"
+    ],
+    "popularity_score": 0.91,
+    "created_date": "2025-10-25T16:13:27.213491",
+    "last_updated": "2025-10-25T16:13:27.213492"
+  },
+  {
+    "combo_id": "RECIPE_0091",
+    "theme": "holiday_baking",
+    "primary_item_id": "ITEM_000407",
+    "complementary_items": [
+      "ITEM_002620",
+      "ITEM_001922",
+      "ITEM_002730",
+      "ITEM_003522"
+    ],
+    "recipe_name": "Special Dark Chocolate Almonds Recipe",
+    "description": "A delicious holiday baking recipe featuring Dark Chocolate Almonds",
+    "difficulty": "easy",
+    "prep_time": 113,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "quick_prep"
+    ],
+    "popularity_score": 0.57,
+    "created_date": "2025-10-25T16:13:27.213498",
+    "last_updated": "2025-10-25T16:13:27.213499"
+  },
+  {
+    "combo_id": "RECIPE_0092",
+    "theme": "quick_snacks",
+    "primary_item_id": "ITEM_001174",
+    "complementary_items": [
+      "ITEM_002539",
+      "ITEM_001310",
+      "ITEM_000502"
+    ],
+    "recipe_name": "Special Dark Chocolate Almonds Recipe",
+    "description": "A delicious quick snacks recipe featuring Dark Chocolate Almonds",
+    "difficulty": "hard",
+    "prep_time": 76,
+    "serving_size": 7,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free"
+    ],
+    "popularity_score": 0.87,
+    "created_date": "2025-10-25T16:13:27.213505",
+    "last_updated": "2025-10-25T16:13:27.213506"
+  },
+  {
+    "combo_id": "RECIPE_0093",
+    "theme": "mediterranean_bowl",
+    "primary_item_id": "ITEM_002056",
+    "complementary_items": [
+      "ITEM_000467",
+      "ITEM_002628",
+      "ITEM_004523",
+      "ITEM_000632",
+      "ITEM_003409",
+      "ITEM_000017",
+      "ITEM_004754"
+    ],
+    "recipe_name": "Special Plant-Based Laundry Detergent Recipe",
+    "description": "A delicious mediterranean bowl recipe featuring Plant-Based Laundry Detergent",
+    "difficulty": "medium",
+    "prep_time": 21,
+    "serving_size": 6,
+    "cuisine_type": "Mediterranean",
+    "dietary_tags": [
+      "gluten_free"
+    ],
+    "popularity_score": 0.89,
+    "created_date": "2025-10-25T16:13:27.213513",
+    "last_updated": "2025-10-25T16:13:27.213514"
+  },
+  {
+    "combo_id": "RECIPE_0094",
+    "theme": "breakfast_smoothie",
+    "primary_item_id": "ITEM_002524",
+    "complementary_items": [
+      "ITEM_004785",
+      "ITEM_004671",
+      "ITEM_004284",
+      "ITEM_001382"
+    ],
+    "recipe_name": "Special Greek Yogurt Plain Recipe",
+    "description": "A delicious breakfast smoothie recipe featuring Greek Yogurt Plain",
+    "difficulty": "hard",
+    "prep_time": 61,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [],
+    "popularity_score": 0.28,
+    "created_date": "2025-10-25T16:13:27.213521",
+    "last_updated": "2025-10-25T16:13:27.213522"
+  },
+  {
+    "combo_id": "RECIPE_0095",
+    "theme": "pasta_night",
+    "primary_item_id": "ITEM_002498",
+    "complementary_items": [
+      "ITEM_000406",
+      "ITEM_004924",
+      "ITEM_003937",
+      "ITEM_001357",
+      "ITEM_004061",
+      "ITEM_002604",
+      "ITEM_003752"
+    ],
+    "recipe_name": "Special Wild-Caught Alaskan Salmon Fillets Recipe",
+    "description": "A delicious pasta night recipe featuring Wild-Caught Alaskan Salmon Fillets",
+    "difficulty": "hard",
+    "prep_time": 57,
+    "serving_size": 2,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "dairy_free"
+    ],
+    "popularity_score": 0.86,
+    "created_date": "2025-10-25T16:13:27.213530",
+    "last_updated": "2025-10-25T16:13:27.213531"
+  },
+  {
+    "combo_id": "RECIPE_0096",
+    "theme": "taco_tuesday",
+    "primary_item_id": "ITEM_002351",
+    "complementary_items": [
+      "ITEM_000102",
+      "ITEM_000251",
+      "ITEM_002354",
+      "ITEM_003928",
+      "ITEM_002186",
+      "ITEM_001527",
+      "ITEM_004598",
+      "ITEM_003512"
+    ],
+    "recipe_name": "Special Grass-Fed Ground Beef Recipe",
+    "description": "A delicious taco tuesday recipe featuring Grass-Fed Ground Beef",
+    "difficulty": "hard",
+    "prep_time": 103,
+    "serving_size": 5,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "quick_prep"
+    ],
+    "popularity_score": 0.5,
+    "created_date": "2025-10-25T16:13:27.213540",
+    "last_updated": "2025-10-25T16:13:27.213541"
+  },
+  {
+    "combo_id": "RECIPE_0097",
+    "theme": "italian_dinner",
+    "primary_item_id": "ITEM_002009",
+    "complementary_items": [
+      "ITEM_000530",
+      "ITEM_003092",
+      "ITEM_004565",
+      "ITEM_002451",
+      "ITEM_002182"
+    ],
+    "recipe_name": "Italiano Artisan Sourdough Bread Recipe",
+    "description": "A delicious italian dinner recipe featuring Artisan Sourdough Bread",
+    "difficulty": "hard",
+    "prep_time": 98,
+    "serving_size": 3,
+    "cuisine_type": "Italian",
+    "dietary_tags": [
+      "vegan",
+      "dairy_free"
+    ],
+    "popularity_score": 0.72,
+    "created_date": "2025-10-25T16:13:27.213547",
+    "last_updated": "2025-10-25T16:13:27.213548"
+  },
+  {
+    "combo_id": "RECIPE_0098",
+    "theme": "healthy_breakfast",
+    "primary_item_id": "ITEM_004958",
+    "complementary_items": [
+      "ITEM_002092",
+      "ITEM_004169",
+      "ITEM_001356"
+    ],
+    "recipe_name": "Energizing Greek Yogurt Plain Recipe",
+    "description": "A delicious healthy breakfast recipe featuring Greek Yogurt Plain",
+    "difficulty": "medium",
+    "prep_time": 113,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free"
+    ],
+    "popularity_score": 0.15,
+    "created_date": "2025-10-25T16:13:27.213555",
+    "last_updated": "2025-10-25T16:13:27.213556"
+  },
+  {
+    "combo_id": "RECIPE_0099",
+    "theme": "mexican_fiesta",
+    "primary_item_id": "ITEM_003312",
+    "complementary_items": [
+      "ITEM_002059",
+      "ITEM_000154",
+      "ITEM_002878",
+      "ITEM_002160",
+      "ITEM_002843",
+      "ITEM_003455",
+      "ITEM_002765",
+      "ITEM_004438"
+    ],
+    "recipe_name": "Cantina Wild-Caught Atlantic Salmon Fillets Recipe",
+    "description": "A delicious mexican fiesta recipe featuring Wild-Caught Atlantic Salmon Fillets",
+    "difficulty": "medium",
+    "prep_time": 90,
+    "serving_size": 4,
+    "cuisine_type": "Mexican",
+    "dietary_tags": [],
+    "popularity_score": 0.29,
+    "created_date": "2025-10-25T16:13:27.213563",
+    "last_updated": "2025-10-25T16:13:27.213564"
+  },
+  {
+    "combo_id": "RECIPE_0100",
+    "theme": "asian_stir_fry",
+    "primary_item_id": "ITEM_002360",
+    "complementary_items": [
+      "ITEM_003941",
+      "ITEM_001495",
+      "ITEM_002825",
+      "ITEM_002934"
+    ],
+    "recipe_name": "Dragon Organic Hass Avocados Recipe",
+    "description": "A delicious asian stir fry recipe featuring Organic Hass Avocados",
+    "difficulty": "easy",
+    "prep_time": 37,
+    "serving_size": 4,
+    "cuisine_type": "Asian",
+    "dietary_tags": [
+      "gluten_free"
+    ],
+    "popularity_score": 0.67,
+    "created_date": "2025-10-25T16:13:27.213571",
+    "last_updated": "2025-10-25T16:13:27.213572"
+  },
+  {
+    "combo_id": "RECIPE_0101",
+    "theme": "comfort_food",
+    "primary_item_id": "ITEM_000539",
+    "complementary_items": [
+      "ITEM_002231",
+      "ITEM_004171",
+      "ITEM_001636",
+      "ITEM_003203"
+    ],
+    "recipe_name": "Homestyle Raw Organic Cashew Butter Recipe",
+    "description": "A delicious comfort food recipe featuring Raw Organic Cashew Butter",
+    "difficulty": "medium",
+    "prep_time": 39,
+    "serving_size": 2,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegan",
+      "gluten_free",
+      "dairy_free"
+    ],
+    "popularity_score": 0.29,
+    "created_date": "2025-10-25T16:13:27.213578",
+    "last_updated": "2025-10-25T16:13:27.213579"
+  },
+  {
+    "combo_id": "RECIPE_0102",
+    "theme": "summer_bbq",
+    "primary_item_id": "ITEM_002882",
+    "complementary_items": [
+      "ITEM_003243",
+      "ITEM_000050",
+      "ITEM_003135",
+      "ITEM_004934"
+    ],
+    "recipe_name": "BBQ Wild-Caught Atlantic Salmon Fillets Recipe",
+    "description": "A delicious summer bbq recipe featuring Wild-Caught Atlantic Salmon Fillets",
+    "difficulty": "medium",
+    "prep_time": 58,
+    "serving_size": 2,
+    "cuisine_type": "American",
+    "dietary_tags": [],
+    "popularity_score": 0.43,
+    "created_date": "2025-10-25T16:13:27.213587",
+    "last_updated": "2025-10-25T16:13:27.213588"
+  },
+  {
+    "combo_id": "RECIPE_0103",
+    "theme": "holiday_baking",
+    "primary_item_id": "ITEM_002978",
+    "complementary_items": [
+      "ITEM_003969",
+      "ITEM_004759",
+      "ITEM_002444",
+      "ITEM_004177",
+      "ITEM_002324",
+      "ITEM_004508",
+      "ITEM_000099",
+      "ITEM_002780"
+    ],
+    "recipe_name": "Special Sliced Turkey Breast Recipe",
+    "description": "A delicious holiday baking recipe featuring Sliced Turkey Breast",
+    "difficulty": "medium",
+    "prep_time": 44,
+    "serving_size": 2,
+    "cuisine_type": "American",
+    "dietary_tags": [],
+    "popularity_score": 0.81,
+    "created_date": "2025-10-25T16:13:27.213596",
+    "last_updated": "2025-10-25T16:13:27.213597"
+  },
+  {
+    "combo_id": "RECIPE_0104",
+    "theme": "quick_snacks",
+    "primary_item_id": "ITEM_004076",
+    "complementary_items": [
+      "ITEM_001891",
+      "ITEM_000346",
+      "ITEM_003840",
+      "ITEM_004123"
+    ],
+    "recipe_name": "Special Greek Yogurt Plain Non-Fat Recipe",
+    "description": "A delicious quick snacks recipe featuring Greek Yogurt Plain Non-Fat",
+    "difficulty": "medium",
+    "prep_time": 39,
+    "serving_size": 2,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free"
+    ],
+    "popularity_score": 0.3,
+    "created_date": "2025-10-25T16:13:27.213603",
+    "last_updated": "2025-10-25T16:13:27.213605"
+  },
+  {
+    "combo_id": "RECIPE_0105",
+    "theme": "mediterranean_bowl",
+    "primary_item_id": "ITEM_001295",
+    "complementary_items": [
+      "ITEM_003747",
+      "ITEM_004153",
+      "ITEM_000662",
+      "ITEM_004326",
+      "ITEM_004759",
+      "ITEM_001969",
+      "ITEM_004090"
+    ],
+    "recipe_name": "Special Grass-Fed Ground Beef Recipe",
+    "description": "A delicious mediterranean bowl recipe featuring Grass-Fed Ground Beef",
+    "difficulty": "easy",
+    "prep_time": 86,
+    "serving_size": 5,
+    "cuisine_type": "Mediterranean",
+    "dietary_tags": [],
+    "popularity_score": 0.97,
+    "created_date": "2025-10-25T16:13:27.213612",
+    "last_updated": "2025-10-25T16:13:27.213613"
+  },
+  {
+    "combo_id": "RECIPE_0106",
+    "theme": "breakfast_smoothie",
+    "primary_item_id": "ITEM_000817",
+    "complementary_items": [
+      "ITEM_004965",
+      "ITEM_001071",
+      "ITEM_000788",
+      "ITEM_003932",
+      "ITEM_003885"
+    ],
+    "recipe_name": "Special Frozen Organic Blueberries Recipe",
+    "description": "A delicious breakfast smoothie recipe featuring Frozen Organic Blueberries",
+    "difficulty": "easy",
+    "prep_time": 38,
+    "serving_size": 6,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegan",
+      "dairy_free"
+    ],
+    "popularity_score": 0.93,
+    "created_date": "2025-10-25T16:13:27.213619",
+    "last_updated": "2025-10-25T16:13:27.213620"
+  },
+  {
+    "combo_id": "RECIPE_0107",
+    "theme": "pasta_night",
+    "primary_item_id": "ITEM_002470",
+    "complementary_items": [
+      "ITEM_000030",
+      "ITEM_004084",
+      "ITEM_004888",
+      "ITEM_003050",
+      "ITEM_004418",
+      "ITEM_001723"
+    ],
+    "recipe_name": "Special Roasted Turkey Breast Slices Recipe",
+    "description": "A delicious pasta night recipe featuring Roasted Turkey Breast Slices",
+    "difficulty": "hard",
+    "prep_time": 64,
+    "serving_size": 7,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "dairy_free",
+      "quick_prep",
+      "low_calorie"
+    ],
+    "popularity_score": 0.28,
+    "created_date": "2025-10-25T16:13:27.213628",
+    "last_updated": "2025-10-25T16:13:27.213629"
+  },
+  {
+    "combo_id": "RECIPE_0108",
+    "theme": "taco_tuesday",
+    "primary_item_id": "ITEM_001624",
+    "complementary_items": [
+      "ITEM_000108",
+      "ITEM_004577",
+      "ITEM_002748"
+    ],
+    "recipe_name": "Special Organic Coconut Oil Recipe",
+    "description": "A delicious taco tuesday recipe featuring Organic Coconut Oil",
+    "difficulty": "easy",
+    "prep_time": 51,
+    "serving_size": 3,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "gluten_free"
+    ],
+    "popularity_score": 0.21,
+    "created_date": "2025-10-25T16:13:27.213635",
+    "last_updated": "2025-10-25T16:13:27.213636"
+  },
+  {
+    "combo_id": "RECIPE_0109",
+    "theme": "italian_dinner",
+    "primary_item_id": "ITEM_003535",
+    "complementary_items": [
+      "ITEM_000045",
+      "ITEM_004034",
+      "ITEM_000393",
+      "ITEM_003456",
+      "ITEM_004564",
+      "ITEM_004270",
+      "ITEM_000140"
+    ],
+    "recipe_name": "Italiano Organic Quinoa Recipe",
+    "description": "A delicious italian dinner recipe featuring Organic Quinoa",
+    "difficulty": "easy",
+    "prep_time": 100,
+    "serving_size": 5,
+    "cuisine_type": "Italian",
+    "dietary_tags": [
+      "quick_prep",
+      "low_calorie"
+    ],
+    "popularity_score": 0.23,
+    "created_date": "2025-10-25T16:13:27.213645",
+    "last_updated": "2025-10-25T16:13:27.213646"
+  },
+  {
+    "combo_id": "RECIPE_0110",
+    "theme": "healthy_breakfast",
+    "primary_item_id": "ITEM_001102",
+    "complementary_items": [
+      "ITEM_001846",
+      "ITEM_002320",
+      "ITEM_002287",
+      "ITEM_001752",
+      "ITEM_004852",
+      "ITEM_000082",
+      "ITEM_003259"
+    ],
+    "recipe_name": "Fresh Organic Face Wash Gel Recipe",
+    "description": "A delicious healthy breakfast recipe featuring Organic Face Wash Gel",
+    "difficulty": "hard",
+    "prep_time": 99,
+    "serving_size": 7,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "quick_prep",
+      "low_calorie"
+    ],
+    "popularity_score": 0.21,
+    "created_date": "2025-10-25T16:13:27.213656",
+    "last_updated": "2025-10-25T16:13:27.213657"
+  },
+  {
+    "combo_id": "RECIPE_0111",
+    "theme": "mexican_fiesta",
+    "primary_item_id": "ITEM_000070",
+    "complementary_items": [
+      "ITEM_002998",
+      "ITEM_002160",
+      "ITEM_004579",
+      "ITEM_004168",
+      "ITEM_003525",
+      "ITEM_004125"
+    ],
+    "recipe_name": "Fiesta Organic Coconut Oil Recipe",
+    "description": "A delicious mexican fiesta recipe featuring Organic Coconut Oil",
+    "difficulty": "easy",
+    "prep_time": 33,
+    "serving_size": 2,
+    "cuisine_type": "Mexican",
+    "dietary_tags": [
+      "gluten_free",
+      "quick_prep"
+    ],
+    "popularity_score": 0.52,
+    "created_date": "2025-10-25T16:13:27.213664",
+    "last_updated": "2025-10-25T16:13:27.213665"
+  },
+  {
+    "combo_id": "RECIPE_0112",
+    "theme": "asian_stir_fry",
+    "primary_item_id": "ITEM_001457",
+    "complementary_items": [
+      "ITEM_004345",
+      "ITEM_003066",
+      "ITEM_000234"
+    ],
+    "recipe_name": "Wok Wild-Caught Atlantic Salmon Fillets Recipe",
+    "description": "A delicious asian stir fry recipe featuring Wild-Caught Atlantic Salmon Fillets",
+    "difficulty": "medium",
+    "prep_time": 51,
+    "serving_size": 4,
+    "cuisine_type": "Asian",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free"
+    ],
+    "popularity_score": 0.66,
+    "created_date": "2025-10-25T16:13:27.213671",
+    "last_updated": "2025-10-25T16:13:27.213672"
+  },
+  {
+    "combo_id": "RECIPE_0113",
+    "theme": "comfort_food",
+    "primary_item_id": "ITEM_003404",
+    "complementary_items": [
+      "ITEM_002225",
+      "ITEM_003260",
+      "ITEM_003562",
+      "ITEM_001689",
+      "ITEM_001948",
+      "ITEM_002910",
+      "ITEM_001342",
+      "ITEM_004650"
+    ],
+    "recipe_name": "Homestyle Organic Coconut Oil Recipe",
+    "description": "A delicious comfort food recipe featuring Organic Coconut Oil",
+    "difficulty": "hard",
+    "prep_time": 73,
+    "serving_size": 6,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "dairy_free",
+      "quick_prep",
+      "low_calorie"
+    ],
+    "popularity_score": 0.95,
+    "created_date": "2025-10-25T16:13:27.213680",
+    "last_updated": "2025-10-25T16:13:27.213681"
+  },
+  {
+    "combo_id": "RECIPE_0114",
+    "theme": "summer_bbq",
+    "primary_item_id": "ITEM_003691",
+    "complementary_items": [
+      "ITEM_000244",
+      "ITEM_002146",
+      "ITEM_004429",
+      "ITEM_001957"
+    ],
+    "recipe_name": "Smoky Artisan Sourdough Bread Recipe",
+    "description": "A delicious summer bbq recipe featuring Artisan Sourdough Bread",
+    "difficulty": "medium",
+    "prep_time": 54,
+    "serving_size": 7,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegan",
+      "dairy_free"
+    ],
+    "popularity_score": 0.53,
+    "created_date": "2025-10-25T16:13:27.213687",
+    "last_updated": "2025-10-25T16:13:27.213688"
+  },
+  {
+    "combo_id": "RECIPE_0115",
+    "theme": "holiday_baking",
+    "primary_item_id": "ITEM_003353",
+    "complementary_items": [
+      "ITEM_002035",
+      "ITEM_003972",
+      "ITEM_000262"
+    ],
+    "recipe_name": "Special Frozen Organic Blueberries Recipe",
+    "description": "A delicious holiday baking recipe featuring Frozen Organic Blueberries",
+    "difficulty": "medium",
+    "prep_time": 81,
+    "serving_size": 7,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "dairy_free",
+      "low_calorie"
+    ],
+    "popularity_score": 0.28,
+    "created_date": "2025-10-25T16:13:27.213695",
+    "last_updated": "2025-10-25T16:13:27.213696"
+  },
+  {
+    "combo_id": "RECIPE_0116",
+    "theme": "quick_snacks",
+    "primary_item_id": "ITEM_000456",
+    "complementary_items": [
+      "ITEM_000374",
+      "ITEM_003961",
+      "ITEM_002767",
+      "ITEM_002439"
+    ],
+    "recipe_name": "Special Grass-Fed Ground Beef Recipe",
+    "description": "A delicious quick snacks recipe featuring Grass-Fed Ground Beef",
+    "difficulty": "medium",
+    "prep_time": 86,
+    "serving_size": 6,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "gluten_free",
+      "dairy_free"
+    ],
+    "popularity_score": 0.62,
+    "created_date": "2025-10-25T16:13:27.213702",
+    "last_updated": "2025-10-25T16:13:27.213703"
+  },
+  {
+    "combo_id": "RECIPE_0117",
+    "theme": "mediterranean_bowl",
+    "primary_item_id": "ITEM_001906",
+    "complementary_items": [
+      "ITEM_004504",
+      "ITEM_001437",
+      "ITEM_000336",
+      "ITEM_000225",
+      "ITEM_004972",
+      "ITEM_000803",
+      "ITEM_004143"
+    ],
+    "recipe_name": "Special Charcoal Face Mask Recipe",
+    "description": "A delicious mediterranean bowl recipe featuring Charcoal Face Mask",
+    "difficulty": "medium",
+    "prep_time": 25,
+    "serving_size": 2,
+    "cuisine_type": "Mediterranean",
+    "dietary_tags": [],
+    "popularity_score": 0.67,
+    "created_date": "2025-10-25T16:13:27.213711",
+    "last_updated": "2025-10-25T16:13:27.213712"
+  },
+  {
+    "combo_id": "RECIPE_0118",
+    "theme": "breakfast_smoothie",
+    "primary_item_id": "ITEM_002083",
+    "complementary_items": [
+      "ITEM_000541",
+      "ITEM_003732",
+      "ITEM_003364",
+      "ITEM_001652",
+      "ITEM_000373"
+    ],
+    "recipe_name": "Special Sliced Turkey Breast Recipe",
+    "description": "A delicious breakfast smoothie recipe featuring Sliced Turkey Breast",
+    "difficulty": "medium",
+    "prep_time": 99,
+    "serving_size": 4,
+    "cuisine_type": "American",
+    "dietary_tags": [],
+    "popularity_score": 0.33,
+    "created_date": "2025-10-25T16:13:27.213720",
+    "last_updated": "2025-10-25T16:13:27.213721"
+  },
+  {
+    "combo_id": "RECIPE_0119",
+    "theme": "pasta_night",
+    "primary_item_id": "ITEM_003418",
+    "complementary_items": [
+      "ITEM_002764",
+      "ITEM_003281",
+      "ITEM_000873",
+      "ITEM_004617",
+      "ITEM_003369",
+      "ITEM_001253",
+      "ITEM_000821"
+    ],
+    "recipe_name": "Special Artisan Sourdough Bread Recipe",
+    "description": "A delicious pasta night recipe featuring Artisan Sourdough Bread",
+    "difficulty": "easy",
+    "prep_time": 26,
+    "serving_size": 8,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegan",
+      "dairy_free"
+    ],
+    "popularity_score": 0.54,
+    "created_date": "2025-10-25T16:13:27.213728",
+    "last_updated": "2025-10-25T16:13:27.213729"
+  },
+  {
+    "combo_id": "RECIPE_0120",
+    "theme": "taco_tuesday",
+    "primary_item_id": "ITEM_004373",
+    "complementary_items": [
+      "ITEM_003242",
+      "ITEM_002619",
+      "ITEM_003062",
+      "ITEM_002898",
+      "ITEM_000028",
+      "ITEM_000072",
+      "ITEM_000520",
+      "ITEM_004941"
+    ],
+    "recipe_name": "Special Organic Raw Almonds Recipe",
+    "description": "A delicious taco tuesday recipe featuring Organic Raw Almonds",
+    "difficulty": "easy",
+    "prep_time": 75,
+    "serving_size": 5,
+    "cuisine_type": "American",
+    "dietary_tags": [
+      "vegetarian",
+      "quick_prep"
+    ],
+    "popularity_score": 0.24,
+    "created_date": "2025-10-25T16:13:27.213737",
+    "last_updated": "2025-10-25T16:13:27.213738"
+  }
+]

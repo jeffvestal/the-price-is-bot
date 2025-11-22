@@ -1,0 +1,20 @@
+slug: the-price-is-bot
+id: b4brfysfkev8
+title: The Price is Bot
+teaser: Play the game, explore Agent Builder, and compete on the leaderboard
+description: ""
+icon: ""
+tags: []
+owner: elastic
+developers:
+- jeff.vestal@elastic.co
+idle_timeout: 10800
+timelimit: 10800
+lab_config:
+  sidebar_enabled: true
+  feedback_recap_enabled: true
+  feedback_tab_enabled: false
+  loadingMessages: true
+  hideStopButton: false
+checksum: "2990973155269747903"
+enhanced_loading: false

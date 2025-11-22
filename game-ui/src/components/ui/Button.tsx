@@ -4,7 +4,7 @@ import { ButtonHTMLAttributes, forwardRef } from 'react';
 import { clsx } from 'clsx';
 import { motion } from 'framer-motion';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onDrag' | 'onDragStart' | 'onDragEnd' | 'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration'> {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'vegas' | 'elastic';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   isLoading?: boolean;
@@ -35,20 +35,33 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ghost: 'bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 focus:ring-gray-500',
       vegas: 'bg-gradient-to-r from-vegas-gold to-vegas-red hover:from-vegas-red hover:to-purple-600 text-white focus:ring-vegas-gold shadow-lg hover:shadow-xl',
       elastic: 'bg-gradient-to-r from-elastic-blue to-elastic-teal hover:from-elastic-teal hover:to-elastic-blue text-white focus:ring-elastic-blue shadow-lg hover:shadow-xl',
-    };
+    } as const;
     
     const sizes = {
       sm: 'px-3 py-1.5 text-sm',
       md: 'px-4 py-2 text-sm',
       lg: 'px-6 py-3 text-base',
       xl: 'px-8 py-4 text-lg',
-    };
+    } as const;
 
-    const ButtonComponent = animate ? motion.button : 'button';
+    // Cast to any to avoid TS signature incompatibilities between HTML and framer-motion handlers
+    const ButtonComponent: any = animate ? motion.button : 'button';
+
     const motionProps = animate ? {
       whileHover: { scale: 1.02 },
       whileTap: { scale: 0.98 },
     } : {};
+
+    // Filter conflicting animation/drag handlers when using motion.button
+    const {
+      onDrag,
+      onDragStart,
+      onDragEnd,
+      onAnimationStart,
+      onAnimationEnd,
+      onAnimationIteration,
+      ...safeProps
+    } = props as Record<string, any>;
 
     return (
       <ButtonComponent
@@ -61,7 +74,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         disabled={disabled || isLoading}
         {...motionProps}
-        {...props}
+        {...(animate ? safeProps : props)}
       >
         {isLoading && (
           <svg className="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">

@@ -1,0 +1,708 @@
+#!/bin/bash
+
+####################################################################### WAIT
+
+echo "Wait for the Instruqt host bootstrap to finish"
+# Wait for the Instruqt host bootstrap to finish
+while [ ! -f /opt/instruqt/bootstrap/host-bootstrap-completed ]
+do
+    echo "Waiting for Instruqt to finish booting the virtual machine"
+    sleep 1
+done
+
+# explicitly source env vars
+source /etc/profile.d/instruqt-env.sh
+
+echo "instruqt-env.sh sourced"
+cat /etc/profile.d/instruqt-env.sh
+####################################################################### ENV CHECK
+
+export _SANDBOX_ID=$_SANDBOX_ID
+
+export INSTRUQT=$INSTRUQT
+export LLM_KEY_DURATION=$LLM_KEY_DURATION
+export LLM_KEY_MAX_BUDGET=$LLM_KEY_MAX_BUDGET
+export LLM_MODELS=$LLM_MODELS
+export LLM_PROXY_URL=$LLM_PROXY_URL
+
+export SA_LLM_PROXY_BEARER_TOKEN=$SA_LLM_PROXY_BEARER_TOKEN
+export GCSKEY_ELASTIC_SA=$GCSKEY_ELASTIC_SA
+export GCSKEY_EDEN_WORKSHOP=$GCSKEY_EDEN_WORKSHOP
+export GCS_KEY_EDUCATION=$GCS_KEY_EDUCATION
+export GCSKEY=$GCSKEY
+
+if [[ -z "$_SANDBOX_ID" ]]; then
+    echo "_SANDBOX_ID is null"
+    exit 1
+else
+    echo "_SANDBOX_ID=$_SANDBOX_ID"
+fi
+
+if [[ -z "$INSTRUQT" ]]; then
+    echo "INSTRUQT is null"
+    exit 1
+else
+    echo "INSTRUQT=$INSTRUQT"
+fi
+
+if [[ -z "$LLM_KEY_DURATION" ]]; then
+    echo "LLM_KEY_DURATION is null"
+    exit 1
+else
+    echo "LLM_KEY_DURATION=$LLM_KEY_DURATION"
+fi
+
+if [[ -z "$LLM_KEY_MAX_BUDGET" ]]; then
+    echo "LLM_KEY_MAX_BUDGET is null"
+    exit 1
+else
+    echo "LLM_KEY_MAX_BUDGET=$LLM_KEY_MAX_BUDGET"
+fi
+
+if [[ -z "$LLM_MODELS" ]]; then
+    echo "LLM_MODELS is null"
+    exit 1
+else
+    echo "LLM_MODELS=$LLM_MODELS"
+fi
+
+if [[ -z "$LLM_PROXY_URL" ]]; then
+    echo "LLM_PROXY_URL is null"
+    exit 1
+else
+    echo "LLM_PROXY_URL=$LLM_PROXY_URL"
+fi
+
+if [[ -z "$SA_LLM_PROXY_BEARER_TOKEN" ]]; then
+    echo "SA_LLM_PROXY_BEARER_TOKEN is null"
+    exit 1
+fi
+if [[ -z "$GCSKEY_ELASTIC_SA" ]]; then
+    echo "GCSKEY_ELASTIC_SA is null"
+    exit 1
+fi
+if [[ -z "$GCSKEY_EDEN_WORKSHOP" ]]; then
+    echo "GCSKEY_EDEN_WORKSHOP is null"
+    exit 1
+fi
+if [[ -z "$GCSKEY" ]]; then
+    echo "GCSKEY is null"
+    exit 1
+fi
+
+# Snapshot configuration
+SNAPSHOT_NAME="grocery-data-snapshot-1mil"
+
+####################################################################### STARTUP
+
+# finish elastic install
+source /opt/workshops/elastic-start.sh
+
+# setup openai
+source /opt/workshops/llm-key.sh
+
+####################################################################### PRICE IS BOT SETUP
+
+# Export OOTB environment variables
+echo "[Price is Bot] Loading OOTB environment variables..."
+export $(curl -s http://localhost:9000/env | xargs) 2>/dev/null || true
+
+echo "[Price is Bot] Setting up kubernetes-vm (Elasticsearch & Kibana)"
+
+# ES and Kibana are started by /opt/workshops/elastic-start.sh above
+# Docker containers will run on host-1 (which has Docker installed)
+
+# Wait for Elasticsearch to be ready
+echo "[Price is Bot] Waiting for Elasticsearch..."
+until curl -fsS -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" "${ELASTICSEARCH_URL}/_cluster/health" >/dev/null 2>&1; do
+  echo "  ... waiting for ES"
+  sleep 2
+done
+echo "[Price is Bot] Elasticsearch is ready"
+
+# Delete existing grocery indices before restore (to avoid conflicts)
+echo "[Price is Bot] Cleaning up existing grocery indices..."
+INDICES_TO_DELETE="grocery_items store_locations store_inventory seasonal_availability promotional_offers nutrition_facts recipe_combinations game_settings"
+
+for index in $INDICES_TO_DELETE; do
+  echo "  - Deleting index: $index"
+  curl -fsS -X DELETE "${ELASTICSEARCH_URL}/${index}" \
+    -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" >/dev/null 2>&1 || echo "    (index not found, skipping)"
+done
+echo "[Price is Bot] Indices cleaned up"
+
+# Wait a moment to ensure indices are fully deleted
+sleep 2
+
+# Restore grocery data snapshot
+echo "[Price is Bot] Restoring snapshot: $SNAPSHOT_NAME..."
+RESTORE_OUTPUT=$(/opt/workshops/elastic-snapshot.sh \
+    -p the_price_is_bot \
+    -b instruqt-workshop-snapshot-public \
+    -c sa \
+    -n repo1 \
+    -s $SNAPSHOT_NAME \
+    -g false 2>&1)
+
+RESTORE_EXIT_CODE=$?
+echo "$RESTORE_OUTPUT"
+
+# Check if restore actually failed (exit code != 0 or explicit error messages)
+if [[ $RESTORE_EXIT_CODE -ne 0 ]] || [[ "$RESTORE_OUTPUT" =~ "cannot restore" ]] || [[ "$RESTORE_OUTPUT" =~ "\"failed\":[1-9]" ]]; then
+  echo "[Price is Bot] ⚠️  Snapshot restore failed for: $SNAPSHOT_NAME"
+  echo "[Price is Bot] Restore output: $RESTORE_OUTPUT"
+  exit 1
+else
+  echo "[Price is Bot] ✅ Snapshot $SNAPSHOT_NAME restored successfully"
+  # Log which indices were restored (extract from snapshot output if available)
+  if [[ "$RESTORE_OUTPUT" =~ "\"indices\":" ]]; then
+    echo "[Price is Bot] Restored indices from snapshot: $SNAPSHOT_NAME"
+  fi
+fi
+
+# Warm up ELSER inference endpoint AFTER snapshot restore (Inference API)
+echo "[Price is Bot] Warming up ELSER inference endpoint via Inference API..."
+
+MAX_ELSER_WAIT=300  # 5 minutes max
+ELSER_WAIT_START=$(date +%s)
+ELSER_READY=false
+
+while [ $(($(date +%s) - ELSER_WAIT_START)) -lt $MAX_ELSER_WAIT ]; do
+  INFER=$(curl -sS -w "\n%{http_code}" -X POST "${ELASTICSEARCH_URL}/_inference/.elser-2-elasticsearch" \
+    -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" \
+    -H "Content-Type: application/json" \
+    -d '{"input":"Bob Belcher is burger man."}' 2>&1)
+
+  HTTP=$(echo "$INFER" | tail -n1)
+  BODY=$(echo "$INFER" | head -n -1)
+
+  if [[ "$HTTP" == "200" ]] && [[ "$BODY" =~ "\"sparse_embedding\"" ]]; then
+    echo "[Price is Bot] ✅ ELSER ready (Inference API returned sparse_embedding)"
+    ELSER_READY=true
+    break
+  fi
+
+  ELAPSED=$(($(date +%s) - ELSER_WAIT_START))
+  echo "[Price is Bot]   ... waiting for ELSER (${ELAPSED}s elapsed, HTTP ${HTTP})"
+  sleep 5
+done
+
+if [ "$ELSER_READY" = false ]; then
+  echo "[Price is Bot] ⚠️  ELSER inference endpoint did not become ready within ${MAX_ELSER_WAIT}s"
+  echo "[Price is Bot] ⚠️  Continuing anyway, but semantic search may not work properly on first request"
+fi
+
+# Configure Default Space to be Elasticsearch solution
+echo "[Price is Bot] Configuring Kibana default space for Elasticsearch..."
+until curl -fsS -X PUT "${KIBANA_URL_UI}/api/spaces/space/default" \
+  -H "Content-Type: application/json" \
+  -H "kbn-xsrf: true" \
+  -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" \
+  -d '{
+    "id": "default",
+    "name": "Default",
+    "solution": "es"
+  }' >/dev/null 2>&1; do
+  echo "  ... waiting for Kibana API"
+  sleep 2
+done
+echo "[Price is Bot] Kibana space configured for Elasticsearch"
+
+# Enable Agent Builder UI and API
+echo "[Price is Bot] Enabling Agent Builder in Kibana..."
+curl -fsS -X POST "${KIBANA_URL_UI}/api/kibana/settings" \
+  -H "Content-Type: application/json" \
+  -H "kbn-xsrf: true" \
+  -H "x-elastic-internal-origin: featureflag" \
+  -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" \
+  -d '{
+    "changes": {
+      "agentBuilder:enabled": true,
+      "workflows:ui:enabled": true,
+      "theme:darkMode": true,
+      "hideAnnouncements": true
+    }
+  }' >/dev/null 2>&1
+echo "[Price is Bot] Agent Builder enabled"
+
+# Wait a moment for Agent Builder to fully initialize
+sleep 5
+
+# Kibana API helper configuration
+ELASTIC_API_VERSION="2023-10-31"
+
+# Helper: Capture last response/status from a Kibana POST call
+kibana_post() {
+  local path="$1"
+  local body="$2"
+  LAST_BODY_FILE=$(mktemp)
+  LAST_STATUS=$(curl -sS -o "$LAST_BODY_FILE" -w "%{http_code}" \
+    -X POST "${KIBANA_URL_UI}${path}" \
+    -H "Content-Type: application/json" \
+    -H "kbn-xsrf: true" \
+    -H "Elastic-Api-Version: ${ELASTIC_API_VERSION}" \
+    -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" \
+    -d "$body")
+}
+
+# Helper: Capture last response/status from a Kibana POST call (internal)
+kibana_post_internal() {
+  local path="$1"
+  local body="$2"
+  LAST_BODY_FILE=$(mktemp)
+  LAST_STATUS=$(curl -sS -o "$LAST_BODY_FILE" -w "%{http_code}" \
+    -X POST "${KIBANA_URL_UI}${path}" \
+    -H "Content-Type: application/json" \
+    -H "kbn-xsrf: true" \
+    -H "x-elastic-internal-origin: featureflag" \
+    -H "Elastic-Api-Version: ${ELASTIC_API_VERSION}" \
+    -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" \
+    -d "$body")
+}
+
+# Helper: GET request (capture body/status)
+kibana_get() {
+  local path="$1"
+  LAST_BODY_FILE=$(mktemp)
+  LAST_STATUS=$(curl -sS -o "$LAST_BODY_FILE" -w "%{http_code}" \
+    -X GET "${KIBANA_URL_UI}${path}" \
+    -H "Content-Type: application/json" \
+    -H "kbn-xsrf: true" \
+    -H "Elastic-Api-Version: ${ELASTIC_API_VERSION}" \
+    -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}")
+}
+
+# Create LLM Connector (OpenAI compatible) with retry
+echo "[Price is Bot] Creating LLM connector..."
+CONNECTOR_CREATED=false
+for attempt in {1..5}; do
+  kibana_post "/api/actions/connector" '{
+      "name": "Elastic Proxy LLM",
+      "config": {
+        "apiProvider": "OpenAI",
+        "apiUrl": "https://'"${LLM_PROXY_URL}"'/v1/chat/completions",
+        "defaultModel": "gpt-4.1"
+      },
+      "secrets": {
+        "apiKey": "'"${LLM_APIKEY}"'"
+      },
+      "connector_type_id": ".gen-ai"
+    }'
+
+  if [[ "$LAST_STATUS" == "200" || "$LAST_STATUS" == "201" ]]; then
+    echo "[Price is Bot] LLM connector created"
+    CONNECTOR_CREATED=true
+    
+    # Extract connector ID and set as default
+    CONNECTOR_ID=$(cat "$LAST_BODY_FILE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+    if [[ -n "$CONNECTOR_ID" ]]; then
+      echo "[Price is Bot] Setting connector $CONNECTOR_ID as default..."
+      kibana_post_internal "/internal/kibana/settings" '{
+          "changes": {
+            "genAiSettings:defaultAIConnector": "'"${CONNECTOR_ID}"'"
+          }
+        }'
+      if [[ "$LAST_STATUS" == "200" || "$LAST_STATUS" == "204" || "$LAST_STATUS" == "201" ]]; then
+        echo "[Price is Bot] Default connector set"
+      else
+        echo "[Price is Bot] Default connector set (internal) failed with $LAST_STATUS, retrying via public settings endpoint..."
+        kibana_post "/api/kibana/settings" '{
+          "changes": {
+            "genAiSettings:defaultAIConnector": "'"${CONNECTOR_ID}"'"
+          }
+        }'
+        if [[ "$LAST_STATUS" == "200" || "$LAST_STATUS" == "204" || "$LAST_STATUS" == "201" ]]; then
+          echo "[Price is Bot] Default connector set (public)"
+        else
+          echo "[Price is Bot] ⚠️  Failed to set default connector (status=$LAST_STATUS)"
+          echo "Body: $(cat "$LAST_BODY_FILE")"
+        fi
+      fi
+    fi
+    break
+  else
+    # If already exists or conflict, proceed by discovering existing connector id
+    if [[ "$LAST_STATUS" == "409" ]] || grep -q "already exists\|Conflict" "$LAST_BODY_FILE" 2>/dev/null; then
+      echo "[Price is Bot] Connector already exists, continuing..."
+      CONNECTOR_CREATED=true
+      # Try to discover existing connector id by name
+      kibana_get "/api/actions/connectors"
+      if [[ "$LAST_STATUS" == "200" ]]; then
+        CONNECTOR_ID=$(cat "$LAST_BODY_FILE" | tr -d '\n' | sed 's/},{/}\n{/g' | grep '"name":"Elastic Proxy LLM"' | head -1 | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
+        if [[ -z "$CONNECTOR_ID" ]]; then
+          CONNECTOR_ID=$(cat "$LAST_BODY_FILE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+        fi
+        if [[ -n "$CONNECTOR_ID" ]]; then
+          echo "[Price is Bot] Found existing connector id: $CONNECTOR_ID; setting as default..."
+          kibana_post_internal "/internal/kibana/settings" '{
+            "changes": {
+              "genAiSettings:defaultAIConnector": "'"${CONNECTOR_ID}"'"
+            }
+          }'
+          if [[ "$LAST_STATUS" == "200" || "$LAST_STATUS" == "204" || "$LAST_STATUS" == "201" ]]; then
+            echo "[Price is Bot] Default connector set"
+          else
+            kibana_post "/api/kibana/settings" '{
+              "changes": {
+                "genAiSettings:defaultAIConnector": "'"${CONNECTOR_ID}"'"
+              }
+            }'
+            if [[ "$LAST_STATUS" == "200" || "$LAST_STATUS" == "204" || "$LAST_STATUS" == "201" ]]; then
+              echo "[Price is Bot] Default connector set (public)"
+            else
+              echo "[Price is Bot] ⚠️  Failed to set default connector (status=$LAST_STATUS)"
+              echo "Body: $(cat "$LAST_BODY_FILE")"
+            fi
+          fi
+        else
+          echo "[Price is Bot] ⚠️  Could not determine existing connector id"
+        fi
+      else
+        echo "[Price is Bot] ⚠️  Failed to list connectors (status=$LAST_STATUS)"
+      fi
+      break
+    fi
+    echo "  ... attempt $attempt failed, retrying in 3s..."
+    sleep 3
+  fi
+done
+
+if [[ "$CONNECTOR_CREATED" == false ]]; then
+  echo "[Price is Bot] ⚠️  Failed to create connector after 5 attempts"
+fi
+
+# Deploy Agent Builder tools and agents (with detailed status)
+echo "[Price is Bot] Deploying tools and agents to Agent Builder..."
+
+# Deploy tools via Kibana API
+echo "[Price is Bot] Deploying base tools..."
+TOOL_COUNT=0
+TOOL_SUCCESS=0
+
+# Tool 1: find_deals
+RESP_FILE=$(mktemp)
+STATUS=$(curl -sS -o "$RESP_FILE" -w "%{http_code}" -X POST "${KIBANA_URL_UI}/api/agent_builder/tools" \
+  -H "Content-Type: application/json" \
+  -H "kbn-xsrf: true" \
+  -H "Elastic-Api-Version: ${ELASTIC_API_VERSION}" \
+  -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" \
+  -d '{
+    "id": "find_deals",
+    "type": "esql",
+    "description": "# Find Promotional Deals and Sales\n\nSearches for items currently on sale or promotion across all stores.\n\n## When to Use\n- Customer asks for \"deals\", \"sales\", \"discounts\", \"promotions\"\n- Looking for items with significant savings\n- Finding the best value items\n\n## Parameters\n- **min_discount** (double): Minimum discount percentage to filter by\n  - Default: 10 (shows items with at least 10% off)\n  - Use 20-30 for \"big savings\" or \"major deals\"\n  - Use 5-15 for \"any discount\"\n\n## Returns\n- Item name, brand, category\n- Original price vs sale price\n- Savings amount and discount percentage\n- Store location and availability\n- Sorted by highest savings first",
+    "tags": ["deals", "promotions"],
+    "configuration": {
+      "query": "\nFROM store_inventory\n| WHERE on_sale == true AND sale_price IS NOT NULL AND current_price > 0\n| EVAL savings = current_price - sale_price\n| EVAL discount_percent = ROUND((savings / current_price) * 100, 1)\n| WHERE discount_percent >= ?min_discount\n| KEEP item_id, store_id, savings, discount_percent, sale_price, current_price, stock_status\n| SORT discount_percent DESC, savings DESC\n| LIMIT 1000\n| LOOKUP JOIN grocery_items ON item_id\n| LOOKUP JOIN store_locations ON store_id\n| WHERE stock_status != \"out_of_stock\"\n| SORT discount_percent DESC, savings DESC\n| LIMIT 20\n                ",
+      "params": {
+        "min_discount": {
+          "type": "double",
+          "description": "Minimum discount percentage (default: 10)"
+        }
+      }
+    }
+  }')
+if [[ "$STATUS" == "200" || "$STATUS" == "201" ]]; then
+  echo "  ✅ find_deals"
+  TOOL_SUCCESS=$((TOOL_SUCCESS+1))
+elif [[ "$STATUS" == "409" ]]; then
+  echo "  ℹ️  find_deals (already exists)"
+else
+  echo "  ❌ find_deals failed (status=$STATUS)"
+  echo "     $(head -c 500 "$RESP_FILE")"
+fi
+rm -f "$RESP_FILE"
+TOOL_COUNT=$((TOOL_COUNT+1))
+
+# Tool 2: check_nutrition
+RESP_FILE=$(mktemp)
+STATUS=$(curl -sS -o "$RESP_FILE" -w "%{http_code}" -X POST "${KIBANA_URL_UI}/api/agent_builder/tools" \
+  -H "Content-Type: application/json" \
+  -H "kbn-xsrf: true" \
+  -H "Elastic-Api-Version: ${ELASTIC_API_VERSION}" \
+  -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" \
+  -d '{
+    "id": "check_nutrition",
+    "type": "esql",
+    "description": "# Check Nutritional Information\n\nRetrieves detailed nutritional data for specific items.",
+    "tags": ["nutrition", "dietary"],
+    "configuration": {
+      "query": "\nFROM nutrition_facts METADATA _score\n| WHERE item_id: ?item_search OR ingredients: ?item_search\n| KEEP item_id, calories, protein, total_carbs, vegan, gluten_free, organic, _score\n| SORT _score DESC\n| LIMIT 1000\n| LOOKUP JOIN grocery_items ON item_id\n| LOOKUP JOIN store_inventory ON item_id\n| WHERE stock_status != \"out_of_stock\"\n| EVAL final_price = CASE(on_sale, sale_price, current_price)\n| EVAL meets_dietary = CASE(\n    ?dietary_restriction == \"vegan\", vegan,\n    ?dietary_restriction == \"gluten_free\", gluten_free,\n    ?dietary_restriction == \"organic\", organic,\n    true\n  )\n| WHERE meets_dietary == true\n| STATS\n    avg_price = AVG(final_price),\n    min_price = MIN(final_price),\n    max_price = MAX(final_price),\n    stores_available = COUNT_DISTINCT(store_id),\n    max_score = MAX(_score),\n    calories = MAX(calories),\n    protein = MAX(protein),\n    total_carbs = MAX(total_carbs)\n  BY name, brand, category, unit_size, organic, gluten_free, vegan\n| WHERE stores_available > 0\n| SORT max_score DESC\n| LIMIT 15\n                ",
+      "params": {
+        "item_search": {
+          "type": "keyword",
+          "description": "Item name or ingredient to search for"
+        },
+        "dietary_restriction": {
+          "type": "keyword",
+          "description": "Dietary restriction: vegan, gluten_free, or organic"
+        }
+      }
+    }
+  }')
+if [[ "$STATUS" == "200" || "$STATUS" == "201" ]]; then
+  echo "  ✅ check_nutrition"
+  TOOL_SUCCESS=$((TOOL_SUCCESS+1))
+elif [[ "$STATUS" == "409" ]]; then
+  echo "  ℹ️  check_nutrition (already exists)"
+else
+  echo "  ❌ check_nutrition failed (status=$STATUS)"
+  echo "     $(head -c 500 "$RESP_FILE")"
+fi
+rm -f "$RESP_FILE"
+TOOL_COUNT=$((TOOL_COUNT+1))
+
+# Tool 3: seasonal_recommendations
+RESP_FILE=$(mktemp)
+STATUS=$(curl -sS -o "$RESP_FILE" -w "%{http_code}" -X POST "${KIBANA_URL_UI}/api/agent_builder/tools" \
+  -H "Content-Type: application/json" \
+  -H "kbn-xsrf: true" \
+  -H "Elastic-Api-Version: ${ELASTIC_API_VERSION}" \
+  -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" \
+  -d '{
+    "id": "seasonal_recommendations",
+    "type": "esql",
+    "description": "# Get Seasonal Product Recommendations\n\nFinds items that are currently in season.",
+    "tags": ["seasonal", "recommendations"],
+    "configuration": {
+      "query": "\nFROM seasonal_availability METADATA _score\n| WHERE season: ?season_query OR description: ?season_query\n| WHERE availability_score >= 0.5\n| KEEP item_id, availability_score, price_multiplier, _score\n| SORT _score DESC\n| LIMIT 1000\n| LOOKUP JOIN grocery_items ON item_id\n| LOOKUP JOIN store_inventory ON item_id\n| WHERE stock_status != \"out_of_stock\"\n| EVAL final_price = CASE(on_sale, sale_price, current_price)\n| EVAL seasonal_score = availability_score * price_multiplier\n| STATS\n    avg_price = AVG(final_price),\n    min_price = MIN(final_price),\n    max_price = MAX(final_price),\n    stores_available = COUNT_DISTINCT(store_id),\n    seasonal_score = MAX(seasonal_score),\n    max_score = MAX(_score)\n  BY name, brand, category, unit_size, organic, gluten_free, vegan\n| WHERE stores_available > 0\n| SORT seasonal_score DESC, max_score DESC\n| LIMIT 15\n                ",
+      "params": {
+        "season_query": {
+          "type": "keyword",
+          "description": "Season, month, or seasonal description to search for"
+        }
+      }
+    }
+  }')
+if [[ "$STATUS" == "200" || "$STATUS" == "201" ]]; then
+  echo "  ✅ seasonal_recommendations"
+  TOOL_SUCCESS=$((TOOL_SUCCESS+1))
+elif [[ "$STATUS" == "409" ]]; then
+  echo "  ℹ️  seasonal_recommendations (already exists)"
+else
+  echo "  ❌ seasonal_recommendations failed (status=$STATUS)"
+  echo "     $(head -c 500 "$RESP_FILE")"
+fi
+rm -f "$RESP_FILE"
+TOOL_COUNT=$((TOOL_COUNT+1))
+
+# Tool 4: dietary_filter
+RESP_FILE=$(mktemp)
+STATUS=$(curl -sS -o "$RESP_FILE" -w "%{http_code}" -X POST "${KIBANA_URL_UI}/api/agent_builder/tools" \
+  -H "Content-Type: application/json" \
+  -H "kbn-xsrf: true" \
+  -H "Elastic-Api-Version: ${ELASTIC_API_VERSION}" \
+  -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" \
+  -d '{
+    "id": "dietary_filter",
+    "type": "esql",
+    "description": "# Filter by Dietary Restrictions\n\nFilters items by dietary requirements.",
+    "tags": ["dietary", "filter"],
+    "configuration": {
+      "query": "\nFROM store_inventory\n| WHERE stock_status != \"out_of_stock\"\n| KEEP item_id, store_id, current_price, on_sale, sale_price, stock_status\n| LOOKUP JOIN nutrition_facts ON item_id\n| EVAL meets_restriction = CASE(\n    ?restriction == \"vegan\", vegan == true,\n    ?restriction == \"gluten_free\", gluten_free == true,\n    ?restriction == \"organic\", organic == true,\n    ?restriction == \"low_carb\", total_carbs < 10,\n    ?restriction == \"high_protein\", protein > 15,\n    true\n  )\n| WHERE meets_restriction == true\n| LOOKUP JOIN grocery_items ON item_id\n| EVAL final_price = CASE(on_sale, sale_price, current_price)\n| STATS\n    best_price = MIN(final_price),\n    avg_price = AVG(final_price),\n    stores_available = COUNT_DISTINCT(store_id),\n    calories = MAX(calories),\n    protein = MAX(protein),\n    total_carbs = MAX(total_carbs)\n  BY name, brand, category, unit_size, organic, gluten_free, vegan\n| SORT best_price ASC\n| LIMIT 20\n                ",
+      "params": {
+        "restriction": {
+          "type": "keyword",
+          "description": "Dietary restriction: vegan, gluten_free, organic, low_carb, or high_protein"
+        }
+      }
+    }
+  }')
+if [[ "$STATUS" == "200" || "$STATUS" == "201" ]]; then
+  echo "  ✅ dietary_filter"
+  TOOL_SUCCESS=$((TOOL_SUCCESS+1))
+elif [[ "$STATUS" == "409" ]]; then
+  echo "  ℹ️  dietary_filter (already exists)"
+else
+  echo "  ❌ dietary_filter failed (status=$STATUS)"
+  echo "     $(head -c 500 "$RESP_FILE")"
+fi
+rm -f "$RESP_FILE"
+TOOL_COUNT=$((TOOL_COUNT+1))
+
+# Tool 5: check_store_inventory
+RESP_FILE=$(mktemp)
+STATUS=$(curl -sS -o "$RESP_FILE" -w "%{http_code}" -X POST "${KIBANA_URL_UI}/api/agent_builder/tools" \
+  -H "Content-Type: application/json" \
+  -H "kbn-xsrf: true" \
+  -H "Elastic-Api-Version: ${ELASTIC_API_VERSION}" \
+  -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" \
+  -d '{
+    "id": "check_store_inventory",
+    "type": "esql",
+    "description": "# Check Store Inventory Levels\n\nChecks real-time stock availability.",
+    "tags": ["inventory", "stores"],
+    "configuration": {
+      "query": "FROM grocery_items METADATA _score\n| WHERE name: ?item_query OR item_id: ?item_query\n| KEEP item_id, name, brand, category, unit_size, _score\n| SORT _score DESC\n| LIMIT 500\n| LOOKUP JOIN store_inventory ON item_id\n| WHERE stock_status != \"out_of_stock\"\n| EVAL final_price = CASE(on_sale, sale_price, current_price)\n| EVAL stock_level_category = CASE(\n    stock_status == \"in_stock\" AND stock_level > 50, \"high\",\n    stock_status == \"in_stock\" AND stock_level > 10, \"medium\", \n    stock_status == \"in_stock\", \"low\",\n    \"out_of_stock\"\n  )\n| LOOKUP JOIN store_locations ON store_id\n| SORT stock_level DESC, final_price ASC\n| LIMIT 15",
+      "params": {
+        "item_query": {
+          "type": "keyword",
+          "description": "Item name or ID to check inventory for"
+        }
+      }
+    }
+  }')
+if [[ "$STATUS" == "200" || "$STATUS" == "201" ]]; then
+  echo "  ✅ check_store_inventory"
+  TOOL_SUCCESS=$((TOOL_SUCCESS+1))
+elif [[ "$STATUS" == "409" ]]; then
+  echo "  ℹ️  check_store_inventory (already exists)"
+else
+  echo "  ❌ check_store_inventory failed (status=$STATUS)"
+  echo "     $(head -c 500 "$RESP_FILE")"
+fi
+rm -f "$RESP_FILE"
+TOOL_COUNT=$((TOOL_COUNT+1))
+
+# Tool 6: find_budget_items
+RESP_FILE=$(mktemp)
+STATUS=$(curl -sS -o "$RESP_FILE" -w "%{http_code}" -X POST "${KIBANA_URL_UI}/api/agent_builder/tools" \
+  -H "Content-Type: application/json" \
+  -H "kbn-xsrf: true" \
+  -H "Elastic-Api-Version: ${ELASTIC_API_VERSION}" \
+  -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" \
+  -d '{
+    "id": "find_budget_items",
+    "type": "esql",
+    "description": "# Find Items by Price Range\n\nSearches for grocery items within a specific price range.",
+    "tags": ["budget", "deals", "savings"],
+    "configuration": {
+      "query": "FROM store_inventory\n| EVAL final_price = CASE(on_sale, sale_price, current_price)\n| WHERE final_price >= ?min_price AND final_price <= ?max_price AND stock_status != \"out_of_stock\"\n| KEEP item_id, store_id, final_price, on_sale\n| LIMIT 20000\n| LOOKUP JOIN store_locations ON store_id\n| EVAL discount_score = CASE(chain_tier == \"Discount\", 3, on_sale, 2, 1)\n| LOOKUP JOIN grocery_items ON item_id\n| STATS\n    best_price = MIN(final_price),\n    avg_price = AVG(final_price),\n    stores_count = COUNT_DISTINCT(store_id),\n    max_discount_score = MAX(discount_score)\n  BY item_id, name, brand, category, unit_size, organic\n| EVAL sort_price = best_price\n| SORT CASE(?sort_order == \"desc\", sort_price * -1, sort_price) ASC\n| LIMIT 20",
+      "params": {
+        "min_price": {
+          "type": "double",
+          "description": "Minimum price for items (default: 15)"
+        },
+        "max_price": {
+          "type": "double",
+          "description": "Maximum price for items (default: 25)"
+        },
+        "sort_order": {
+          "type": "keyword",
+          "description": "Sort order: asc for cheapest first (default), desc for most expensive first"
+        }
+      }
+    }
+  }')
+if [[ "$STATUS" == "200" || "$STATUS" == "201" ]]; then
+  echo "  ✅ find_budget_items"
+  TOOL_SUCCESS=$((TOOL_SUCCESS+1))
+elif [[ "$STATUS" == "409" ]]; then
+  echo "  ℹ️  find_budget_items (already exists)"
+else
+  echo "  ❌ find_budget_items failed (status=$STATUS)"
+  echo "     $(head -c 500 "$RESP_FILE")"
+fi
+rm -f "$RESP_FILE"
+TOOL_COUNT=$((TOOL_COUNT+1))
+
+# Tool 7: search_grocery_items
+RESP_FILE=$(mktemp)
+STATUS=$(curl -sS -o "$RESP_FILE" -w "%{http_code}" -X POST "${KIBANA_URL_UI}/api/agent_builder/tools" \
+  -H "Content-Type: application/json" \
+  -H "kbn-xsrf: true" \
+  -H "Elastic-Api-Version: ${ELASTIC_API_VERSION}" \
+  -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" \
+  -d '{
+    "id": "search_grocery_items",
+    "type": "esql",
+    "description": "# Search for Grocery Items\n\nSearches for grocery items by name, type, category.",
+    "tags": [],
+    "configuration": {
+      "query": "FROM grocery_items METADATA _score\n| WHERE name.semantic: ?search_term\n   OR description.semantic: ?search_term\n   OR category: ?search_term\n| KEEP item_id, name, _score\n| SORT _score DESC\n| LIMIT 20000\n| LOOKUP JOIN store_inventory ON item_id\n| EVAL price = CASE(on_sale == true AND sale_price IS NOT NULL, sale_price, current_price)\n| EVAL price = COALESCE(price, sale_price, current_price)\n| WHERE price IS NOT NULL AND price > 0\n| STATS price = MIN(price) BY name\n| EVAL best_price = price\n| KEEP name, price, best_price\n| SORT price ASC\n| LIMIT 20",
+      "params": {
+        "search_term": {
+          "type": "text",
+          "description": "Search term for item name, category, or description"
+        }
+      }
+    }
+  }')
+if [[ "$STATUS" == "200" || "$STATUS" == "201" ]]; then
+  echo "  ✅ search_grocery_items"
+  TOOL_SUCCESS=$((TOOL_SUCCESS+1))
+elif [[ "$STATUS" == "409" ]]; then
+  echo "  ℹ️  search_grocery_items (already exists)"
+else
+  echo "  ❌ search_grocery_items failed (status=$STATUS)"
+  echo "     $(head -c 500 "$RESP_FILE")"
+fi
+rm -f "$RESP_FILE"
+TOOL_COUNT=$((TOOL_COUNT+1))
+
+# Tool 8: find_recipe_items
+RESP_FILE=$(mktemp)
+STATUS=$(curl -sS -o "$RESP_FILE" -w "%{http_code}" -X POST "${KIBANA_URL_UI}/api/agent_builder/tools" \
+  -H "Content-Type: application/json" \
+  -H "kbn-xsrf: true" \
+  -H "Elastic-Api-Version: ${ELASTIC_API_VERSION}" \
+  -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" \
+  -d '{
+    "id": "find_recipe_items",
+    "type": "esql",
+    "description": "# Find Recipe Ingredients\n\nFinds ingredients for specific recipes or dishes.",
+    "tags": [],
+    "configuration": {
+      "query": "FROM grocery_items METADATA _score\n| WHERE name.semantic: ?recipe_query OR category: ?recipe_query OR description.semantic: ?recipe_query OR tags.semantic: ?recipe_query\n| KEEP item_id, name, brand, category, unit_size, organic, gluten_free, vegan, _score\n| SORT _score DESC\n| LIMIT 500\n| LOOKUP JOIN store_inventory ON item_id\n| WHERE stock_status != \"out_of_stock\"\n| EVAL final_price = CASE(on_sale, sale_price, current_price)\n| STATS\n    avg_price = AVG(final_price),\n    min_price = MIN(final_price),\n    max_price = MAX(final_price),\n    stores_available = COUNT_DISTINCT(store_id),\n    max_score = MAX(_score)\n  BY name, brand, category, unit_size, organic, gluten_free, vegan\n| WHERE stores_available > 0\n| SORT max_score DESC\n| LIMIT 20",
+      "params": {
+        "recipe_query": {
+          "type": "text",
+          "description": "Recipe name, cooking style, or ingredient type"
+        }
+      }
+    }
+  }')
+if [[ "$STATUS" == "200" || "$STATUS" == "201" ]]; then
+  echo "  ✅ find_recipe_items"
+  TOOL_SUCCESS=$((TOOL_SUCCESS+1))
+elif [[ "$STATUS" == "409" ]]; then
+  echo "  ℹ️  find_recipe_items (already exists)"
+else
+  echo "  ❌ find_recipe_items failed (status=$STATUS)"
+  echo "     $(head -c 500 "$RESP_FILE")"
+fi
+rm -f "$RESP_FILE"
+TOOL_COUNT=$((TOOL_COUNT+1))
+
+echo "[Price is Bot] Deployed $TOOL_SUCCESS/$TOOL_COUNT tools"
+
+echo "[Price is Bot] Deploying game agents..."
+AGENT_COUNT=0
+AGENT_SUCCESS=0
+
+post_agent () {
+  local payload="$1"
+  RESP_FILE=$(mktemp)
+  STATUS=$(curl -sS -o "$RESP_FILE" -w "%{http_code}" -X POST "${KIBANA_URL_UI}/api/agent_builder/agents" \
+    -H "Content-Type: application/json" \
+    -H "kbn-xsrf: true" \
+    -H "Elastic-Api-Version: ${ELASTIC_API_VERSION}" \
+    -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" \
+    -d "$payload")
+  NAME=$(echo "$payload" | sed -n 's/.*"name"[[:space:]]*:[[:space:]]*"\([^"\n]*\)".*/\1/p')
+  if [[ "$STATUS" == "200" || "$STATUS" == "201" ]]; then
+    echo "  ✅ ${NAME:-agent}"
+    AGENT_SUCCESS=$((AGENT_SUCCESS+1))
+  elif [[ "$STATUS" == "409" ]]; then
+    echo "  ℹ️  ${NAME:-agent} (already exists)"
+  else
+    echo "  ❌ Agent deploy failed (status=$STATUS)"
+    head -c 500 "$RESP_FILE"; echo
+  fi
+  rm -f "$RESP_FILE"
+  AGENT_COUNT=$((AGENT_COUNT+1))
+}
+
+# Full set of agents
+post_agent '{"id":"budget_master","name":"Budget Master","description":"Savings expert","configuration":{"tools":[{"tool_ids":["platform.core.execute_esql","platform.core.get_document_by_id","platform.core.list_indices","find_deals","platform.core.get_index_mapping","platform.core.generate_esql","search_grocery_items","check_store_inventory","find_budget_items"]}]}}'
+
+post_agent '{"id":"health_guru","name":"Health Guru","description":"Nutrition-focused","configuration":{"tools":[{"tool_ids":["find_budget_items","seasonal_recommendations","platform.core.execute_esql","platform.core.get_document_by_id","platform.core.list_indices","check_nutrition","platform.core.get_index_mapping","platform.core.generate_esql","search_grocery_items","dietary_filter"]}]}}'
+
+post_agent '{"id":"gourmet_chef","name":"Gourmet Chef","description":"Recipe combinations","configuration":{"tools":[{"tool_ids":["seasonal_recommendations","platform.core.execute_esql","platform.core.get_document_by_id","platform.core.list_indices","platform.core.get_index_mapping","find_recipe_items","platform.core.generate_esql","search_grocery_items","check_store_inventory"]}]}}'
+
+post_agent '{"id":"speed_shopper","name":"Speed Shopper","description":"Efficiency expert","configuration":{"tools":[{"tool_ids":["platform.core.execute_esql","platform.core.get_document_by_id","platform.core.list_indices","platform.core.get_index_mapping","platform.core.generate_esql","search_grocery_items","check_store_inventory","find_budget_items"]}]}}'
+
+post_agent '{"id":"local_expert","name":"Vegas Local Expert","description":"Local insights","configuration":{"tools":[{"tool_ids":["seasonal_recommendations","platform.core.execute_esql","platform.core.get_document_by_id","platform.core.list_indices","find_deals","platform.core.get_index_mapping","platform.core.generate_esql","search_grocery_items","check_store_inventory","find_budget_items"]}]}}'
+
+echo "[Price is Bot] Deployed $AGENT_SUCCESS/$AGENT_COUNT agents"
+
+echo "[Price is Bot] kubernetes-vm setup complete"

@@ -1,0 +1,210 @@
+#!/bin/bash
+
+####################################################################### WAIT
+
+echo "Wait for the Instruqt host bootstrap to finish"
+# Wait for the Instruqt host bootstrap to finish
+while [ ! -f /opt/instruqt/bootstrap/host-bootstrap-completed ]
+do
+    echo "Waiting for Instruqt to finish booting the virtual machine"
+    sleep 1
+done
+
+# explicitly source env vars
+source /etc/profile.d/instruqt-env.sh
+
+####################################################################### ENV CHECK
+
+export GCSKEY_CE_INFRA_CONTAINERS=$GCSKEY_CE_INFRA_CONTAINERS
+
+if [[ -z "$GCSKEY_CE_INFRA_CONTAINERS" ]]; then
+    echo "GCSKEY_CE_INFRA_CONTAINERS is null"
+    exit 1
+fi
+
+####################################################################### STARTUP
+
+source /opt/workshops/worker-start.sh
+
+####################################################################### PRICE IS BOT SETUP
+# set env vars from kubernetes-vm
+echo "setting env vars from kubernetes-vm"
+export $(curl http://kubernetes-vm:9000/env | xargs)
+
+echo "[Price is Bot] Setting up host-1 (Docker containers)"
+
+# Hardcoded values - register as runtime variables
+export PROJECT="elastic-customer-eng"
+export ADMIN_TOKEN="f17bd5277efe588bbc19818df0f039a1d388fdfc622a4d8b738010a2d1af7403"
+export SECRET_KEY="50bb198964ddd28183d4f4a3a2af7aac2e628a2aeaf3c5a39a9e0098b50fb795"
+
+echo "[Price is Bot] Registering hardcoded runtime variables..."
+agent variable set PROJECT "$PROJECT"
+agent variable set ADMIN_TOKEN "$ADMIN_TOKEN"
+agent variable set SECRET_KEY "$SECRET_KEY"
+
+# From Instruqt secrets (lowercase) - register as runtime variables
+echo "[Price is Bot] Registering secret runtime variables..."
+if [[ -n "${price_is_bot_remote_es_url:-}" ]]; then
+  export REMOTE_ES_URL="$price_is_bot_remote_es_url"
+  agent variable set REMOTE_ES_URL "$REMOTE_ES_URL"
+  echo "  - REMOTE_ES_URL: set"
+else
+  echo "  ⚠️  REMOTE_ES_URL: not found in secrets"
+fi
+
+if [[ -n "${price_is_bot_remote_es_key:-}" ]]; then
+  export REMOTE_ES_API_KEY="$price_is_bot_remote_es_key"
+  agent variable set REMOTE_ES_API_KEY "$REMOTE_ES_API_KEY"
+  echo "  - REMOTE_ES_API_KEY: set"
+else
+  echo "  ⚠️  REMOTE_ES_API_KEY: not found in secrets"
+fi
+
+if [[ -n "${price_is_bot_docker_key:-}" ]]; then
+  export AR_KEY_B64="$price_is_bot_docker_key"
+  agent variable set AR_KEY_B64 "$AR_KEY_B64"
+  echo "  - AR_KEY_B64: set"
+else
+  echo "  ⚠️  AR_KEY_B64: not found in secrets"
+fi
+
+# Validate all required vars
+: "${PROJECT:?PROJECT required}"
+: "${REMOTE_ES_URL:?REMOTE_ES_URL required}"
+: "${REMOTE_ES_API_KEY:?REMOTE_ES_API_KEY required}"
+: "${ELASTICSEARCH_URL:?ELASTICSEARCH_URL required}"
+: "${ELASTICSEARCH_APIKEY:?ELASTICSEARCH_APIKEY required}"
+: "${KIBANA_URL_UI:?KIBANA_URL_UI required}"
+: "${ADMIN_TOKEN:?ADMIN_TOKEN required}"
+: "${SECRET_KEY:?SECRET_KEY required}"
+
+echo "[Price is Bot] Environment configured:"
+echo "  - Local ES: ${ELASTICSEARCH_URL}"
+echo "  - Remote ES: ${REMOTE_ES_URL:0:30}..."
+echo "  - Kibana UI: ${KIBANA_URL_UI}"
+echo "  - Project: ${PROJECT}"
+
+# Wait for Elasticsearch on kubernetes-vm to be ready
+echo "[Price is Bot] Waiting for Elasticsearch on kubernetes-vm..."
+until curl -fsS -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" "${ELASTICSEARCH_URL}/_cluster/health" >/dev/null 2>&1; do
+  echo "  ... waiting for ES"
+  sleep 2
+done
+echo "[Price is Bot] Elasticsearch is ready"
+
+# Wait for Kibana to be ready (agents/tools deployed on kubernetes-vm)
+echo "[Price is Bot] Waiting for Kibana..."
+until curl -fsS -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" -H 'kbn-xsrf: true' "${KIBANA_URL_UI}/api/status" >/dev/null 2>&1; do
+  echo "  ... waiting for Kibana"
+  sleep 2
+done
+echo "[Price is Bot] Kibana is ready (agents/tools deployed on kubernetes-vm)"
+
+# Docker login for Artifact Registry
+if [[ -n "${AR_KEY_B64:-}" ]]; then
+  echo "[Price is Bot] Logging into Artifact Registry..."
+  echo "$AR_KEY_B64" | base64 -d > /tmp/ar-key.json 2>/dev/null || echo "$AR_KEY_B64" | base64 -D > /tmp/ar-key.json 2>/dev/null || true
+  if [[ -f /tmp/ar-key.json ]]; then
+    docker login -u _json_key --password-stdin https://us-central1-docker.pkg.dev < /tmp/ar-key.json
+    rm -f /tmp/ar-key.json
+    echo "[Price is Bot] Docker login successful"
+  else
+    echo "[Price is Bot] Warning: Failed to decode AR key"
+  fi
+else
+  echo "[Price is Bot] Warning: AR_KEY_B64 not set; assuming public images or prior login"
+fi
+
+# Resolve kubernetes-vm IP for Docker containers
+echo "[Price is Bot] Resolving kubernetes-vm IP..."
+KUBERNETES_VM_IP=$(getent hosts kubernetes-vm | awk '{ print $1 }')
+if [[ -z "$KUBERNETES_VM_IP" ]]; then
+  echo "  ⚠️  Could not resolve kubernetes-vm, using hostname"
+  KUBERNETES_VM_IP="kubernetes-vm"
+else
+  echo "  ✅ kubernetes-vm IP: ${KUBERNETES_VM_IP}"
+fi
+
+# Create docker-compose.yml
+COMPOSE_DIR="/opt/price-is-bot"
+mkdir -p "$COMPOSE_DIR"
+cd "$COMPOSE_DIR"
+
+cat > docker-compose.yml <<EOF
+version: "3.9"
+services:
+  backend:
+    image: us-central1-docker.pkg.dev/${PROJECT}/price-is-bot/backend:latest
+    environment:
+      - ELASTICSEARCH_HOST=http://${KUBERNETES_VM_IP}:30920
+      - ELASTICSEARCH_API_KEY=${ELASTICSEARCH_APIKEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - ADMIN_TOKEN=${ADMIN_TOKEN}
+      - CORS_ALLOWED_ORIGINS=http://host-1:8080
+      - PORT=8081
+    ports: ["8081:8081"]
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8081"]
+    restart: unless-stopped
+
+  leaderboard-api:
+    image: us-central1-docker.pkg.dev/${PROJECT}/price-is-bot/leaderboard-api:latest
+    environment:
+      - ELASTICSEARCH_URL=${REMOTE_ES_URL}
+      - ELASTICSEARCH_API_KEY=${REMOTE_ES_API_KEY}
+      - ADMIN_TOKEN=${ADMIN_TOKEN}
+      - PORT=8082
+    ports: ["8082:8082"]
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8082"]
+    restart: unless-stopped
+
+  game-ui:
+    image: us-central1-docker.pkg.dev/${PROJECT}/price-is-bot/game-ui:latest
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://host-1:8081
+      - NEXT_PUBLIC_LEADERBOARD_API_URL=http://host-1:8082
+      - KIBANA_URL=http://${KUBERNETES_VM_IP}:30001
+      - KIBANA_API_KEY=${ELASTICSEARCH_APIKEY}
+      - PORT=8080
+    ports: ["8080:8080"]
+    restart: unless-stopped
+EOF
+
+echo "[Price is Bot] Pulling Docker images..."
+docker compose pull
+
+echo "[Price is Bot] Starting services..."
+docker compose up -d
+
+echo "[Price is Bot] Verifying services..."
+sleep 5
+
+# Health checks
+if curl -fsS http://localhost:8081/health >/dev/null 2>&1; then
+  echo "[Price is Bot] ✓ Backend is healthy"
+else
+  echo "[Price is Bot] ✗ Backend health check failed"
+fi
+
+if curl -fsS http://localhost:8082/ >/dev/null 2>&1; then
+  echo "[Price is Bot] ✓ Leaderboard API is responding"
+else
+  echo "[Price is Bot] ✗ Leaderboard API health check failed"
+fi
+
+if curl -fsS http://localhost:8080 >/dev/null 2>&1; then
+  echo "[Price is Bot] ✓ Game UI is responding"
+else
+  echo "[Price is Bot] ✗ Game UI health check failed"
+fi
+
+# TODO: Deploy agents and tools to Agent Builder
+# curl -fsS -H "Authorization: ApiKey ${ELASTICSEARCH_APIKEY}" -H 'kbn-xsrf: true' -H 'Content-Type: application/json' \
+#   -X POST "${KIBANA_URL_UI}/api/agent_builder/agents" -d @agent_definition.json
+
+echo "[Price is Bot] host-1 setup complete"
+echo "[Price is Bot] Services available at:"
+echo "  - Game UI: http://host-1:8080"
+echo "  - Backend: http://host-1:8081"
+echo "  - Leaderboard: http://host-1:8082"
+echo "  - Kibana: ${KIBANA_URL_UI}"

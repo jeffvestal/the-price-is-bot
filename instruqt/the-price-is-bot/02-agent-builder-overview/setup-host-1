@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ES_URL="${LOCAL_ES_URL:-http://host-1:9200}"
+KIBANA_URL="${KIBANA_URL_UI:-http://host-1:5601}"
+: "${LOCAL_ES_API_KEY:?LOCAL_ES_API_KEY required}"
+: "${KIBANA_API_KEY:?KIBANA_API_KEY required}"
+
+echo "[setup-host-1] ES: ${ES_URL}  Kibana: ${KIBANA_URL}"
+
+# TODO: your snapshot restore here (replace with your actual commands)
+# curl -fsS -H "Authorization: ApiKey ${LOCAL_ES_API_KEY}" -H 'Content-Type: application/json' \
+#   -X PUT "${ES_URL}/_snapshot/repo" -d '{"type":"fs","settings":{"location":"/var/lib/elasticsearch/snapshots"}}'
+# curl -fsS -H "Authorization: ApiKey ${LOCAL_ES_API_KEY}" -H 'Content-Type: application/json' \
+#   -X POST "${ES_URL}/_snapshot/repo/<snapshot_name>/_restore" -d '{"include_global_state":true}'
+
+# Verify Kibana and deploy (placeholder)
+curl -fsS -H "Authorization: ApiKey ${KIBANA_API_KEY}" -H 'kbn-xsrf: true' \
+  "${KIBANA_URL}/api/status" >/dev/null
+
+echo "[setup-host-1] Complete."
+
+
+
+
+
+
+
+

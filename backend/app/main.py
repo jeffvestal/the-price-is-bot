@@ -18,6 +18,7 @@ from app.sockets import sio
 import socketio
 import uvicorn
 import os
+from app.config import CORS_ALLOWED_ORIGINS
 
 # Configure root logger
 logging.basicConfig(
@@ -48,6 +49,10 @@ async def startup_event():
     logger.info("Connecting to Elasticsearch...")
     await connect_elasticsearch()  # Establish connection to Elasticsearch
     logger.info("Elasticsearch connected.")
+
+    # Warm up ELSER inference endpoint (prevents timeout on first semantic search)
+    from app.services.elastic_service import warmup_elser
+    await warmup_elser()
 
     logger.info("Initializing Elasticsearch indices...")
     await initialize_indices()
@@ -83,7 +88,7 @@ async def startup_event():
 # Set up CORS middleware for FastAPI app
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Update to specific domains in production
+    allow_origins=CORS_ALLOWED_ORIGINS or ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -96,6 +101,14 @@ async def log_requests(request: Request, call_next):
     response = await call_next(request)
     logging.debug(f"Response status: {response.status_code}")
     return response
+
+@app.get("/")
+async def root():
+    return {"service": "price-is-bot-backend", "status": "ok"}
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy"}
 
 # Create the Socket.IO ASGI app
 socketio_app = socketio.ASGIApp(sio, socketio_path='/socket.io')

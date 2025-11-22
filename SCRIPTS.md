@@ -19,9 +19,131 @@ This repository contains **game-specific components**:
 
 ## 🚀 Deployment Scripts
 
-### `deploy-canonical.sh` ✅ **PRIMARY DEPLOYMENT SCRIPT**
+### `scripts/deploy-everything.sh` ✅ **MASTER DEPLOYMENT SCRIPT**
 
-Deploy both base tools and game agents to any cluster.
+One-command deployment from scratch: data generation → agent deployment → GCP deployment.
+
+```bash
+./scripts/deploy-everything.sh
+```
+
+**What it does:**
+1. Installs elastic-grocery-core
+2. Generates grocery data in Elasticsearch
+3. Deploys 8 base tools + 5 game agents
+4. Builds and pushes 3 Docker images to GCP
+5. Deploys 3 Cloud Run services
+6. Runs verification tests
+
+**Requirements:**
+- .env.elasticsearch (ES credentials)
+- .env.kibana (Kibana credentials)  
+- .env.gcp (GCP project settings)
+- .env.secrets (JWT keys, admin token)
+
+**Exit codes:**
+- `0` = Success, everything deployed
+- `1` = Failure at any step
+
+---
+
+### `scripts/setup-elasticsearch.sh` 
+
+Automated Elasticsearch setup: data generation and agent deployment.
+
+```bash
+./scripts/setup-elasticsearch.sh
+
+# With options
+./scripts/setup-elasticsearch.sh --delete-existing
+```
+
+**What it does:**
+1. Tests Elasticsearch connection
+2. Generates 5000 grocery items and 10 stores
+3. Deploys 8 base tools from elastic-grocery-core
+4. Deploys 5 game agents
+5. Verifies deployment (tool and agent counts)
+
+**Requirements:**
+- .env.elasticsearch (ES_URL, ES_API_KEY)
+- .env.kibana (KIBANA_URL, KIBANA_API_KEY)
+
+**Exit codes:**
+- `0` = Success, all data and agents deployed
+- `1` = Failure during data generation or deployment
+
+---
+
+### `scripts/deploy-to-gcp.sh`
+
+GCP Cloud Run deployment automation.
+
+```bash
+./scripts/deploy-to-gcp.sh
+```
+
+**What it does:**
+1. Enables required GCP APIs
+2. Creates Artifact Registry repository
+3. Creates/updates secrets in Secret Manager
+4. Builds 3 Docker images
+5. Pushes images to Artifact Registry
+6. Deploys 3 Cloud Run services:
+   - price-is-bot-backend
+   - price-is-bot-leaderboard-api
+   - price-is-bot-game-ui
+7. Outputs service URLs
+
+**Requirements:**
+- .env.gcp (GCP_PROJECT, GCP_REGION)
+- .env.elasticsearch (for secrets)
+- .env.kibana (for secrets)
+- .env.secrets (SECRET_KEY, ADMIN_TOKEN)
+- gcloud CLI configured
+- Docker installed
+
+**Services Deployed:**
+- **backend**: Min 0, Max 10 instances, 512Mi RAM
+- **leaderboard-api**: Min 0, Max 10 instances, 512Mi RAM
+- **game-ui**: Min 1, Max 10 instances, 512Mi RAM
+
+**Exit codes:**
+- `0` = Success, all services deployed
+- `1` = Failure during GCP deployment
+
+---
+
+### `scripts/test-deployment.sh`
+
+Smoke tests for deployed services.
+
+```bash
+./scripts/test-deployment.sh
+```
+
+**What it tests:**
+1. Game UI homepage (HTTP 200)
+2. Backend health endpoint
+3. Leaderboard API health endpoint
+4. Leaderboard API settings endpoint
+5. Leaderboard API leaderboard endpoint
+6. Kibana tool count (8 expected)
+7. Kibana agent count (5 expected)
+
+**Requirements:**
+- .env.gcp (to fetch Cloud Run URLs)
+- .env.kibana (to test Kibana deployment)
+
+**Exit codes:**
+- `0` = All tests passed
+- `1` = One or more tests failed
+
+---
+
+### `deploy-canonical.sh` 
+
+Deploy base tools and game agents to Kibana (no GCP).
 
 ```bash
 # Fresh deployment
@@ -34,7 +156,7 @@ export KIBANA_API_KEY=your_api_key
 ```
 
 **What it does:**
-1. Deploys 9 base tools from elastic-grocery-core
+1. Deploys 8 base tools from elastic-grocery-core
 2. Deploys 5 game personality agents from definitions/game_agents.json
 
 **Exit codes:**

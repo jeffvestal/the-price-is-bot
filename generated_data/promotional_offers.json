@@ -1,0 +1,1859 @@
+[
+  {
+    "promo_id": "STORE_0001_PROMO_001",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_003324",
+      "ITEM_001116",
+      "ITEM_004293"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-18T16:13:27.130243",
+    "end_date": "2025-11-03T16:13:27.130248",
+    "description": "Buy one get one 50% off on Wild-Caught Atlantic Salmon Fillets, Artisan Sourdough Bread, Dark Chocolate Almonds",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130254",
+    "last_updated": "2025-10-25T16:13:27.130256"
+  },
+  {
+    "promo_id": "STORE_0001_PROMO_002",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_004729",
+      "ITEM_003796"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 16.404410082046343,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-20T16:13:27.130261",
+    "end_date": "2025-11-17T16:13:27.130263",
+    "description": "Buy 3 or more: Organic Coconut Oil, Frozen Organic Blueberries",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130266",
+    "last_updated": "2025-10-25T16:13:27.130267"
+  },
+  {
+    "promo_id": "STORE_0001_PROMO_003",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_004199",
+      "ITEM_003250"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 21.043963751300858,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-22T16:13:27.130272",
+    "end_date": "2025-11-13T16:13:27.130274",
+    "description": "Buy 3 or more: Raw Organic Almonds, Greek Yogurt Plain Non-Fat",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130276",
+    "last_updated": "2025-10-25T16:13:27.130277"
+  },
+  {
+    "promo_id": "STORE_0001_PROMO_004",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_004388",
+      "ITEM_002966"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 16.810437559222617,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-21T16:13:27.130280",
+    "end_date": "2025-11-18T16:13:27.130281",
+    "description": "Save on Organic Hass Avocados, Organic Hummus Roasted Red Pepper!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130284",
+    "last_updated": "2025-10-25T16:13:27.130285"
+  },
+  {
+    "promo_id": "STORE_0001_PROMO_005",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_000209",
+      "ITEM_000678",
+      "ITEM_003938"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 20.89797000479986,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-20T16:13:27.130288",
+    "end_date": "2025-11-12T16:13:27.130289",
+    "description": "Save on Organic Coconut Oil Shampoo, Wild-Caught Atlantic Salmon Fillets, Sliced Turkey Breast!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130292",
+    "last_updated": "2025-10-25T16:13:27.130293"
+  },
+  {
+    "promo_id": "STORE_0001_PROMO_006",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_001884",
+      "ITEM_000735",
+      "ITEM_000725"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 29.704028871776135,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-22T16:13:27.130295",
+    "end_date": "2025-11-19T16:13:27.130297",
+    "description": "Save on Eco-Friendly Dish Soap, Artisan Sourdough Bread, Organic Raw Almonds!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130299",
+    "last_updated": "2025-10-25T16:13:27.130300"
+  },
+  {
+    "promo_id": "STORE_0001_PROMO_007",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_003868",
+      "ITEM_004570",
+      "ITEM_000121"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-22T16:13:27.130303",
+    "end_date": "2025-11-18T16:13:27.130304",
+    "description": "Buy one get one 50% off on Wild-Caught Atlantic Salmon Fillets, Organic Sliced Turkey Breast, Organic Coconut Oil",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130306",
+    "last_updated": "2025-10-25T16:13:27.130307"
+  },
+  {
+    "promo_id": "STORE_0001_PROMO_008",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_003498"
+    ],
+    "promo_type": "bundle",
+    "discount_percent": null,
+    "fixed_discount": null,
+    "bundle_price": 5.59,
+    "start_date": "2025-10-21T16:13:27.130309",
+    "end_date": "2025-11-08T16:13:27.130311",
+    "description": "Bundle deal: Organic Quinoa and more!",
+    "conditions": "All items must be purchased together",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130313",
+    "last_updated": "2025-10-25T16:13:27.130314"
+  },
+  {
+    "promo_id": "STORE_0001_PROMO_009",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_001937",
+      "ITEM_004387"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 18.926216692519656,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-23T16:13:27.130319",
+    "end_date": "2025-11-15T16:13:27.130320",
+    "description": "Buy 3 or more: Wild-Caught Atlantic Salmon Fillets, Grass-Fed Ground Beef",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130322",
+    "last_updated": "2025-10-25T16:13:27.130323"
+  },
+  {
+    "promo_id": "STORE_0001_PROMO_010",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_001148"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-24T16:13:27.130326",
+    "end_date": "2025-11-15T16:13:27.130327",
+    "description": "Buy one get one 50% off on Almond Milk Unsweetened",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130329",
+    "last_updated": "2025-10-25T16:13:27.130330"
+  },
+  {
+    "promo_id": "STORE_0001_PROMO_011",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_003799",
+      "ITEM_000847",
+      "ITEM_004412"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-24T16:13:27.130333",
+    "end_date": "2025-11-07T16:13:27.130334",
+    "description": "Buy one get one 50% off on Organic Coconut Oil, Roasted Turkey Breast Slices, Organic Hass Avocados",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130336",
+    "last_updated": "2025-10-25T16:13:27.130337"
+  },
+  {
+    "promo_id": "STORE_0001_PROMO_012",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_002608",
+      "ITEM_004977"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-21T16:13:27.130340",
+    "end_date": "2025-11-14T16:13:27.130341",
+    "description": "Buy one get one 50% off on Artisan Sourdough Bread, Bamboo Paper Towels",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130344",
+    "last_updated": "2025-10-25T16:13:27.130345"
+  },
+  {
+    "promo_id": "STORE_0001_PROMO_013",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_001211"
+    ],
+    "promo_type": "bundle",
+    "discount_percent": null,
+    "fixed_discount": null,
+    "bundle_price": 8.46,
+    "start_date": "2025-10-20T16:13:27.130347",
+    "end_date": "2025-11-04T16:13:27.130348",
+    "description": "Bundle deal: Organic Coconut Oil and more!",
+    "conditions": "All items must be purchased together",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130350",
+    "last_updated": "2025-10-25T16:13:27.130351"
+  },
+  {
+    "promo_id": "STORE_0001_PROMO_014",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_004971",
+      "ITEM_001318",
+      "ITEM_000203"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130355",
+    "end_date": "2025-11-15T16:13:27.130356",
+    "description": "Buy one get one 50% off on Organic Quinoa, Wild-Caught Atlantic Salmon Fillets, Wild-Caught Atlantic Salmon Fillets",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130359",
+    "last_updated": "2025-10-25T16:13:27.130359"
+  },
+  {
+    "promo_id": "STORE_0001_PROMO_015",
+    "store_id": "STORE_0001",
+    "item_ids": [
+      "ITEM_001680",
+      "ITEM_001111",
+      "ITEM_004751",
+      "ITEM_004851",
+      "ITEM_003749"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130363",
+    "end_date": "2025-11-19T16:13:27.130364",
+    "description": "Buy one get one 50% off on Greek Yogurt Plain, Frozen Wild Blueberries, Frozen Organic Blueberries",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130366",
+    "last_updated": "2025-10-25T16:13:27.130367"
+  },
+  {
+    "promo_id": "STORE_0002_PROMO_001",
+    "store_id": "STORE_0002",
+    "item_ids": [
+      "ITEM_001541",
+      "ITEM_003211",
+      "ITEM_004438",
+      "ITEM_003386"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 24.677870107236394,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-23T16:13:27.130370",
+    "end_date": "2025-11-09T16:13:27.130372",
+    "description": "Buy 3 or more: Organic Sliced Turkey Breast, Organic Hass Avocados, Greek Yogurt Plain",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130376",
+    "last_updated": "2025-10-25T16:13:27.130377"
+  },
+  {
+    "promo_id": "STORE_0002_PROMO_002",
+    "store_id": "STORE_0002",
+    "item_ids": [
+      "ITEM_002530",
+      "ITEM_002774",
+      "ITEM_003673",
+      "ITEM_004125"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 15.147818335271158,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130380",
+    "end_date": "2025-11-09T16:13:27.130382",
+    "description": "Buy 3 or more: Organic Coconut Oil, Organic Quinoa, Frozen Organic Blueberries",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130384",
+    "last_updated": "2025-10-25T16:13:27.130385"
+  },
+  {
+    "promo_id": "STORE_0002_PROMO_003",
+    "store_id": "STORE_0002",
+    "item_ids": [
+      "ITEM_004365",
+      "ITEM_001309",
+      "ITEM_004955",
+      "ITEM_004460",
+      "ITEM_002947"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 18.107114117452475,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-21T16:13:27.130388",
+    "end_date": "2025-11-16T16:13:27.130389",
+    "description": "Buy 3 or more: Organic Quinoa, Frozen Organic Blueberries, Organic Sprouted Bread",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130391",
+    "last_updated": "2025-10-25T16:13:27.130392"
+  },
+  {
+    "promo_id": "STORE_0002_PROMO_004",
+    "store_id": "STORE_0002",
+    "item_ids": [
+      "ITEM_000414",
+      "ITEM_003748"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 18.20898952749475,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-20T16:13:27.130395",
+    "end_date": "2025-11-09T16:13:27.130396",
+    "description": "Buy 3 or more: Organic Hass Avocados, Organic Dark Chocolate Almonds",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130398",
+    "last_updated": "2025-10-25T16:13:27.130399"
+  },
+  {
+    "promo_id": "STORE_0002_PROMO_005",
+    "store_id": "STORE_0002",
+    "item_ids": [
+      "ITEM_001291",
+      "ITEM_000072",
+      "ITEM_004376",
+      "ITEM_002557"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 30.27115929427798,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130402",
+    "end_date": "2025-11-14T16:13:27.130404",
+    "description": "Save on Organic Hass Avocados, Artisan Sourdough Bread, Wild-Caught Atlantic Salmon Fillets!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130406",
+    "last_updated": "2025-10-25T16:13:27.130407"
+  },
+  {
+    "promo_id": "STORE_0002_PROMO_006",
+    "store_id": "STORE_0002",
+    "item_ids": [
+      "ITEM_001611",
+      "ITEM_004879",
+      "ITEM_001137",
+      "ITEM_001030",
+      "ITEM_000309"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 33.55861000484659,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-18T16:13:27.130410",
+    "end_date": "2025-11-14T16:13:27.130411",
+    "description": "Save on Organic Coconut Oil Shampoo, Plant-Based Laundry Detergent, Dark Chocolate Almonds!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130418",
+    "last_updated": "2025-10-25T16:13:27.130419"
+  },
+  {
+    "promo_id": "STORE_0002_PROMO_007",
+    "store_id": "STORE_0002",
+    "item_ids": [
+      "ITEM_003557",
+      "ITEM_000066"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 23.971316832732555,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-22T16:13:27.130421",
+    "end_date": "2025-11-23T16:13:27.130423",
+    "description": "Buy 3 or more: Raw Organic Almonds, Organic Quinoa",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130425",
+    "last_updated": "2025-10-25T16:13:27.130426"
+  },
+  {
+    "promo_id": "STORE_0002_PROMO_008",
+    "store_id": "STORE_0002",
+    "item_ids": [
+      "ITEM_000179",
+      "ITEM_000933",
+      "ITEM_001199",
+      "ITEM_003161",
+      "ITEM_004389"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 16.44772626650888,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-24T16:13:27.130429",
+    "end_date": "2025-11-21T16:13:27.130430",
+    "description": "Buy 3 or more: Wild-Caught Atlantic Salmon Fillets, Organic Sprouted Grain Bread, Organic Coconut Oil",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130432",
+    "last_updated": "2025-10-25T16:13:27.130433"
+  },
+  {
+    "promo_id": "STORE_0002_PROMO_009",
+    "store_id": "STORE_0002",
+    "item_ids": [
+      "ITEM_004485",
+      "ITEM_004583"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 24.152228339068138,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-22T16:13:27.130436",
+    "end_date": "2025-11-13T16:13:27.130437",
+    "description": "Save on Grass-Fed Ground Beef, Organic Sprouted Grain Bread!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130439",
+    "last_updated": "2025-10-25T16:13:27.130440"
+  },
+  {
+    "promo_id": "STORE_0002_PROMO_010",
+    "store_id": "STORE_0002",
+    "item_ids": [
+      "ITEM_001436",
+      "ITEM_003911",
+      "ITEM_004873"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 34.668677202060465,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-23T16:13:27.130443",
+    "end_date": "2025-11-09T16:13:27.130444",
+    "description": "Save on Sparkling Water Variety Pack, Vitamin C Serum, Organic Greek Yogurt!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130451",
+    "last_updated": "2025-10-25T16:13:27.130452"
+  },
+  {
+    "promo_id": "STORE_0002_PROMO_011",
+    "store_id": "STORE_0002",
+    "item_ids": [
+      "ITEM_000999",
+      "ITEM_003969",
+      "ITEM_002622"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 38.318541869250694,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-18T16:13:27.130455",
+    "end_date": "2025-11-05T16:13:27.130456",
+    "description": "Save on Organic Quinoa, Frozen Wild Blueberries, Organic Raw Almonds!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130458",
+    "last_updated": "2025-10-25T16:13:27.130459"
+  },
+  {
+    "promo_id": "STORE_0002_PROMO_012",
+    "store_id": "STORE_0002",
+    "item_ids": [
+      "ITEM_001125",
+      "ITEM_002658"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 27.906616747871244,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130462",
+    "end_date": "2025-11-02T16:13:27.130463",
+    "description": "Save on Dark Chocolate Almonds, Sliced Prosciutto!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130465",
+    "last_updated": "2025-10-25T16:13:27.130466"
+  },
+  {
+    "promo_id": "STORE_0002_PROMO_013",
+    "store_id": "STORE_0002",
+    "item_ids": [
+      "ITEM_003417",
+      "ITEM_003058",
+      "ITEM_004585",
+      "ITEM_003376",
+      "ITEM_002206"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 18.692079569944614,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-24T16:13:27.130469",
+    "end_date": "2025-11-01T16:13:27.130470",
+    "description": "Buy 3 or more: Bamboo Paper Towels, Almond Milk Unsweetened, Wild-Caught Atlantic Salmon Fillets",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130473",
+    "last_updated": "2025-10-25T16:13:27.130474"
+  },
+  {
+    "promo_id": "STORE_0003_PROMO_001",
+    "store_id": "STORE_0003",
+    "item_ids": [
+      "ITEM_004221",
+      "ITEM_002131"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-21T16:13:27.130476",
+    "end_date": "2025-11-24T16:13:27.130478",
+    "description": "Buy one get one 50% off on Organic Coconut Oil, Artisan Sourdough Bread",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130480",
+    "last_updated": "2025-10-25T16:13:27.130481"
+  },
+  {
+    "promo_id": "STORE_0003_PROMO_002",
+    "store_id": "STORE_0003",
+    "item_ids": [
+      "ITEM_001663"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130483",
+    "end_date": "2025-11-16T16:13:27.130484",
+    "description": "Buy one get one 50% off on Organic Roasted Turkey Breast",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130486",
+    "last_updated": "2025-10-25T16:13:27.130487"
+  },
+  {
+    "promo_id": "STORE_0003_PROMO_003",
+    "store_id": "STORE_0003",
+    "item_ids": [
+      "ITEM_004553"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 12.711977116615277,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130489",
+    "end_date": "2025-11-19T16:13:27.130491",
+    "description": "Save on Organic Coconut Oil!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130493",
+    "last_updated": "2025-10-25T16:13:27.130494"
+  },
+  {
+    "promo_id": "STORE_0003_PROMO_004",
+    "store_id": "STORE_0003",
+    "item_ids": [
+      "ITEM_004386",
+      "ITEM_003679",
+      "ITEM_003850",
+      "ITEM_000498"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-18T16:13:27.130500",
+    "end_date": "2025-11-09T16:13:27.130501",
+    "description": "Buy one get one 50% off on Organic Spinach Salad Mix, Sliced Turkey Breast, Bamboo Paper Towels",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130503",
+    "last_updated": "2025-10-25T16:13:27.130504"
+  },
+  {
+    "promo_id": "STORE_0003_PROMO_005",
+    "store_id": "STORE_0003",
+    "item_ids": [
+      "ITEM_003887",
+      "ITEM_002477"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 21.540484142234522,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-23T16:13:27.130506",
+    "end_date": "2025-11-23T16:13:27.130508",
+    "description": "Buy 3 or more: Eco-Friendly Dish Soap, Almond Milk Unsweetened",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130510",
+    "last_updated": "2025-10-25T16:13:27.130511"
+  },
+  {
+    "promo_id": "STORE_0003_PROMO_006",
+    "store_id": "STORE_0003",
+    "item_ids": [
+      "ITEM_004548",
+      "ITEM_003596",
+      "ITEM_004117",
+      "ITEM_002267"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 21.787174533815364,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-18T16:13:27.130514",
+    "end_date": "2025-11-13T16:13:27.130515",
+    "description": "Buy 3 or more: Greek Yogurt Plain, Greek Yogurt Plain, Frozen Wild Blueberries",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130517",
+    "last_updated": "2025-10-25T16:13:27.130518"
+  },
+  {
+    "promo_id": "STORE_0003_PROMO_007",
+    "store_id": "STORE_0003",
+    "item_ids": [
+      "ITEM_000551",
+      "ITEM_004494",
+      "ITEM_001067"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 36.46955078641494,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-22T16:13:27.130521",
+    "end_date": "2025-11-24T16:13:27.130522",
+    "description": "Save on Organic Sprouted Bread, Recycled Paper Towels, Bamboo Paper Towels!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130524",
+    "last_updated": "2025-10-25T16:13:27.130525"
+  },
+  {
+    "promo_id": "STORE_0003_PROMO_008",
+    "store_id": "STORE_0003",
+    "item_ids": [
+      "ITEM_004985",
+      "ITEM_003273",
+      "ITEM_000957",
+      "ITEM_004380",
+      "ITEM_004171"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 24.819054652246166,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-21T16:13:27.130528",
+    "end_date": "2025-11-02T16:13:27.130529",
+    "description": "Buy 3 or more: Frozen Organic Blueberries, Organic Hass Avocados, Sliced Roasted Turkey Breast",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130535",
+    "last_updated": "2025-10-25T16:13:27.130535"
+  },
+  {
+    "promo_id": "STORE_0003_PROMO_009",
+    "store_id": "STORE_0003",
+    "item_ids": [
+      "ITEM_004760",
+      "ITEM_000783",
+      "ITEM_002646",
+      "ITEM_001519",
+      "ITEM_000948"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-20T16:13:27.130539",
+    "end_date": "2025-11-05T16:13:27.130540",
+    "description": "Buy one get one 50% off on Wild-Caught Atlantic Salmon Fillets, Natural Bamboo Toothbrush, Sourdough Bread",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130542",
+    "last_updated": "2025-10-25T16:13:27.130543"
+  },
+  {
+    "promo_id": "STORE_0003_PROMO_010",
+    "store_id": "STORE_0003",
+    "item_ids": [
+      "ITEM_003452",
+      "ITEM_001086",
+      "ITEM_002487",
+      "ITEM_004052"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 20.049972817996007,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130546",
+    "end_date": "2025-11-13T16:13:27.130548",
+    "description": "Buy 3 or more: Dark Chocolate Almonds, Organic Quinoa, Greek Yogurt Plain",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130550",
+    "last_updated": "2025-10-25T16:13:27.130551"
+  },
+  {
+    "promo_id": "STORE_0003_PROMO_011",
+    "store_id": "STORE_0003",
+    "item_ids": [
+      "ITEM_000510",
+      "ITEM_002231"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 37.88515979899108,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-23T16:13:27.130553",
+    "end_date": "2025-11-15T16:13:27.130555",
+    "description": "Save on Eco-Friendly Dish Soap, Organic Face Wash Gel!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130557",
+    "last_updated": "2025-10-25T16:13:27.130558"
+  },
+  {
+    "promo_id": "STORE_0003_PROMO_012",
+    "store_id": "STORE_0003",
+    "item_ids": [
+      "ITEM_003049",
+      "ITEM_004833"
+    ],
+    "promo_type": "bundle",
+    "discount_percent": null,
+    "fixed_discount": null,
+    "bundle_price": 9.17,
+    "start_date": "2025-10-23T16:13:27.130560",
+    "end_date": "2025-11-12T16:13:27.130561",
+    "description": "Bundle deal: Eco-Friendly Bamboo Paper Towels, Organic Hass Avocados and more!",
+    "conditions": "All items must be purchased together",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130564",
+    "last_updated": "2025-10-25T16:13:27.130564"
+  },
+  {
+    "promo_id": "STORE_0003_PROMO_013",
+    "store_id": "STORE_0003",
+    "item_ids": [
+      "ITEM_004312",
+      "ITEM_001007"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-18T16:13:27.130570",
+    "end_date": "2025-11-10T16:13:27.130572",
+    "description": "Buy one get one 50% off on Organic Hass Avocados, Organic Roasted Turkey Breast",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130574",
+    "last_updated": "2025-10-25T16:13:27.130575"
+  },
+  {
+    "promo_id": "STORE_0004_PROMO_001",
+    "store_id": "STORE_0004",
+    "item_ids": [
+      "ITEM_001362"
+    ],
+    "promo_type": "bundle",
+    "discount_percent": null,
+    "fixed_discount": null,
+    "bundle_price": 4.55,
+    "start_date": "2025-10-20T16:13:27.130577",
+    "end_date": "2025-11-07T16:13:27.130579",
+    "description": "Bundle deal: Dark Chocolate Almonds and more!",
+    "conditions": "All items must be purchased together",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130580",
+    "last_updated": "2025-10-25T16:13:27.130581"
+  },
+  {
+    "promo_id": "STORE_0004_PROMO_002",
+    "store_id": "STORE_0004",
+    "item_ids": [
+      "ITEM_002282",
+      "ITEM_002266"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 24.594977717592737,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130584",
+    "end_date": "2025-11-14T16:13:27.130586",
+    "description": "Buy 3 or more: Artisan Sourdough Bread, Kombucha Variety Pack",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130588",
+    "last_updated": "2025-10-25T16:13:27.130589"
+  },
+  {
+    "promo_id": "STORE_0004_PROMO_003",
+    "store_id": "STORE_0004",
+    "item_ids": [
+      "ITEM_000589",
+      "ITEM_003841"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 13.916076607286122,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-22T16:13:27.130591",
+    "end_date": "2025-11-13T16:13:27.130592",
+    "description": "Save on Organic Hass Avocados, Organic Spinach Salad Mix!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130595",
+    "last_updated": "2025-10-25T16:13:27.130596"
+  },
+  {
+    "promo_id": "STORE_0004_PROMO_004",
+    "store_id": "STORE_0004",
+    "item_ids": [
+      "ITEM_001735",
+      "ITEM_003194",
+      "ITEM_003878"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 17.071519217774853,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-24T16:13:27.130598",
+    "end_date": "2025-11-08T16:13:27.130600",
+    "description": "Buy 3 or more: Organic Coconut Oil, Almond Butter Crunchy, Organic Chia Seeds",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130602",
+    "last_updated": "2025-10-25T16:13:27.130603"
+  },
+  {
+    "promo_id": "STORE_0004_PROMO_005",
+    "store_id": "STORE_0004",
+    "item_ids": [
+      "ITEM_001793"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 21.24489760566742,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-21T16:13:27.130605",
+    "end_date": "2025-11-10T16:13:27.130606",
+    "description": "Buy 3 or more: Organic Quinoa",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130608",
+    "last_updated": "2025-10-25T16:13:27.130609"
+  },
+  {
+    "promo_id": "STORE_0004_PROMO_006",
+    "store_id": "STORE_0004",
+    "item_ids": [
+      "ITEM_001914",
+      "ITEM_003722",
+      "ITEM_002327"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-20T16:13:27.130612",
+    "end_date": "2025-11-19T16:13:27.130613",
+    "description": "Buy one get one 50% off on Greek Yogurt Plain, Frozen Organic Blueberries, Almond Milk Unsweetened",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130615",
+    "last_updated": "2025-10-25T16:13:27.130616"
+  },
+  {
+    "promo_id": "STORE_0004_PROMO_007",
+    "store_id": "STORE_0004",
+    "item_ids": [
+      "ITEM_002581"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130618",
+    "end_date": "2025-11-05T16:13:27.130619",
+    "description": "Buy one get one 50% off on Organic Coconut Oil",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130621",
+    "last_updated": "2025-10-25T16:13:27.130622"
+  },
+  {
+    "promo_id": "STORE_0004_PROMO_008",
+    "store_id": "STORE_0004",
+    "item_ids": [
+      "ITEM_003996"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-24T16:13:27.130625",
+    "end_date": "2025-11-05T16:13:27.130626",
+    "description": "Buy one get one 50% off on Organic Coconut Oil Shampoo",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130628",
+    "last_updated": "2025-10-25T16:13:27.130629"
+  },
+  {
+    "promo_id": "STORE_0005_PROMO_001",
+    "store_id": "STORE_0005",
+    "item_ids": [
+      "ITEM_001698",
+      "ITEM_000414",
+      "ITEM_004918",
+      "ITEM_004608",
+      "ITEM_002847"
+    ],
+    "promo_type": "bundle",
+    "discount_percent": null,
+    "fixed_discount": null,
+    "bundle_price": 30.12,
+    "start_date": "2025-10-21T16:13:27.130635",
+    "end_date": "2025-11-02T16:13:27.130636",
+    "description": "Bundle deal: Bamboo Paper Towels, Organic Hass Avocados, Sliced Turkey Breast and more!",
+    "conditions": "All items must be purchased together",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130638",
+    "last_updated": "2025-10-25T16:13:27.130639"
+  },
+  {
+    "promo_id": "STORE_0005_PROMO_002",
+    "store_id": "STORE_0005",
+    "item_ids": [
+      "ITEM_000318",
+      "ITEM_003432",
+      "ITEM_004940",
+      "ITEM_003203",
+      "ITEM_003004"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 21.678688555193222,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130643",
+    "end_date": "2025-11-19T16:13:27.130644",
+    "description": "Buy 3 or more: Organic Quinoa, Organic Sprouted Almond Butter, Eco-Friendly Bamboo Paper Towels",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130646",
+    "last_updated": "2025-10-25T16:13:27.130647"
+  },
+  {
+    "promo_id": "STORE_0005_PROMO_003",
+    "store_id": "STORE_0005",
+    "item_ids": [
+      "ITEM_002142",
+      "ITEM_001678",
+      "ITEM_004870",
+      "ITEM_004898"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 25.29657016163548,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-23T16:13:27.130650",
+    "end_date": "2025-11-16T16:13:27.130651",
+    "description": "Save on Dark Chocolate Almonds, Organic Hass Avocados, Organic Spinach!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130654",
+    "last_updated": "2025-10-25T16:13:27.130655"
+  },
+  {
+    "promo_id": "STORE_0005_PROMO_004",
+    "store_id": "STORE_0005",
+    "item_ids": [
+      "ITEM_001437",
+      "ITEM_000295"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 19.55185671139609,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-20T16:13:27.130657",
+    "end_date": "2025-11-05T16:13:27.130658",
+    "description": "Buy 3 or more: Dark Chocolate Almonds, Sparkling Water Lemon Lime",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130661",
+    "last_updated": "2025-10-25T16:13:27.130661"
+  },
+  {
+    "promo_id": "STORE_0005_PROMO_005",
+    "store_id": "STORE_0005",
+    "item_ids": [
+      "ITEM_000856",
+      "ITEM_002148",
+      "ITEM_003876",
+      "ITEM_004901",
+      "ITEM_000051"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 22.28162519634008,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-20T16:13:27.130665",
+    "end_date": "2025-11-20T16:13:27.130666",
+    "description": "Buy 3 or more: Organic Coconut Oil, Wild-Caught Atlantic Salmon Fillets, Artisan Sourdough Bread",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130668",
+    "last_updated": "2025-10-25T16:13:27.130669"
+  },
+  {
+    "promo_id": "STORE_0005_PROMO_006",
+    "store_id": "STORE_0005",
+    "item_ids": [
+      "ITEM_004381",
+      "ITEM_003054"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 20.731116979138807,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-18T16:13:27.130671",
+    "end_date": "2025-11-19T16:13:27.130673",
+    "description": "Buy 3 or more: Dark Chocolate Almonds, Wild-Caught Atlantic Salmon Fillets",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130675",
+    "last_updated": "2025-10-25T16:13:27.130676"
+  },
+  {
+    "promo_id": "STORE_0006_PROMO_001",
+    "store_id": "STORE_0006",
+    "item_ids": [
+      "ITEM_004953",
+      "ITEM_001958"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 22.72777262650381,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-24T16:13:27.130678",
+    "end_date": "2025-11-13T16:13:27.130680",
+    "description": "Buy 3 or more: Artisan Sourdough Bread, Eco-Friendly Bamboo Paper Towels",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130685",
+    "last_updated": "2025-10-25T16:13:27.130686"
+  },
+  {
+    "promo_id": "STORE_0006_PROMO_002",
+    "store_id": "STORE_0006",
+    "item_ids": [
+      "ITEM_003566",
+      "ITEM_000666",
+      "ITEM_001875"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-24T16:13:27.130688",
+    "end_date": "2025-11-22T16:13:27.130689",
+    "description": "Buy one get one 50% off on Bamboo Paper Towels, Wild-Caught Atlantic Salmon Fillets, Organic Hass Avocados",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130691",
+    "last_updated": "2025-10-25T16:13:27.130692"
+  },
+  {
+    "promo_id": "STORE_0006_PROMO_003",
+    "store_id": "STORE_0006",
+    "item_ids": [
+      "ITEM_004226",
+      "ITEM_001180",
+      "ITEM_003940",
+      "ITEM_002521"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 18.274832919669635,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-22T16:13:27.130695",
+    "end_date": "2025-11-16T16:13:27.130696",
+    "description": "Buy 3 or more: Organic Hass Avocados, Organic Hass Avocados, Organic Hass Avocados",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130698",
+    "last_updated": "2025-10-25T16:13:27.130699"
+  },
+  {
+    "promo_id": "STORE_0006_PROMO_004",
+    "store_id": "STORE_0006",
+    "item_ids": [
+      "ITEM_003455"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 20.05873449899461,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130702",
+    "end_date": "2025-11-01T16:13:27.130703",
+    "description": "Buy 3 or more: Artisan Sourdough Bread",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130705",
+    "last_updated": "2025-10-25T16:13:27.130706"
+  },
+  {
+    "promo_id": "STORE_0006_PROMO_005",
+    "store_id": "STORE_0006",
+    "item_ids": [
+      "ITEM_003505",
+      "ITEM_004812",
+      "ITEM_003846",
+      "ITEM_001234",
+      "ITEM_004196"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 23.830897576563395,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130709",
+    "end_date": "2025-11-02T16:13:27.130710",
+    "description": "Buy 3 or more: Sliced Turkey Breast, Almond Milk Unsweetened, Organic Frozen Mixed Berries",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130712",
+    "last_updated": "2025-10-25T16:13:27.130713"
+  },
+  {
+    "promo_id": "STORE_0006_PROMO_006",
+    "store_id": "STORE_0006",
+    "item_ids": [
+      "ITEM_004832",
+      "ITEM_002115",
+      "ITEM_004963",
+      "ITEM_004028",
+      "ITEM_001297"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 19.11113775497745,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-24T16:13:27.130717",
+    "end_date": "2025-11-08T16:13:27.130718",
+    "description": "Save on Raw Organic Almonds, Almond Milk Unsweetened, Organic Coconut Oil!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130720",
+    "last_updated": "2025-10-25T16:13:27.130721"
+  },
+  {
+    "promo_id": "STORE_0007_PROMO_001",
+    "store_id": "STORE_0007",
+    "item_ids": [
+      "ITEM_003412"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 18.652885790213325,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-20T16:13:27.130724",
+    "end_date": "2025-11-11T16:13:27.130725",
+    "description": "Buy 3 or more: Organic Quinoa",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130727",
+    "last_updated": "2025-10-25T16:13:27.130728"
+  },
+  {
+    "promo_id": "STORE_0007_PROMO_002",
+    "store_id": "STORE_0007",
+    "item_ids": [
+      "ITEM_002772"
+    ],
+    "promo_type": "bundle",
+    "discount_percent": null,
+    "fixed_discount": null,
+    "bundle_price": 11.01,
+    "start_date": "2025-10-20T16:13:27.130730",
+    "end_date": "2025-11-11T16:13:27.130731",
+    "description": "Bundle deal: Wild-Caught Atlantic Salmon Fillets and more!",
+    "conditions": "All items must be purchased together",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130733",
+    "last_updated": "2025-10-25T16:13:27.130734"
+  },
+  {
+    "promo_id": "STORE_0007_PROMO_003",
+    "store_id": "STORE_0007",
+    "item_ids": [
+      "ITEM_004843"
+    ],
+    "promo_type": "bundle",
+    "discount_percent": null,
+    "fixed_discount": null,
+    "bundle_price": 4.01,
+    "start_date": "2025-10-22T16:13:27.130740",
+    "end_date": "2025-11-06T16:13:27.130741",
+    "description": "Bundle deal: Artisan Sourdough Bread and more!",
+    "conditions": "All items must be purchased together",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130743",
+    "last_updated": "2025-10-25T16:13:27.130744"
+  },
+  {
+    "promo_id": "STORE_0007_PROMO_004",
+    "store_id": "STORE_0007",
+    "item_ids": [
+      "ITEM_002858",
+      "ITEM_000706",
+      "ITEM_004437",
+      "ITEM_001582"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 21.591688916988403,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-18T16:13:27.130747",
+    "end_date": "2025-11-01T16:13:27.130748",
+    "description": "Buy 3 or more: Wild-Caught Atlantic Salmon Fillets, Grass-Fed Ground Beef, Wild-Caught Atlantic Salmon Fillets",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130750",
+    "last_updated": "2025-10-25T16:13:27.130751"
+  },
+  {
+    "promo_id": "STORE_0007_PROMO_005",
+    "store_id": "STORE_0007",
+    "item_ids": [
+      "ITEM_004716",
+      "ITEM_003295",
+      "ITEM_000355",
+      "ITEM_004377",
+      "ITEM_002541"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-22T16:13:27.130754",
+    "end_date": "2025-11-17T16:13:27.130756",
+    "description": "Buy one get one 50% off on Organic Dark Chocolate Almonds, Sourdough Bread, Organic Quinoa",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130758",
+    "last_updated": "2025-10-25T16:13:27.130759"
+  },
+  {
+    "promo_id": "STORE_0007_PROMO_006",
+    "store_id": "STORE_0007",
+    "item_ids": [
+      "ITEM_000655",
+      "ITEM_001499",
+      "ITEM_001444",
+      "ITEM_004171",
+      "ITEM_002053"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-24T16:13:27.130762",
+    "end_date": "2025-11-20T16:13:27.130763",
+    "description": "Buy one get one 50% off on Organic Quinoa, Dark Chocolate Almonds, Organic Hass Avocados",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130765",
+    "last_updated": "2025-10-25T16:13:27.130766"
+  },
+  {
+    "promo_id": "STORE_0007_PROMO_007",
+    "store_id": "STORE_0007",
+    "item_ids": [
+      "ITEM_002932",
+      "ITEM_003655",
+      "ITEM_003983",
+      "ITEM_002425"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 19.17014306114348,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-23T16:13:27.130769",
+    "end_date": "2025-11-04T16:13:27.130770",
+    "description": "Buy 3 or more: Greek Yogurt Plain, Organic Chia Seeds, Dark Chocolate Almonds",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130772",
+    "last_updated": "2025-10-25T16:13:27.130773"
+  },
+  {
+    "promo_id": "STORE_0007_PROMO_008",
+    "store_id": "STORE_0007",
+    "item_ids": [
+      "ITEM_001521",
+      "ITEM_003009",
+      "ITEM_001859",
+      "ITEM_002028",
+      "ITEM_004080"
+    ],
+    "promo_type": "bundle",
+    "discount_percent": null,
+    "fixed_discount": null,
+    "bundle_price": 21.26,
+    "start_date": "2025-10-21T16:13:27.130776",
+    "end_date": "2025-11-04T16:13:27.130778",
+    "description": "Bundle deal: Organic Quinoa, Almond Milk Unsweetened, Eco-Friendly Paper Towels and more!",
+    "conditions": "All items must be purchased together",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130783",
+    "last_updated": "2025-10-25T16:13:27.130784"
+  },
+  {
+    "promo_id": "STORE_0007_PROMO_009",
+    "store_id": "STORE_0007",
+    "item_ids": [
+      "ITEM_002222"
+    ],
+    "promo_type": "bundle",
+    "discount_percent": null,
+    "fixed_discount": null,
+    "bundle_price": 8.53,
+    "start_date": "2025-10-21T16:13:27.130787",
+    "end_date": "2025-11-15T16:13:27.130788",
+    "description": "Bundle deal: Organic Cold-Pressed Coconut Oil and more!",
+    "conditions": "All items must be purchased together",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130790",
+    "last_updated": "2025-10-25T16:13:27.130791"
+  },
+  {
+    "promo_id": "STORE_0008_PROMO_001",
+    "store_id": "STORE_0008",
+    "item_ids": [
+      "ITEM_001150",
+      "ITEM_004837",
+      "ITEM_002943",
+      "ITEM_004418"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 18.158481767682982,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-24T16:13:27.130794",
+    "end_date": "2025-11-14T16:13:27.130795",
+    "description": "Save on Organic Coconut Oil, Grass-Fed Ground Beef, Wild-Caught Atlantic Salmon Fillets!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130797",
+    "last_updated": "2025-10-25T16:13:27.130798"
+  },
+  {
+    "promo_id": "STORE_0008_PROMO_002",
+    "store_id": "STORE_0008",
+    "item_ids": [
+      "ITEM_003867"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-23T16:13:27.130801",
+    "end_date": "2025-11-10T16:13:27.130802",
+    "description": "Buy one get one 50% off on Organic Hass Avocados",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130804",
+    "last_updated": "2025-10-25T16:13:27.130805"
+  },
+  {
+    "promo_id": "STORE_0008_PROMO_003",
+    "store_id": "STORE_0008",
+    "item_ids": [
+      "ITEM_002686",
+      "ITEM_000479",
+      "ITEM_001739"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 35.71087085189509,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-23T16:13:27.130807",
+    "end_date": "2025-11-24T16:13:27.130809",
+    "description": "Save on Wild-Caught Atlantic Salmon Fillets, Greek Yogurt Plain, Organic Chia Seeds!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130811",
+    "last_updated": "2025-10-25T16:13:27.130812"
+  },
+  {
+    "promo_id": "STORE_0008_PROMO_004",
+    "store_id": "STORE_0008",
+    "item_ids": [
+      "ITEM_000594"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 10.13753595032474,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-21T16:13:27.130814",
+    "end_date": "2025-11-22T16:13:27.130815",
+    "description": "Save on Almond Milk Unsweetened!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130817",
+    "last_updated": "2025-10-25T16:13:27.130818"
+  },
+  {
+    "promo_id": "STORE_0008_PROMO_005",
+    "store_id": "STORE_0008",
+    "item_ids": [
+      "ITEM_000468",
+      "ITEM_002912",
+      "ITEM_003571"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130820",
+    "end_date": "2025-11-01T16:13:27.130822",
+    "description": "Buy one get one 50% off on Organic Quinoa, Organic Bamboo Toothbrush Set, Wild-Caught Atlantic Salmon Fillets",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130824",
+    "last_updated": "2025-10-25T16:13:27.130825"
+  },
+  {
+    "promo_id": "STORE_0008_PROMO_006",
+    "store_id": "STORE_0008",
+    "item_ids": [
+      "ITEM_002350",
+      "ITEM_002809",
+      "ITEM_002890",
+      "ITEM_004778"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 18.417850165677336,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-20T16:13:27.130827",
+    "end_date": "2025-11-10T16:13:27.130829",
+    "description": "Buy 3 or more: Organic Quinoa, Greek Yogurt Plain, Artisan Sourdough Bread",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130831",
+    "last_updated": "2025-10-25T16:13:27.130832"
+  },
+  {
+    "promo_id": "STORE_0008_PROMO_007",
+    "store_id": "STORE_0008",
+    "item_ids": [
+      "ITEM_004892"
+    ],
+    "promo_type": "bundle",
+    "discount_percent": null,
+    "fixed_discount": null,
+    "bundle_price": 3.64,
+    "start_date": "2025-10-24T16:13:27.130834",
+    "end_date": "2025-11-17T16:13:27.130835",
+    "description": "Bundle deal: Artisan Sourdough Bread and more!",
+    "conditions": "All items must be purchased together",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130837",
+    "last_updated": "2025-10-25T16:13:27.130838"
+  },
+  {
+    "promo_id": "STORE_0009_PROMO_001",
+    "store_id": "STORE_0009",
+    "item_ids": [
+      "ITEM_003894",
+      "ITEM_001343",
+      "ITEM_003750"
+    ],
+    "promo_type": "bundle",
+    "discount_percent": null,
+    "fixed_discount": null,
+    "bundle_price": 22.97,
+    "start_date": "2025-10-20T16:13:27.130842",
+    "end_date": "2025-11-12T16:13:27.130843",
+    "description": "Bundle deal: Organic Quinoa, Organic Hass Avocados, Eco-Friendly Bamboo Paper Towels and more!",
+    "conditions": "All items must be purchased together",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130845",
+    "last_updated": "2025-10-25T16:13:27.130846"
+  },
+  {
+    "promo_id": "STORE_0009_PROMO_002",
+    "store_id": "STORE_0009",
+    "item_ids": [
+      "ITEM_004382",
+      "ITEM_001582",
+      "ITEM_004598",
+      "ITEM_001316"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 22.503080695391116,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-21T16:13:27.130850",
+    "end_date": "2025-11-18T16:13:27.130851",
+    "description": "Buy 3 or more: Organic Coconut Oil, Greek Yogurt Plain, Greek Yogurt Plain",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130853",
+    "last_updated": "2025-10-25T16:13:27.130854"
+  },
+  {
+    "promo_id": "STORE_0009_PROMO_003",
+    "store_id": "STORE_0009",
+    "item_ids": [
+      "ITEM_002751",
+      "ITEM_001194",
+      "ITEM_002190",
+      "ITEM_004089",
+      "ITEM_002664"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 16.785924930929017,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-24T16:13:27.130857",
+    "end_date": "2025-11-04T16:13:27.130858",
+    "description": "Buy 3 or more: Sparkling Water Lemon Lime, Greek Yogurt Plain, Frozen Wild Blueberries",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130860",
+    "last_updated": "2025-10-25T16:13:27.130861"
+  },
+  {
+    "promo_id": "STORE_0009_PROMO_004",
+    "store_id": "STORE_0009",
+    "item_ids": [
+      "ITEM_001321",
+      "ITEM_002819"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 16.61681841666698,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130864",
+    "end_date": "2025-11-16T16:13:27.130865",
+    "description": "Buy 3 or more: Grass-Fed Ground Beef, Organic Chia Seeds",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130867",
+    "last_updated": "2025-10-25T16:13:27.130868"
+  },
+  {
+    "promo_id": "STORE_0009_PROMO_005",
+    "store_id": "STORE_0009",
+    "item_ids": [
+      "ITEM_003595",
+      "ITEM_003049",
+      "ITEM_003661",
+      "ITEM_004264",
+      "ITEM_000816"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 15.937454999490676,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-20T16:13:27.130871",
+    "end_date": "2025-11-08T16:13:27.130873",
+    "description": "Buy 3 or more: Wild-Caught Atlantic Salmon Fillets, Eco-Friendly Bamboo Paper Towels, Frozen Organic Blueberries",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130875",
+    "last_updated": "2025-10-25T16:13:27.130876"
+  },
+  {
+    "promo_id": "STORE_0009_PROMO_006",
+    "store_id": "STORE_0009",
+    "item_ids": [
+      "ITEM_002130",
+      "ITEM_001667"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-19T16:13:27.130878",
+    "end_date": "2025-11-12T16:13:27.130880",
+    "description": "Buy one get one 50% off on Eco-Friendly Bamboo Paper Towels, Greek Yogurt Plain",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130882",
+    "last_updated": "2025-10-25T16:13:27.130883"
+  },
+  {
+    "promo_id": "STORE_0009_PROMO_007",
+    "store_id": "STORE_0009",
+    "item_ids": [
+      "ITEM_002392",
+      "ITEM_004172",
+      "ITEM_004222",
+      "ITEM_000647"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-23T16:13:27.130885",
+    "end_date": "2025-11-16T16:13:27.130887",
+    "description": "Buy one get one 50% off on Dark Chocolate Almonds, Artisan Sourdough Bread, Eco-Friendly Dish Soap",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130889",
+    "last_updated": "2025-10-25T16:13:27.130890"
+  },
+  {
+    "promo_id": "STORE_0009_PROMO_008",
+    "store_id": "STORE_0009",
+    "item_ids": [
+      "ITEM_002518",
+      "ITEM_001869"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 20.62472843739576,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-23T16:13:27.130892",
+    "end_date": "2025-11-18T16:13:27.130893",
+    "description": "Save on Bamboo Paper Towels, Dark Chocolate Almonds!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130896",
+    "last_updated": "2025-10-25T16:13:27.130896"
+  },
+  {
+    "promo_id": "STORE_0009_PROMO_009",
+    "store_id": "STORE_0009",
+    "item_ids": [
+      "ITEM_004979",
+      "ITEM_001498",
+      "ITEM_000209",
+      "ITEM_001445"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 17.646361925374013,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-24T16:13:27.130899",
+    "end_date": "2025-11-14T16:13:27.130900",
+    "description": "Buy 3 or more: Organic Hummus Roasted Red Pepper, Almond Milk Unsweetened, Organic Coconut Oil Shampoo",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130902",
+    "last_updated": "2025-10-25T16:13:27.130903"
+  },
+  {
+    "promo_id": "STORE_0010_PROMO_001",
+    "store_id": "STORE_0010",
+    "item_ids": [
+      "ITEM_000981",
+      "ITEM_001528",
+      "ITEM_003911",
+      "ITEM_003724",
+      "ITEM_004393"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 27.161231399042162,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-22T16:13:27.130907",
+    "end_date": "2025-11-23T16:13:27.130908",
+    "description": "Save on Artisan Sourdough Bread, Sliced Roasted Turkey Breast, Vitamin C Serum!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130910",
+    "last_updated": "2025-10-25T16:13:27.130911"
+  },
+  {
+    "promo_id": "STORE_0010_PROMO_002",
+    "store_id": "STORE_0010",
+    "item_ids": [
+      "ITEM_004060",
+      "ITEM_000356",
+      "ITEM_004869",
+      "ITEM_003429",
+      "ITEM_001371"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-23T16:13:27.130915",
+    "end_date": "2025-11-18T16:13:27.130916",
+    "description": "Buy one get one 50% off on Organic Spinach Salad Mix, Frozen Organic Blueberries, Organic Coconut Oil",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130918",
+    "last_updated": "2025-10-25T16:13:27.130919"
+  },
+  {
+    "promo_id": "STORE_0010_PROMO_003",
+    "store_id": "STORE_0010",
+    "item_ids": [
+      "ITEM_000539",
+      "ITEM_003866",
+      "ITEM_001410",
+      "ITEM_000943",
+      "ITEM_003976"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 18.45969792017373,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-23T16:13:27.130922",
+    "end_date": "2025-11-08T16:13:27.130923",
+    "description": "Buy 3 or more: Raw Organic Cashew Butter, Raw Organic Chia Seeds, Sparkling Water Lemon Lime",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130926",
+    "last_updated": "2025-10-25T16:13:27.130927"
+  },
+  {
+    "promo_id": "STORE_0010_PROMO_004",
+    "store_id": "STORE_0010",
+    "item_ids": [
+      "ITEM_001295",
+      "ITEM_000228"
+    ],
+    "promo_type": "discount",
+    "discount_percent": 31.98487003654994,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-18T16:13:27.130929",
+    "end_date": "2025-11-20T16:13:27.130930",
+    "description": "Save on Grass-Fed Ground Beef, Greek Yogurt Plain!",
+    "conditions": "While supplies last",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130932",
+    "last_updated": "2025-10-25T16:13:27.130933"
+  },
+  {
+    "promo_id": "STORE_0010_PROMO_005",
+    "store_id": "STORE_0010",
+    "item_ids": [
+      "ITEM_002602"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-20T16:13:27.130936",
+    "end_date": "2025-11-19T16:13:27.130937",
+    "description": "Buy one get one 50% off on Grass-Fed Ground Beef",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130939",
+    "last_updated": "2025-10-25T16:13:27.130940"
+  },
+  {
+    "promo_id": "STORE_0010_PROMO_006",
+    "store_id": "STORE_0010",
+    "item_ids": [
+      "ITEM_001986",
+      "ITEM_003970",
+      "ITEM_002804"
+    ],
+    "promo_type": "bogo",
+    "discount_percent": 50,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-21T16:13:27.130942",
+    "end_date": "2025-11-01T16:13:27.130944",
+    "description": "Buy one get one 50% off on Organic Raw Almonds, Cold Brew Coffee Concentrate, Artisan Sourdough Bread",
+    "conditions": "Equal or lesser value. Limit 6.",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130946",
+    "last_updated": "2025-10-25T16:13:27.130947"
+  },
+  {
+    "promo_id": "STORE_0010_PROMO_007",
+    "store_id": "STORE_0010",
+    "item_ids": [
+      "ITEM_001070",
+      "ITEM_002931",
+      "ITEM_001313",
+      "ITEM_002030"
+    ],
+    "promo_type": "bulk_discount",
+    "discount_percent": 22.18122002051097,
+    "fixed_discount": null,
+    "bundle_price": null,
+    "start_date": "2025-10-20T16:13:27.130949",
+    "end_date": "2025-11-22T16:13:27.130950",
+    "description": "Buy 3 or more: Organic Chia Seeds, Wild-Caught Atlantic Salmon Fillets, Bamboo Paper Towels",
+    "conditions": "Buy 3 or more items",
+    "active": true,
+    "created_date": "2025-10-25T16:13:27.130952",
+    "last_updated": "2025-10-25T16:13:27.130953"
+  }
+]

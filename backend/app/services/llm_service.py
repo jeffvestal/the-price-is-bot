@@ -41,20 +41,23 @@ required_configs = [
     AZURE_OPENAI_API_VERSION
 ]
 
-if not all(required_configs):
+# Determine if Azure OpenAI is configured
+USE_AZURE = all(required_configs)
+
+if not USE_AZURE:
     missing = [name for name, value in zip(
         ["AZURE_OPENAI_API_KEY", "AZURE_OPENAI_ENDPOINT", "AZURE_OPENAI_DEPLOYMENT_NAME", "AZURE_OPENAI_API_VERSION"],
         required_configs
     ) if not value]
-    logger.error(f"Azure OpenAI configurations are incomplete. Missing: {', '.join(missing)}")
-    raise ValueError("Azure OpenAI configurations are incomplete.")
-
-# Initialize AzureOpenAI client
-client = openai.AzureOpenAI(
-    api_key=AZURE_OPENAI_API_KEY,
-    azure_endpoint=AZURE_OPENAI_ENDPOINT,
-    api_version=AZURE_OPENAI_API_VERSION
-)
+    logger.warning(f"Azure OpenAI not configured. Missing: {', '.join(missing)}. Falling back to non-Azure behavior.")
+    client = None
+else:
+    # Initialize AzureOpenAI client
+    client = openai.AzureOpenAI(
+        api_key=AZURE_OPENAI_API_KEY,
+        azure_endpoint=AZURE_OPENAI_ENDPOINT,
+        api_version=AZURE_OPENAI_API_VERSION
+    )
 
 def set_categories(categories: list):
     """
@@ -260,6 +263,28 @@ async def handle_llm_interaction(username: str, user_message: str) -> str:
     """
 
     logger.debug(f"Handling LLM interaction for user '{username}' with message: {user_message}")
+
+    # If Azure is not configured, return a safe fallback response to keep the service healthy
+    if not USE_AZURE:
+        try:
+            assistant_response = AssistantResponse(
+                podiums=[],
+                overall_total=0.0,
+                other_info=(
+                    "LLM is not configured on this deployment. Please contact an administrator "
+                    "to enable Azure OpenAI or update configuration."
+                ),
+                proposed_solution=False,
+            )
+            return json.dumps(assistant_response.dict())
+        except Exception:
+            # As a last resort, return a minimal JSON
+            return json.dumps({
+                "podiums": [],
+                "overall_total": 0.0,
+                "other_info": "LLM not configured.",
+                "proposed_solution": False
+            })
 
     try:
         # Initialize conversation history for the user if not present

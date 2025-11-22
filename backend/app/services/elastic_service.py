@@ -38,6 +38,51 @@ async def connect_elasticsearch():
         logger.error(f"Failed to connect to Elasticsearch: {e}")
         raise e
 
+async def warmup_elser():
+    """Warm up ELSER inference endpoint to avoid timeout errors on first use"""
+    logger.info("Warming up ELSER inference endpoint...")
+    
+    import asyncio
+    import time
+    max_wait = 300  # 5 minutes max
+    start_time = time.time()
+    
+    while (time.time() - start_time) < max_wait:
+        try:
+            # Make a test inference call using the Inference API endpoint with {"input": "..."}
+            response = await es.transport.perform_request(
+                method="POST",
+                url="/_inference/.elser-2-elasticsearch",
+                body={"input": "test"},
+                headers={"Content-Type": "application/json"}
+            )
+            
+            # Check if we got a successful response without deployment errors
+            response_str = str(response)
+            if response and "model_deployment_timeout_exception" not in response_str and "deployment" not in response_str.lower():
+                logger.info("✅ ELSER inference endpoint is ready")
+                return True
+            else:
+                # Got a response but it might have deployment errors
+                elapsed = int(time.time() - start_time)
+                logger.info(f"... waiting for ELSER ({elapsed}s elapsed)")
+                await asyncio.sleep(5)
+        except Exception as e:
+            error_str = str(e).lower()
+            if "model_deployment_timeout_exception" in error_str or "deployment" in error_str:
+                elapsed = int(time.time() - start_time)
+                logger.info(f"... waiting for ELSER ({elapsed}s elapsed)")
+                await asyncio.sleep(5)
+            else:
+                # If it's a different error (like 404), log and continue
+                # This might mean ELSER isn't configured, but we'll continue anyway
+                logger.warning(f"ELSER warmup check failed: {e}")
+                break
+    
+    logger.warning("⚠️  ELSER inference endpoint did not become ready within 5 minutes")
+    logger.warning("⚠️  Continuing anyway, but semantic search may not work properly on first request")
+    return False
+
 async def initialize_indices():
     """
     Initializes the necessary Elasticsearch indices with appropriate mappings.

@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+: "${PROJECT:?PROJECT required}"
+: "${REMOTE_ES_URL:?REMOTE_ES_URL required}"
+: "${REMOTE_ES_API_KEY:?REMOTE_ES_API_KEY required}"
+: "${LOCAL_ES_URL:?LOCAL_ES_URL required}"
+: "${LOCAL_ES_API_KEY:?LOCAL_ES_API_KEY required}"
+: "${KIBANA_URL_UI:?KIBANA_URL_UI required}"
+: "${KIBANA_API_KEY:?KIBANA_API_KEY required}"
+: "${ADMIN_TOKEN:?ADMIN_TOKEN required}"
+: "${SECRET_KEY:?SECRET_KEY required}"
+
+# Docker login for Artifact Registry if key present
+if [[ -n "${AR_KEY_B64:-}" ]]; then
+  echo "$AR_KEY_B64" | base64 -d > /tmp/ar-key.json || echo "$AR_KEY_B64" | base64 -D > /tmp/ar-key.json || true
+  docker login -u _json_key -p "$(cat /tmp/ar-key.json)" https://us-central1-docker.pkg.dev
+else
+  echo "[setup-kubernetes-vm] AR_KEY_B64 not set; assuming public images or prior login"
+fi
+
+cd "$(dirname "$0")"
+
+cat > docker-compose.yml <<'YML'
+version: "3.9"
+services:
+  backend:
+    image: us-central1-docker.pkg.dev/${PROJECT}/price-is-bot/backend:latest
+    environment:
+      - ELASTICSEARCH_HOST=${LOCAL_ES_URL}
+      - ELASTICSEARCH_API_KEY=${LOCAL_ES_API_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - ADMIN_TOKEN=${ADMIN_TOKEN}
+      - CORS_ALLOWED_ORIGINS=http://kubernetes-vm:8080
+      - PORT=8081
+    ports: ["8081:8081"]
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8081"]
+
+  leaderboard-api:
+    image: us-central1-docker.pkg.dev/${PROJECT}/price-is-bot/leaderboard-api:latest
+    environment:
+      - ELASTICSEARCH_URL=${REMOTE_ES_URL}
+      - ELASTICSEARCH_API_KEY=${REMOTE_ES_API_KEY}
+      - ADMIN_TOKEN=${ADMIN_TOKEN}
+      - PORT=8082
+    ports: ["8082:8082"]
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8082"]
+
+  game-ui:
+    image: us-central1-docker.pkg.dev/${PROJECT}/price-is-bot/game-ui:latest
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://kubernetes-vm:8081
+      - NEXT_PUBLIC_LEADERBOARD_API_URL=http://kubernetes-vm:8082
+      - KIBANA_URL=${KIBANA_URL_UI}
+      - KIBANA_API_KEY=${KIBANA_API_KEY}
+      - PORT=8080
+    ports: ["8080:8080"]
+YML
+
+docker compose pull
+docker compose up -d
+
+echo "[setup-kubernetes-vm] Verifying..."
+curl -fsS http://kubernetes-vm:8081/health >/dev/null
+curl -fsS http://kubernetes-vm:8080 >/dev/null || true
+curl -fsS http://kubernetes-vm:8082/api/leaderboard >/dev/null || true
+
+echo "[setup-kubernetes-vm] Done."
+
+
+
+
+
+
+
+
